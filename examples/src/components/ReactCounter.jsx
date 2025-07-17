@@ -35,11 +35,11 @@ export default function ReactCounter() {
     const newCount = localCount + 1;
     setLocalCount(newCount);
 
-    pubsub.emit('user-action', {
-      action: 'increment_local',
-      framework: 'React',
-      data: { newValue: newCount }
-    });
+    // pubsub.emit('user-action', {
+    //   action: 'increment_local',
+    //   framework: 'React',
+    //   data: { newValue: newCount }
+    // });
   };
 
   const reset = () => {

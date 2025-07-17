@@ -12,6 +12,11 @@ export * from './dependency-tracker.js';
 // MTM Vite Plugin
 export * from './vite-plugin-mtm.js';
 
+// Hot Reload Configuration and Developer Tools
+export * from './hot-reload-config.js';
+export * from './hot-reload-dev-tools.js';
+export * from './hot-reload-debug-logger.js';
+
 // Optimization exports
 export * from './tree-shaker.js';
 export * from './bundle-analyzer.js';

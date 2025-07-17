@@ -1,17 +1,19 @@
 import { MetamonViteOptions } from './types/build-options.js';
+import { defaultHotReloadConfig, devHotReloadConfig, prodHotReloadConfig, mergeHotReloadConfig } from './hot-reload-config.js';
 
 type MetamonOptions = MetamonViteOptions;
 
 /**
  * Default configuration for Metamon Vite plugin
  */
-export const defaultConfig: Required<Omit<MetamonOptions, 'adapters'>> & Pick<MetamonOptions, 'adapters'> = {
+export const defaultConfig: Required<Omit<MetamonOptions, 'adapters' | 'hotReload'>> & Pick<MetamonOptions, 'adapters' | 'hotReload'> = {
   root: 'src',
   pagesDir: 'pages',
   componentsDir: 'components',
   hmr: true,
   sourceMaps: true,
   adapters: {},
+  hotReload: defaultHotReloadConfig,
   optimization: {
     treeShaking: {
       runtime: true,
@@ -57,7 +59,8 @@ export const defaultConfig: Required<Omit<MetamonOptions, 'adapters'>> & Pick<Me
  */
 export const devConfig: Partial<MetamonOptions> = {
   hmr: true,
-  sourceMaps: true
+  sourceMaps: true,
+  hotReload: devHotReloadConfig
 };
 
 /**
@@ -65,7 +68,8 @@ export const devConfig: Partial<MetamonOptions> = {
  */
 export const prodConfig: Partial<MetamonOptions> = {
   hmr: false,
-  sourceMaps: false
+  sourceMaps: false,
+  hotReload: prodHotReloadConfig
 };
 
 /**
@@ -83,7 +87,11 @@ export function mergeConfig(
       ...defaultConfig.adapters,
       ...envConfig.adapters,
       ...userConfig.adapters
-    }
+    },
+    hotReload: mergeHotReloadConfig(
+      userConfig.hotReload,
+      envConfig.hotReload
+    )
   };
 }
 

@@ -8,10 +8,10 @@ channels:
 
 import React, { useEffect } from 'react';
 import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
-import ReactCounter from '@components/react-counter.mtm';
-import VueMessageBoard from '@components/vue-message-board.mtm';
-import SolidThemeToggle from '@components/solid-theme-toggle.mtm';
-import SvelteUserList from '@components/svelte-user-list.mtm';
+import ReactCounter from '@components/react-counter';
+import VueMessageBoard from '@components/vue-message-board';
+import SolidThemeToggle from '@components/solid-theme-toggle';
+import SvelteUserList from '@components/svelte-user-list';
 
 export default function HomePage() {
   const [userCount] = useMetamonSignal('userCount');
