@@ -1,0 +1,155 @@
+{
+  "MTM React Component": {
+    "prefix": "mtm-react",
+    "body": [
+      "---",
+      "target: reactjs",
+      "channels:",
+      "  - event: ${1:eventName}",
+      "    emit: ${2:onEventName}",
+      "---",
+      "",
+      "import React, { useState } from 'react';",
+      "",
+      "export default function ${3:ComponentName}() {",
+      "  const [${4:state}, set${4/(.*)/${1:/capitalize}/}] = useState(${5:null});",
+      "",
+      "  const ${2:onEventName} = (data) => {",
+      "    console.log('Received event:', data);",
+      "    set${4/(.*)/${1:/capitalize}/}(data);",
+      "  };",
+      "",
+      "  return (",
+      "    <div>",
+      "      <h1>${3:ComponentName}</h1>",
+      "      $0",
+      "    </div>",
+      "  );",
+      "}"
+    ],
+    "description": "Create a new MTM React component"
+  },
+  "MTM Vue Component": {
+    "prefix": "mtm-vue",
+    "body": [
+      "---",
+      "target: vue",
+      "channels:",
+      "  - event: ${1:eventName}",
+      "    emit: ${2:onEventName}",
+      "---",
+      "",
+      "<template>",
+      "  <div>",
+      "    <h1>${3:ComponentName}</h1>",
+      "    $0",
+      "  </div>",
+      "</template>",
+      "",
+      "<script setup>",
+      "import { ref } from 'vue';",
+      "",
+      "const ${4:state} = ref(${5:null});",
+      "",
+      "const ${2:onEventName} = (data) => {",
+      "  console.log('Received event:', data);",
+      "  ${4:state}.value = data;",
+      "};",
+      "</script>"
+    ],
+    "description": "Create a new MTM Vue component"
+  },
+  "MTM Solid Component": {
+    "prefix": "mtm-solid",
+    "body": [
+      "---",
+      "target: solid",
+      "channels:",
+      "  - event: ${1:eventName}",
+      "    emit: ${2:onEventName}",
+      "---",
+      "",
+      "import { createSignal } from 'solid-js';",
+      "",
+      "export default function ${3:ComponentName}() {",
+      "  const [${4:state}, set${4/(.*)/${1:/capitalize}/}] = createSignal(${5:null});",
+      "",
+      "  const ${2:onEventName} = (data) => {",
+      "    console.log('Received event:', data);",
+      "    set${4/(.*)/${1:/capitalize}/}(data);",
+      "  };",
+      "",
+      "  return (",
+      "    <div>",
+      "      <h1>${3:ComponentName}</h1>",
+      "      $0",
+      "    </div>",
+      "  );",
+      "}"
+    ],
+    "description": "Create a new MTM Solid component"
+  },
+  "MTM Svelte Component": {
+    "prefix": "mtm-svelte",
+    "body": [
+      "---",
+      "target: svelte",
+      "channels:",
+      "  - event: ${1:eventName}",
+      "    emit: ${2:onEventName}",
+      "---",
+      "",
+      "<script>",
+      "  let ${3:state} = ${4:null};",
+      "",
+      "  function ${2:onEventName}(data) {",
+      "    console.log('Received event:', data);",
+      "    ${3:state} = data;",
+      "  }",
+      "</script>",
+      "",
+      "<div>",
+      "  <h1>${5:ComponentName}</h1>",
+      "  $0",
+      "</div>"
+    ],
+    "description": "Create a new MTM Svelte component"
+  },
+  "MTM Page Component": {
+    "prefix": "mtm-page",
+    "body": [
+      "---",
+      "target: ${1|reactjs,vue,solid,svelte|}",
+      "route: /${2:path}",
+      "layout: ${3:main}",
+      "channels:",
+      "  - event: ${4:pageEvent}",
+      "    emit: ${5:onPageEvent}",
+      "---",
+      "",
+      "$0"
+    ],
+    "description": "Create a new MTM page component with routing"
+  },
+  "Channel Definition": {
+    "prefix": "channel",
+    "body": [
+      "- event: ${1:eventName}",
+      "  emit: ${2:onEventName}"
+    ],
+    "description": "Add a new channel definition"
+  },
+  "Frontmatter Block": {
+    "prefix": "frontmatter",
+    "body": [
+      "---",
+      "target: ${1|reactjs,vue,solid,svelte|}",
+      "${2:channels:}",
+      "${3:  - event: ${4:eventName}}",
+      "${5:    emit: ${6:onEventName}}",
+      "---",
+      "$0"
+    ],
+    "description": "Add frontmatter block to MTM file"
+  }
+}

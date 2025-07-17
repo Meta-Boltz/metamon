@@ -1,0 +1,61 @@
+// 🚀 Metamon Universal Component
+// Import components from any framework - they just work together!
+
+import ReactCounter from './ReactCounter.jsx';
+import VueMessageBoard from './VueMessageBoard.vue';
+import SvelteUserList from './SvelteUserList.svelte';
+
+// 🎯 Universal state - works across all frameworks
+const globalCount = signal('userCount', 0);
+const messages = signal('messages', []);
+const theme = signal('theme', 'light');
+
+// 📡 Universal events - any framework can emit/listen
+const events = pubsub();
+
+export default function UniversalDemo() {
+  // 🎨 Cool syntax: direct framework component usage
+  return layout`
+    <div class="universal-app">
+      <header>
+        <h1>🚀 Multi-Framework Magic</h1>
+        <p>Components from React, Vue, and Svelte working together!</p>
+      </header>
+      
+      <div class="framework-grid">
+        <!-- React component with props -->
+        <ReactCounter 
+          count={globalCount} 
+          onIncrement={(value) => events.emit('count-changed', value)}
+        />
+        
+        <!-- Vue component with reactive data -->
+        <VueMessageBoard 
+          :messages="messages" 
+          @message-sent="(msg) => events.emit('message-sent', msg)"
+        />
+        
+        <!-- Svelte component with stores -->
+        <SvelteUserList 
+          bind:userCount={globalCount}
+          on:user-added={(e) => events.emit('user-added', e.detail)}
+        />
+      </div>
+      
+      <footer>
+        <p>Theme: {theme} | Count: {globalCount} | Messages: {messages.length}</p>
+      </footer>
+    </div>
+  `;
+}
+
+// 🎵 Cool feature: Universal lifecycle hooks
+onMount(() => {
+  console.log('Universal component mounted!');
+  events.emit('app-ready', { timestamp: Date.now() });
+});
+
+onDestroy(() => {
+  console.log('Universal component destroyed!');
+  events.cleanup();
+});

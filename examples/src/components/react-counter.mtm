@@ -1,0 +1,85 @@
+---
+target: reactjs
+channels:
+  - event: counter-updated
+    emit: onCounterUpdate
+  - event: user-action
+    emit: onUserAction
+---
+
+import React, { useState, useCallback } from 'react';
+import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
+
+export default function ReactCounter() {
+  const [userCount, setUserCount] = useMetamonSignal('userCount');
+  const [localCount, setLocalCount] = useState(0);
+  const { emit, subscribe } = useMetamonPubSub();
+
+  const incrementGlobal = useCallback(() => {
+    const newCount = userCount + 1;
+    setUserCount(newCount);
+    emit('counter-updated', { 
+      framework: 'React', 
+      value: newCount,
+      timestamp: Date.now()
+    });
+    emit('user-action', {
+      action: 'increment_global',
+      framework: 'React',
+      data: { newValue: newCount }
+    });
+  }, [userCount, setUserCount, emit]);
+
+  const incrementLocal = useCallback(() => {
+    const newCount = localCount + 1;
+    setLocalCount(newCount);
+    emit('user-action', {
+      action: 'increment_local',
+      framework: 'React',
+      data: { newValue: newCount }
+    });
+  }, [localCount, emit]);
+
+  const reset = useCallback(() => {
+    setUserCount(0);
+    setLocalCount(0);
+    emit('counter-updated', { 
+      framework: 'React', 
+      value: 0,
+      timestamp: Date.now()
+    });
+    emit('user-action', {
+      action: 'reset_counters',
+      framework: 'React'
+    });
+  }, [setUserCount, emit]);
+
+  return (
+    <div className="component-demo">
+      <div className="counter">
+        <span>Global Count:</span>
+        <span className="counter-value">{userCount}</span>
+        <button className="button" onClick={incrementGlobal}>
+          +1 Global
+        </button>
+      </div>
+      
+      <div className="counter">
+        <span>Local Count:</span>
+        <span className="counter-value">{localCount}</span>
+        <button className="button secondary" onClick={incrementLocal}>
+          +1 Local
+        </button>
+      </div>
+
+      <button className="button" onClick={reset} style={{ marginTop: '10px' }}>
+        Reset All
+      </button>
+
+      <div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
+        Global count is shared across all frameworks via signals.
+        Local count demonstrates React-specific state.
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,27 @@
+{
+  "name": "metamon",
+  "version": "0.1.0",
+  "description": "A meta-framework for writing components once and targeting multiple JavaScript frameworks",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "setup-examples": "node setup-examples.js",
+    "examples": "npm run dev --workspace=examples"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "turbo": "^1.10.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

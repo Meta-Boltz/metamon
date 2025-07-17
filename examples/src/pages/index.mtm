@@ -1,0 +1,94 @@
+---
+target: reactjs
+route: /
+channels:
+  - event: framework-demo-loaded
+    emit: onDemoLoaded
+---
+
+import React, { useEffect } from 'react';
+import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
+import ReactCounter from '@components/react-counter.mtm';
+import VueMessageBoard from '@components/vue-message-board.mtm';
+import SolidThemeToggle from '@components/solid-theme-toggle.mtm';
+import SvelteUserList from '@components/svelte-user-list.mtm';
+
+export default function HomePage() {
+  const [userCount] = useMetamonSignal('userCount');
+  const [messages] = useMetamonSignal('messages');
+  const [theme] = useMetamonSignal('theme');
+  const { emit } = useMetamonPubSub();
+
+  useEffect(() => {
+    emit('framework-demo-loaded', { timestamp: Date.now() });
+  }, []);
+
+  return (
+    <div className="app-container">
+      <header className="header">
+        <h1>🚀 Metamon Framework Demo</h1>
+        <p>Multi-framework components working together seamlessly</p>
+      </header>
+
+      <div className="shared-state-display">
+        <h3>🔄 Shared State (Live Updates)</h3>
+        <div className="state-item">
+          <span>Active Users:</span>
+          <span className="metric-value">{userCount}</span>
+        </div>
+        <div className="state-item">
+          <span>Messages:</span>
+          <span className="metric-value">{messages.length}</span>
+        </div>
+        <div className="state-item">
+          <span>Theme:</span>
+          <span className="metric-value">{theme}</span>
+        </div>
+      </div>
+
+      <div className="framework-grid">
+        <div className="framework-card">
+          <div className="react-badge framework-badge">React</div>
+          <h3>Counter Component</h3>
+          <p>Demonstrates signal-based state management</p>
+          <ReactCounter />
+        </div>
+
+        <div className="framework-card">
+          <div className="vue-badge framework-badge">Vue</div>
+          <h3>Message Board</h3>
+          <p>Shows cross-framework event communication</p>
+          <VueMessageBoard />
+        </div>
+
+        <div className="framework-card">
+          <div className="solid-badge framework-badge">Solid</div>
+          <h3>Theme Toggle</h3>
+          <p>Native Solid signals integration</p>
+          <SolidThemeToggle />
+        </div>
+
+        <div className="framework-card">
+          <div className="svelte-badge framework-badge">Svelte</div>
+          <h3>User Management</h3>
+          <p>Svelte stores with Metamon signals</p>
+          <SvelteUserList />
+        </div>
+      </div>
+
+      <div className="shared-state">
+        <h3>📊 Framework Communication Demo</h3>
+        <p>
+          Each component above is built with a different framework, but they all share state
+          and communicate through Metamon's unified pub/sub system and signals.
+        </p>
+        <ul>
+          <li>React Counter updates the global user count signal</li>
+          <li>Vue Message Board listens for messages from all frameworks</li>
+          <li>Solid Theme Toggle changes the global theme signal</li>
+          <li>Svelte User List manages users and emits events</li>
+        </ul>
+      </div>
+    </div>
+  );
+}

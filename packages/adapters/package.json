@@ -1,0 +1,35 @@
+{
+  "name": "@metamon/adapters",
+  "version": "0.1.0",
+  "description": "Framework adapters for Metamon",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rmdir /s /q dist 2>nul || echo cleaned"
+  },
+  "dependencies": {
+    "@metamon/core": "*"
+  },
+  "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "@testing-library/react": "^13.4.0",
+    "@types/react": "^18.2.0",
+    "@vue/test-utils": "^2.4.0",
+    "jsdom": "^22.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "solid-js": "^1.9.7",
+    "svelte": "^5.36.1",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0",
+    "vue": "^3.3.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

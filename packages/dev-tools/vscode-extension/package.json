@@ -1,0 +1,94 @@
+{
+  "name": "metamon-language-support",
+  "displayName": "Metamon Language Support",
+  "description": "Language support for Metamon .mtm files",
+  "version": "0.1.0",
+  "publisher": "metamon",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Snippets"
+  ],
+  "keywords": [
+    "metamon",
+    "mtm",
+    "react",
+    "vue",
+    "solid",
+    "svelte",
+    "meta-framework"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:mtm"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "mtm",
+        "aliases": [
+          "Metamon Template",
+          "mtm"
+        ],
+        "extensions": [
+          ".mtm"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/mtm-light.svg",
+          "dark": "./icons/mtm-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "mtm",
+        "scopeName": "source.mtm",
+        "path": "./syntaxes/mtm.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "mtm",
+        "path": "./snippets/mtm.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Metamon",
+      "properties": {
+        "metamon.languageServer.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Metamon language server"
+        },
+        "metamon.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable validation for .mtm files"
+        },
+        "metamon.completion.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable auto-completion for .mtm files"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.1.0"
+  }
+}

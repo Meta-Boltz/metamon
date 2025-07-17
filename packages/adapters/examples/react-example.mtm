@@ -1,0 +1,84 @@
+---
+target: reactjs
+channels:
+  - event: userLogin
+    emit: onUserLogin
+  - event: dataUpdate
+    emit: onDataUpdate
+route: /dashboard
+layout: main
+---
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+export default function Dashboard() {
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+  // Use Metamon signal for global state
+  const [globalCounter, setGlobalCounter] = useMetamonSignal('counter', 0);
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  const loadInitialData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('/api/dashboard');
+      setData(response.data);
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    // Emit event to other components
+    onUserLogin(userData);
+  };
+
+  const refreshData = () => {
+    loadInitialData();
+    // Emit data update event
+    onDataUpdate({ timestamp: Date.now() });
+  };
+
+  const incrementCounter = () => {
+    setGlobalCounter(globalCounter + 1);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="dashboard">
+      <h1>Dashboard</h1>
+      <div>Global Counter: {globalCounter}</div>
+      <button onClick={incrementCounter}>Increment Counter</button>
+      
+      {user ? (
+        <div>
+          <p>Welcome, {user.name}!</p>
+          <button onClick={refreshData}>Refresh Data</button>
+          <div className="data-list">
+            {data.map(item => (
+              <div key={item.id} className="data-item">
+                {item.title}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <button onClick={() => handleLogin({ name: 'Test User', id: 1 })}>
+          Login
+        </button>
+      )}
+    </div>
+  );
+}

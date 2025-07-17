@@ -1,0 +1,35 @@
+{
+  "name": "@metamon/dev-tools",
+  "version": "0.1.0",
+  "description": "Development tools and language support for Metamon .mtm files",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "metamon-language-server": "dist/language-server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rmdir /s /q dist 2>nul || echo cleaned"
+  },
+  "dependencies": {
+    "@metamon/core": "*",
+    "vscode-languageserver": "^8.1.0",
+    "vscode-languageserver-textdocument": "^1.0.8",
+    "vscode-uri": "^3.0.7",
+    "yaml": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0",
+    "vscode-languageserver-protocol": "^3.17.3"
+  },
+  "files": [
+    "dist",
+    "syntaxes",
+    "language-configuration.json"
+  ]
+}

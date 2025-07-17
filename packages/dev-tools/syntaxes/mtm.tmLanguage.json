@@ -1,0 +1,186 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Metamon Template",
+  "patterns": [
+    {
+      "include": "#frontmatter"
+    },
+    {
+      "include": "#content"
+    }
+  ],
+  "repository": {
+    "frontmatter": {
+      "name": "meta.frontmatter.mtm",
+      "begin": "\\A(---)\\s*$",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.frontmatter.mtm"
+        }
+      },
+      "end": "^(---)\\s*$",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.frontmatter.mtm"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#yaml-content"
+        }
+      ]
+    },
+    "yaml-content": {
+      "patterns": [
+        {
+          "name": "meta.target.mtm",
+          "match": "^\\s*(target)\\s*(:)\\s*(reactjs|vue|solid|svelte)\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.yaml"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.yaml"
+            },
+            "3": {
+              "name": "string.unquoted.yaml support.constant.mtm"
+            }
+          }
+        },
+        {
+          "name": "meta.route.mtm",
+          "match": "^\\s*(route)\\s*(:)\\s*(.+)$",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.yaml"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.yaml"
+            },
+            "3": {
+              "name": "string.unquoted.yaml"
+            }
+          }
+        },
+        {
+          "name": "meta.layout.mtm",
+          "match": "^\\s*(layout)\\s*(:)\\s*(.+)$",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.yaml"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.yaml"
+            },
+            "3": {
+              "name": "string.unquoted.yaml"
+            }
+          }
+        },
+        {
+          "name": "meta.channels.mtm",
+          "match": "^\\s*(channels)\\s*(:)\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.yaml"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.yaml"
+            }
+          }
+        },
+        {
+          "name": "meta.channel-item.mtm",
+          "match": "^\\s*(-\\s+)?(event|emit)\\s*(:)\\s*(.+)$",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.list.yaml"
+            },
+            "2": {
+              "name": "entity.name.tag.yaml support.type.mtm"
+            },
+            "3": {
+              "name": "punctuation.separator.key-value.yaml"
+            },
+            "4": {
+              "name": "string.unquoted.yaml"
+            }
+          }
+        },
+        {
+          "include": "source.yaml"
+        }
+      ]
+    },
+    "content": {
+      "name": "meta.content.mtm",
+      "begin": "(?<=^---\\s*$)",
+      "end": "\\z",
+      "patterns": [
+        {
+          "include": "#detect-language"
+        }
+      ]
+    },
+    "detect-language": {
+      "patterns": [
+        {
+          "name": "meta.content.react.mtm",
+          "begin": "(?=import\\s+React|import\\s*{[^}]*}\\s*from\\s*['\"]react['\"]|export\\s+default\\s+function)",
+          "end": "\\z",
+          "patterns": [
+            {
+              "include": "source.tsx"
+            },
+            {
+              "include": "source.jsx"
+            }
+          ]
+        },
+        {
+          "name": "meta.content.vue.mtm",
+          "begin": "(?=<template|<script.*setup|export\\s+default\\s*{)",
+          "end": "\\z",
+          "patterns": [
+            {
+              "include": "source.vue"
+            }
+          ]
+        },
+        {
+          "name": "meta.content.solid.mtm",
+          "begin": "(?=import\\s*{[^}]*}\\s*from\\s*['\"]solid-js['\"]|createSignal|createEffect)",
+          "end": "\\z",
+          "patterns": [
+            {
+              "include": "source.tsx"
+            },
+            {
+              "include": "source.jsx"
+            }
+          ]
+        },
+        {
+          "name": "meta.content.svelte.mtm",
+          "begin": "(?=<script|<style|<[a-zA-Z])",
+          "end": "\\z",
+          "patterns": [
+            {
+              "include": "source.svelte"
+            }
+          ]
+        },
+        {
+          "include": "source.js"
+        },
+        {
+          "include": "source.ts"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.mtm",
+  "fileTypes": [
+    "mtm"
+  ]
+}
