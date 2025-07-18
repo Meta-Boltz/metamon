@@ -1,3 +1,4 @@
+import { defaultHotReloadConfig, devHotReloadConfig, prodHotReloadConfig, mergeHotReloadConfig } from './hot-reload-config.js';
 /**
  * Default configuration for Metamon Vite plugin
  */
@@ -8,6 +9,7 @@ export const defaultConfig = {
     hmr: true,
     sourceMaps: true,
     adapters: {},
+    hotReload: defaultHotReloadConfig,
     optimization: {
         treeShaking: {
             runtime: true,
@@ -52,14 +54,16 @@ export const defaultConfig = {
  */
 export const devConfig = {
     hmr: true,
-    sourceMaps: true
+    sourceMaps: true,
+    hotReload: devHotReloadConfig
 };
 /**
  * Production-specific configuration
  */
 export const prodConfig = {
     hmr: false,
-    sourceMaps: false
+    sourceMaps: false,
+    hotReload: prodHotReloadConfig
 };
 /**
  * Merge configurations with defaults
@@ -73,7 +77,8 @@ export function mergeConfig(userConfig = {}, envConfig = {}) {
             ...defaultConfig.adapters,
             ...envConfig.adapters,
             ...userConfig.adapters
-        }
+        },
+        hotReload: mergeHotReloadConfig(userConfig.hotReload, envConfig.hotReload)
     };
 }
 /**

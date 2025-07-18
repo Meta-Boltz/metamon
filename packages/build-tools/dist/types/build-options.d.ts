@@ -1,4 +1,5 @@
 import { FrameworkAdapter } from '@metamon/adapters';
+import { HotReloadConfig } from '../hot-reload-config.js';
 /**
  * Options for Metamon build tools
  */
@@ -47,6 +48,10 @@ export interface MetamonViteOptions {
      * Custom framework adapters
      */
     adapters?: Record<string, FrameworkAdapter>;
+    /**
+     * Hot reload configuration
+     */
+    hotReload?: Partial<HotReloadConfig>;
     /**
      * Production optimization settings
      */

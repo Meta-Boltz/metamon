@@ -19,6 +19,16 @@ import { TreeShaker, TreeShakingConfig } from './tree-shaker.js';
 import { BundleAnalyzer, BundleAnalysisConfig } from './bundle-analyzer.js';
 import { ProductionOptimizer, ProductionOptimizationConfig } from './production-optimizer.js';
 
+// Performance optimization imports
+import { serviceWorkerPlugin, ServiceWorkerPluginOptions } from './service-worker/vite-plugin-service-worker.js';
+import { FrameworkLoaderService } from './framework-loader/framework-loader-service.js';
+import { PerformanceMonitor } from './performance-monitoring/performance-monitor.js';
+import { LayoutStabilityController } from './layout-stability/layout-stability-controller.js';
+import { IntelligentPreloader } from './intelligent-preloader/intelligent-preloader.js';
+import { BundleOptimizationOrchestrator } from './bundle-optimization/bundle-optimization-orchestrator.js';
+import { ProgressiveEnhancementCoordinator } from './progressive-enhancement/progressive-enhancement-coordinator.js';
+import { NetworkAdaptationCoordinator } from './network-adaptation/network-adaptation-coordinator.js';
+
 // Re-export for convenience
 export type MetamonOptions = MetamonViteOptions;
 
@@ -34,7 +44,7 @@ interface CompilationCache {
 }
 
 /**
- * Vite plugin for processing .mtm files
+ * Vite plugin for processing .mtm files with performance optimization
  */
 export function metamon(options: MetamonOptions = {}): Plugin {
   const {
@@ -44,8 +54,52 @@ export function metamon(options: MetamonOptions = {}): Plugin {
     hmr = true,
     sourceMaps,
     adapters: customAdapters = {},
-    optimization = {}
+    optimization = {},
+    performance = {}
   } = options;
+
+  // Performance optimization defaults
+  const performanceConfig = {
+    lazyLoading: {
+      enabled: true,
+      strategy: 'viewport' as const,
+      intelligentPreload: true,
+      targetLoadTime: 100,
+      ...performance.lazyLoading
+    },
+    serviceWorker: {
+      enabled: true,
+      scope: '/',
+      cacheStrategy: 'stale-while-revalidate' as const,
+      backgroundExecution: true,
+      ...performance.serviceWorker
+    },
+    layoutStability: {
+      enabled: true,
+      targetCLS: 0.1,
+      placeholderStrategy: 'dimensions' as const,
+      ...performance.layoutStability
+    },
+    ssr: {
+      selectiveHydration: true,
+      hydrationStrategy: 'viewport' as const,
+      progressiveEnhancement: true,
+      ...performance.ssr
+    },
+    networkAdaptation: {
+      enabled: true,
+      bandwidthAware: true,
+      intermittentConnectivity: true,
+      ...performance.networkAdaptation
+    },
+    monitoring: {
+      enabled: true,
+      webVitals: true,
+      frameworkMetrics: true,
+      serviceWorkerDebug: false,
+      ...performance.monitoring
+    }
+  };
 
   // Initialize framework adapters
   const adapters: Record<string, FrameworkAdapter> = {
@@ -71,6 +125,92 @@ export function metamon(options: MetamonOptions = {}): Plugin {
   // Initialize optimization tools for production builds
   let productionOptimizer: ProductionOptimizer | undefined;
   let bundleAnalyzer: BundleAnalyzer | undefined;
+
+  // Initialize performance optimization components
+  let frameworkLoader: FrameworkLoaderService | undefined;
+  let performanceMonitor: PerformanceMonitor | undefined;
+  let layoutStabilityController: LayoutStabilityController | undefined;
+  let intelligentPreloader: IntelligentPreloader | undefined;
+  let bundleOptimizer: BundleOptimizationOrchestrator | undefined;
+  let progressiveEnhancement: ProgressiveEnhancementCoordinator | undefined;
+  let networkAdaptation: NetworkAdaptationCoordinator | undefined;
+
+  // Initialize performance components if enabled
+  if (performanceConfig.lazyLoading.enabled) {
+    frameworkLoader = new FrameworkLoaderService({
+      serviceWorkerEnabled: performanceConfig.serviceWorker.enabled,
+      fallbackEnabled: true,
+      loadingStrategy: {
+        maxConcurrentLoads: 3,
+        timeoutMs: performanceConfig.lazyLoading.targetLoadTime * 10,
+        retryAttempts: 2,
+        retryDelayMs: 1000,
+        priorityWeights: {
+          critical: 1.0,
+          high: 0.8,
+          normal: 0.6,
+          low: 0.4
+        },
+        networkAdaptation: {
+          enabled: performanceConfig.networkAdaptation.enabled,
+          slowNetworkThreshold: 1000,
+          adaptiveTimeout: true
+        }
+      },
+      cacheConfig: {
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        maxSize: 50 * 1024 * 1024, // 50MB
+        compressionEnabled: true,
+        invalidationStrategy: 'version'
+      },
+      enableMetrics: performanceConfig.monitoring.frameworkMetrics,
+      enableLogging: performanceConfig.monitoring.serviceWorkerDebug
+    });
+  }
+
+  if (performanceConfig.monitoring.enabled) {
+    performanceMonitor = new PerformanceMonitor({
+      webVitals: performanceConfig.monitoring.webVitals,
+      frameworkMetrics: performanceConfig.monitoring.frameworkMetrics,
+      serviceWorkerDebug: performanceConfig.monitoring.serviceWorkerDebug
+    });
+  }
+
+  if (performanceConfig.layoutStability.enabled) {
+    layoutStabilityController = new LayoutStabilityController({
+      targetCLS: performanceConfig.layoutStability.targetCLS,
+      placeholderStrategy: performanceConfig.layoutStability.placeholderStrategy
+    });
+  }
+
+  if (performanceConfig.lazyLoading.intelligentPreload) {
+    intelligentPreloader = new IntelligentPreloader({
+      strategy: performanceConfig.lazyLoading.strategy,
+      networkAware: performanceConfig.networkAdaptation.enabled
+    });
+  }
+
+  if (performanceConfig.networkAdaptation.enabled) {
+    networkAdaptation = new NetworkAdaptationCoordinator({
+      bandwidthAware: performanceConfig.networkAdaptation.bandwidthAware,
+      intermittentConnectivity: performanceConfig.networkAdaptation.intermittentConnectivity
+    });
+  }
+
+  // Initialize bundle optimization orchestrator
+  bundleOptimizer = new BundleOptimizationOrchestrator({
+    frameworkSplitting: true,
+    sharedDependencyExtraction: true,
+    http2Optimization: true,
+    cacheStrategyOptimization: true
+  });
+
+  // Initialize progressive enhancement coordinator
+  progressiveEnhancement = new ProgressiveEnhancementCoordinator({
+    serviceWorkerFallback: true,
+    offlineFunctionality: true,
+    errorRecovery: true
+  });
 
   /**
    * Compile a .mtm file to framework-specific code
@@ -155,11 +295,91 @@ export function metamon(options: MetamonOptions = {}): Plugin {
     return routePath || '/';
   }
 
+  // Create service worker plugin configuration
+  const serviceWorkerConfig: Partial<ServiceWorkerPluginOptions> = {
+    serviceWorker: {
+      enabled: performanceConfig.serviceWorker.enabled,
+      swPath: '/metamon-sw.js',
+      scope: performanceConfig.serviceWorker.scope,
+      generateSW: true
+    },
+    bundleSplitting: {
+      enableFrameworkSplitting: true,
+      sharedDependencyThreshold: 2,
+      chunkSizeThreshold: 50 * 1024, // 50KB
+      compressionEnabled: true,
+      cacheStrategy: {
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        strategy: performanceConfig.serviceWorker.cacheStrategy
+      }
+    },
+    development: {
+      enableInDev: server !== undefined,
+      mockServiceWorker: true,
+      logLevel: performanceConfig.monitoring.serviceWorkerDebug ? 'debug' : 'info'
+    },
+    build: {
+      generateManifest: true,
+      manifestPath: '/metamon-manifest.json',
+      outputDir: 'dist',
+      enableCompression: true
+    }
+  };
+
   return {
     name: 'metamon',
     
     async configureServer(devServer) {
       server = devServer;
+      
+      // Initialize performance monitoring in development
+      if (performanceMonitor && server) {
+        performanceMonitor.startDevelopmentMonitoring();
+        console.log('Metamon: Performance monitoring enabled in development mode');
+      }
+
+      // Initialize layout stability controller in development
+      if (layoutStabilityController && server) {
+        layoutStabilityController.enableDevelopmentMode();
+        console.log('Metamon: Layout stability monitoring enabled');
+      }
+
+      // Setup intelligent preloader in development
+      if (intelligentPreloader && server) {
+        intelligentPreloader.enableDevelopmentMode();
+        console.log('Metamon: Intelligent preloader enabled with development insights');
+      }
+
+      // Setup network adaptation in development
+      if (networkAdaptation && server) {
+        networkAdaptation.enableDevelopmentMode();
+        console.log('Metamon: Network adaptation enabled with development simulation');
+      }
+
+      // Add development middleware for performance optimization features
+      if (server && performanceConfig.lazyLoading.enabled) {
+        // Serve framework loader client script
+        server.middlewares.use('/metamon-loader.js', (req, res, next) => {
+          res.setHeader('Content-Type', 'application/javascript');
+          res.end(generateDevelopmentFrameworkLoader());
+        });
+
+        // Serve performance monitoring client script
+        if (performanceConfig.monitoring.enabled) {
+          server.middlewares.use('/metamon-performance.js', (req, res, next) => {
+            res.setHeader('Content-Type', 'application/javascript');
+            res.end(generatePerformanceMonitoringClient());
+          });
+        }
+
+        // Serve layout stability client script
+        if (performanceConfig.layoutStability.enabled) {
+          server.middlewares.use('/metamon-layout-stability.js', (req, res, next) => {
+            res.setHeader('Content-Type', 'application/javascript');
+            res.end(generateLayoutStabilityClient());
+          });
+        }
+      }
       
       // Build initial dependency graph
       try {
@@ -440,8 +660,362 @@ export function metamon(options: MetamonOptions = {}): Plugin {
       }
     },
 
+    /**
+     * Transform index.html to inject performance optimization scripts
+     */
+    transformIndexHtml(html, ctx) {
+      if (ctx.server && performanceConfig.lazyLoading.enabled) {
+        let injectedScripts = '';
+
+        // Inject framework loader script
+        injectedScripts += `<script src="/metamon-loader.js" defer></script>\n`;
+
+        // Inject performance monitoring script if enabled
+        if (performanceConfig.monitoring.enabled) {
+          injectedScripts += `<script src="/metamon-performance.js" defer></script>\n`;
+        }
+
+        // Inject layout stability script if enabled
+        if (performanceConfig.layoutStability.enabled) {
+          injectedScripts += `<script src="/metamon-layout-stability.js" defer></script>\n`;
+        }
+
+        // Inject service worker registration if enabled
+        if (performanceConfig.serviceWorker.enabled) {
+          injectedScripts += `
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/metamon-sw.js', {
+      scope: '${performanceConfig.serviceWorker.scope}'
+    }).then(registration => {
+      console.log('[Metamon] Service worker registered:', registration.scope);
+    }).catch(error => {
+      console.warn('[Metamon] Service worker registration failed:', error);
+    });
+  });
+}
+</script>\n`;
+        }
+
+        return html.replace('</head>', `${injectedScripts}</head>`);
+      }
+      
+      return html;
+    }
 
   };
+
+  /**
+   * Generate development framework loader client script
+   */
+  function generateDevelopmentFrameworkLoader(): string {
+    return `
+// Metamon Development Framework Loader
+(function() {
+  'use strict';
+  
+  console.log('[Metamon] Development framework loader initialized');
+  
+  class MetamonDevLoader {
+    constructor() {
+      this.loadedFrameworks = new Set();
+      this.loadingPromises = new Map();
+      this.config = ${JSON.stringify(performanceConfig.lazyLoading, null, 2)};
+    }
+    
+    async loadFramework(frameworkName, priority = 'normal') {
+      if (this.loadedFrameworks.has(frameworkName)) {
+        return Promise.resolve();
+      }
+      
+      if (this.loadingPromises.has(frameworkName)) {
+        return this.loadingPromises.get(frameworkName);
+      }
+      
+      console.log(\`[Metamon] Loading framework: \${frameworkName} (priority: \${priority})\`);
+      
+      const loadPromise = this._simulateFrameworkLoad(frameworkName, priority);
+      this.loadingPromises.set(frameworkName, loadPromise);
+      
+      try {
+        await loadPromise;
+        this.loadedFrameworks.add(frameworkName);
+        this.loadingPromises.delete(frameworkName);
+        console.log(\`[Metamon] Framework loaded: \${frameworkName}\`);
+      } catch (error) {
+        this.loadingPromises.delete(frameworkName);
+        console.error(\`[Metamon] Framework load failed: \${frameworkName}\`, error);
+        throw error;
+      }
+    }
+    
+    async _simulateFrameworkLoad(frameworkName, priority) {
+      // Simulate network delay based on priority
+      const delay = priority === 'critical' ? 50 : 
+                   priority === 'high' ? 100 : 
+                   priority === 'normal' ? 200 : 300;
+      
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+      // In development, frameworks are already loaded by Vite
+      return Promise.resolve();
+    }
+    
+    isFrameworkLoaded(frameworkName) {
+      return this.loadedFrameworks.has(frameworkName);
+    }
+    
+    getLoadedFrameworks() {
+      return Array.from(this.loadedFrameworks);
+    }
+  }
+  
+  // Create global instance
+  window.MetamonLoader = new MetamonDevLoader();
+  
+  // Auto-load common frameworks in development
+  const commonFrameworks = ['reactjs', 'vue', 'solid', 'svelte'];
+  commonFrameworks.forEach(framework => {
+    window.MetamonLoader.loadFramework(framework, 'high');
+  });
+  
+})();
+`;
+  }
+
+  /**
+   * Generate performance monitoring client script
+   */
+  function generatePerformanceMonitoringClient(): string {
+    return `
+// Metamon Performance Monitoring Client
+(function() {
+  'use strict';
+  
+  console.log('[Metamon] Performance monitoring initialized');
+  
+  class MetamonPerformanceMonitor {
+    constructor() {
+      this.config = ${JSON.stringify(performanceConfig.monitoring, null, 2)};
+      this.metrics = {
+        frameworkLoading: new Map(),
+        webVitals: {},
+        cachePerformance: {}
+      };
+      
+      this.initWebVitalsMonitoring();
+      this.initFrameworkMetrics();
+    }
+    
+    initWebVitalsMonitoring() {
+      if (!this.config.webVitals) return;
+      
+      // Monitor Core Web Vitals
+      this.observeWebVitals();
+    }
+    
+    initFrameworkMetrics() {
+      if (!this.config.frameworkMetrics) return;
+      
+      // Monitor framework loading times
+      this.observeFrameworkLoading();
+    }
+    
+    observeWebVitals() {
+      // LCP (Largest Contentful Paint)
+      new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        this.metrics.webVitals.lcp = lastEntry.startTime;
+        console.log(\`[Metamon] LCP: \${lastEntry.startTime.toFixed(2)}ms\`);
+      }).observe({ entryTypes: ['largest-contentful-paint'] });
+      
+      // FID (First Input Delay)
+      new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        entries.forEach(entry => {
+          this.metrics.webVitals.fid = entry.processingStart - entry.startTime;
+          console.log(\`[Metamon] FID: \${this.metrics.webVitals.fid.toFixed(2)}ms\`);
+        });
+      }).observe({ entryTypes: ['first-input'] });
+      
+      // CLS (Cumulative Layout Shift)
+      let clsValue = 0;
+      new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        entries.forEach(entry => {
+          if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+          }
+        });
+        this.metrics.webVitals.cls = clsValue;
+        console.log(\`[Metamon] CLS: \${clsValue.toFixed(4)}\`);
+      }).observe({ entryTypes: ['layout-shift'] });
+    }
+    
+    observeFrameworkLoading() {
+      // Monitor resource loading
+      new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        entries.forEach(entry => {
+          if (entry.name.includes('framework') || entry.name.includes('metamon')) {
+            const loadTime = entry.responseEnd - entry.startTime;
+            console.log(\`[Metamon] Resource loaded: \${entry.name} (\${loadTime.toFixed(2)}ms)\`);
+          }
+        });
+      }).observe({ entryTypes: ['resource'] });
+    }
+    
+    getMetrics() {
+      return this.metrics;
+    }
+    
+    reportMetrics() {
+      console.group('[Metamon] Performance Metrics');
+      console.log('Web Vitals:', this.metrics.webVitals);
+      console.log('Framework Loading:', Object.fromEntries(this.metrics.frameworkLoading));
+      console.log('Cache Performance:', this.metrics.cachePerformance);
+      console.groupEnd();
+    }
+  }
+  
+  // Create global instance
+  window.MetamonPerformance = new MetamonPerformanceMonitor();
+  
+  // Report metrics periodically in development
+  setInterval(() => {
+    window.MetamonPerformance.reportMetrics();
+  }, 10000); // Every 10 seconds
+  
+})();
+`;
+  }
+
+  /**
+   * Generate layout stability client script
+   */
+  function generateLayoutStabilityClient(): string {
+    return `
+// Metamon Layout Stability Client
+(function() {
+  'use strict';
+  
+  console.log('[Metamon] Layout stability monitoring initialized');
+  
+  class MetamonLayoutStability {
+    constructor() {
+      this.config = ${JSON.stringify(performanceConfig.layoutStability, null, 2)};
+      this.clsScore = 0;
+      this.placeholders = new Map();
+      
+      this.initCLSMonitoring();
+      this.initPlaceholderSystem();
+    }
+    
+    initCLSMonitoring() {
+      new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        entries.forEach(entry => {
+          if (!entry.hadRecentInput) {
+            this.clsScore += entry.value;
+            
+            if (this.clsScore > this.config.targetCLS) {
+              console.warn(\`[Metamon] CLS threshold exceeded: \${this.clsScore.toFixed(4)} > \${this.config.targetCLS}\`);
+            }
+          }
+        });
+      }).observe({ entryTypes: ['layout-shift'] });
+    }
+    
+    initPlaceholderSystem() {
+      // Create placeholder elements for components that haven't loaded yet
+      this.createPlaceholders();
+    }
+    
+    createPlaceholders() {
+      const components = document.querySelectorAll('[data-metamon-component]');
+      components.forEach(component => {
+        if (!component.hasAttribute('data-metamon-loaded')) {
+          this.createPlaceholder(component);
+        }
+      });
+    }
+    
+    createPlaceholder(element) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'metamon-placeholder';
+      placeholder.style.cssText = \`
+        width: \${element.offsetWidth || 200}px;
+        height: \${element.offsetHeight || 100}px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: metamon-loading 1.5s infinite;
+        border-radius: 4px;
+      \`;
+      
+      // Add loading animation styles if not already present
+      if (!document.getElementById('metamon-loading-styles')) {
+        const style = document.createElement('style');
+        style.id = 'metamon-loading-styles';
+        style.textContent = \`
+          @keyframes metamon-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        \`;
+        document.head.appendChild(style);
+      }
+      
+      element.parentNode.insertBefore(placeholder, element);
+      element.style.display = 'none';
+      
+      this.placeholders.set(element, placeholder);
+    }
+    
+    removePlaceholder(element) {
+      const placeholder = this.placeholders.get(element);
+      if (placeholder) {
+        placeholder.remove();
+        element.style.display = '';
+        element.setAttribute('data-metamon-loaded', 'true');
+        this.placeholders.delete(element);
+      }
+    }
+    
+    getCLSScore() {
+      return this.clsScore;
+    }
+  }
+  
+  // Create global instance
+  window.MetamonLayoutStability = new MetamonLayoutStability();
+  
+  // Monitor for new components
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const components = node.querySelectorAll ? 
+            node.querySelectorAll('[data-metamon-component]') : [];
+          components.forEach(component => {
+            if (!component.hasAttribute('data-metamon-loaded')) {
+              window.MetamonLayoutStability.createPlaceholder(component);
+            }
+          });
+        }
+      });
+    });
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+})();
+`;
+  }
 }
 
 /**

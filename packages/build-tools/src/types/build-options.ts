@@ -62,6 +62,89 @@ export interface MetamonViteOptions {
   hotReload?: Partial<HotReloadConfig>;
 
   /**
+   * Performance optimization configuration
+   */
+  performance?: {
+    /**
+     * Framework lazy loading configuration
+     */
+    lazyLoading?: {
+      /** Enable framework lazy loading */
+      enabled?: boolean;
+      /** Loading priority strategy */
+      strategy?: 'viewport' | 'interaction' | 'idle' | 'immediate';
+      /** Preload frameworks based on user behavior */
+      intelligentPreload?: boolean;
+      /** Target loading time in milliseconds */
+      targetLoadTime?: number;
+    };
+
+    /**
+     * Service worker configuration
+     */
+    serviceWorker?: {
+      /** Enable service worker for framework caching */
+      enabled?: boolean;
+      /** Service worker scope */
+      scope?: string;
+      /** Cache strategy */
+      cacheStrategy?: 'cache-first' | 'network-first' | 'stale-while-revalidate';
+      /** Background execution for heavy tasks */
+      backgroundExecution?: boolean;
+    };
+
+    /**
+     * Layout stability configuration
+     */
+    layoutStability?: {
+      /** Enable CLS prevention */
+      enabled?: boolean;
+      /** Target CLS score */
+      targetCLS?: number;
+      /** Placeholder strategy */
+      placeholderStrategy?: 'dimensions' | 'skeleton' | 'spinner';
+    };
+
+    /**
+     * SSR optimization configuration
+     */
+    ssr?: {
+      /** Enable selective hydration */
+      selectiveHydration?: boolean;
+      /** Hydration strategy */
+      hydrationStrategy?: 'immediate' | 'viewport' | 'interaction';
+      /** Progressive enhancement fallback */
+      progressiveEnhancement?: boolean;
+    };
+
+    /**
+     * Network adaptation configuration
+     */
+    networkAdaptation?: {
+      /** Enable network-aware loading */
+      enabled?: boolean;
+      /** Bandwidth-aware preloading */
+      bandwidthAware?: boolean;
+      /** Intermittent connectivity handling */
+      intermittentConnectivity?: boolean;
+    };
+
+    /**
+     * Performance monitoring configuration
+     */
+    monitoring?: {
+      /** Enable performance metrics collection */
+      enabled?: boolean;
+      /** Track Core Web Vitals */
+      webVitals?: boolean;
+      /** Framework loading metrics */
+      frameworkMetrics?: boolean;
+      /** Service worker debugging */
+      serviceWorkerDebug?: boolean;
+    };
+  };
+
+  /**
    * Production optimization settings
    */
   optimization?: {

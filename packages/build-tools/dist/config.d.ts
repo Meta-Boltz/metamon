@@ -3,7 +3,7 @@ type MetamonOptions = MetamonViteOptions;
 /**
  * Default configuration for Metamon Vite plugin
  */
-export declare const defaultConfig: Required<Omit<MetamonOptions, 'adapters'>> & Pick<MetamonOptions, 'adapters'>;
+export declare const defaultConfig: Required<Omit<MetamonOptions, 'adapters' | 'hotReload'>> & Pick<MetamonOptions, 'adapters' | 'hotReload'>;
 /**
  * Development-specific configuration
  */
