@@ -1,5 +1,30 @@
 node_modules
 .kiro/specs/mtm-syntax-evolution/**
+
+# Build outputs
 dist/
 **/dist/
+build/
+**/build/
+out/
+**/out/
+lib/
+**/lib/
+
+# Compiled files
+*.js.map
+*.d.ts.map
+*.tsbuildinfo
+
+# Cache directories
+.cache/
+**/.cache/
+.turbo/
+**/.turbo/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
 
