@@ -8,6 +8,28 @@ export type {
 // MTM Parser implementation
 export { MTMParser } from './parser/mtm-parser.js';
 
+// Enhanced MTM Parser with modern syntax support
+export { 
+  EnhancedMTMParser,
+  type SyntaxVersion,
+  type ModernSyntaxFeatures,
+  type EnhancedMTMFile
+} from './parser/enhanced-mtm-parser.js';
+
+// Unified AST types for modern syntax support
+export type {
+  UnifiedAST,
+  ProgramNode,
+  VariableDeclarationNode,
+  FunctionDeclarationNode,
+  ClassDeclarationNode,
+  ReactiveVariableNode,
+  TypeInfo,
+  TypeAnnotationNode,
+  ASTVisitor,
+  ASTTransformer
+} from './types/unified-ast.js';
+
 // Compiler types
 export type {
   CompilationResult,
