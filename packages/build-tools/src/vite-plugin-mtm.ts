@@ -5,7 +5,14 @@
 import { Plugin } from 'vite';
 import { readFileSync, existsSync } from 'fs';
 import { resolve, extname, dirname, basename } from 'path';
-import { MTMFileParser as MTMParser, MTMCompiler } from '@metamon/core';
+import { 
+  MTMParser,
+  MTMCompiler,
+  EnhancedMTMParser,
+  type SyntaxVersion,
+  type ModernSyntaxFeatures,
+  type EnhancedMTMFile
+} from '@metamon/core';
 import { HotReloadOrchestrator, type HotReloadConfig } from './hot-reload-orchestrator.js';
 
 export interface MTMPluginOptions {
@@ -48,7 +55,14 @@ export function mtmPlugin(options: MTMPluginOptions = {}): Plugin {
   } = options;
 
   const compiler = new MTMCompiler();
-  const compilationCache = new Map<string, { code: string; timestamp: number }>();
+  const enhancedParser = new EnhancedMTMParser();
+  const legacyParser = new MTMParser();
+  const compilationCache = new Map<string, { 
+    code: string; 
+    timestamp: number; 
+    syntaxVersion?: SyntaxVersion;
+    migrationWarnings?: string[];
+  }>();
   
   // Initialize hot reload orchestrator if HMR is enabled
   const hotReloadOrchestrator = hmr ? new HotReloadOrchestrator({
@@ -76,17 +90,56 @@ export function mtmPlugin(options: MTMPluginOptions = {}): Plugin {
         return cached.code;
       }
 
-      // Read and parse .mtm file
+      // First, detect syntax version to determine which parser to use
       const content = readFileSync(filePath, 'utf-8');
-      const mtmFile = MTMParser.parse(content, filePath);
+      const syntaxVersion = enhancedParser.detectSyntaxVersion(content);
+      
+      let mtmFile: any;
+      let migrationWarnings: string[] = [];
+      
+      if (syntaxVersion === 'modern') {
+        // Use enhanced parser for modern syntax
+        mtmFile = enhancedParser.parse(filePath);
+        
+        console.log(`🔥 Modern syntax detected in ${basename(filePath)}`);
+        if (mtmFile.modernFeatures) {
+          const features = Object.entries(mtmFile.modernFeatures)
+            .filter(([_, enabled]) => enabled)
+            .map(([feature, _]) => feature);
+          if (features.length > 0) {
+            console.log(`   Features: ${features.join(', ')}`);
+          }
+        }
+      } else {
+        // Use legacy parser for backward compatibility
+        mtmFile = legacyParser.parse(content, filePath);
+        
+        // Check for potential migration opportunities
+        migrationWarnings = detectMigrationOpportunities(content, filePath);
+        
+        if (migrationWarnings.length > 0) {
+          console.log(`📋 Legacy syntax detected in ${basename(filePath)}`);
+          console.log(`   Migration opportunities: ${migrationWarnings.length}`);
+          migrationWarnings.forEach(warning => {
+            console.log(`   ⚠️  ${warning}`);
+          });
+        } else {
+          console.log(`📋 Legacy syntax detected in ${basename(filePath)} (no migration needed)`);
+        }
+        
+        // Add syntax version to legacy file for consistency
+        mtmFile.syntaxVersion = 'legacy';
+      }
       
       // Compile to target framework
       const result = compiler.compile(mtmFile);
       
-      // Cache result
+      // Cache result with syntax version info and migration warnings
       compilationCache.set(filePath, {
         code: result.code,
-        timestamp
+        timestamp,
+        syntaxVersion: mtmFile.syntaxVersion,
+        migrationWarnings
       });
 
       // Add file extension based on target framework
@@ -127,6 +180,57 @@ export function mtmPlugin(options: MTMPluginOptions = {}): Plugin {
       default:
         return '.js';
     }
+  }
+
+  /**
+   * Detect migration opportunities from legacy to modern syntax
+   */
+  function detectMigrationOpportunities(content: string, filePath: string): string[] {
+    const warnings: string[] = [];
+    
+    // Check for variable declarations that could use $ prefix
+    const variableDeclarations = content.match(/(?:const|let|var)\s+(\w+)\s*=/g);
+    if (variableDeclarations && variableDeclarations.length > 0) {
+      warnings.push(`Found ${variableDeclarations.length} variable declaration(s) that could use $ prefix syntax`);
+    }
+    
+    // Check for function declarations that could use arrow syntax
+    const functionDeclarations = content.match(/function\s+(\w+)\s*\(/g);
+    if (functionDeclarations && functionDeclarations.length > 0) {
+      warnings.push(`Found ${functionDeclarations.length} function declaration(s) that could use modern arrow syntax`);
+    }
+    
+    // Check for manual DOM manipulation that could be reactive
+    const domManipulation = content.match(/document\.(getElementById|querySelector|createElement)/g);
+    if (domManipulation && domManipulation.length > 0) {
+      warnings.push(`Found ${domManipulation.length} DOM manipulation(s) that could use reactive variables`);
+    }
+    
+    // Check for event listeners that could use template binding
+    const eventListeners = content.match(/addEventListener\s*\(\s*['"`](\w+)['"`]/g);
+    if (eventListeners && eventListeners.length > 0) {
+      warnings.push(`Found ${eventListeners.length} event listener(s) that could use template event binding`);
+    }
+    
+    // Check for string concatenation that could use template literals
+    const stringConcatenation = content.match(/['"`][^'"`]*['"`]\s*\+\s*\w+/g);
+    if (stringConcatenation && stringConcatenation.length > 0) {
+      warnings.push(`Found ${stringConcatenation.length} string concatenation(s) that could use template binding`);
+    }
+    
+    // Check for explicit type annotations that are missing
+    const unTypedVariables = content.match(/(?:const|let|var)\s+(\w+)\s*=\s*(?:\d+|['"`][^'"`]*['"`]|true|false)/g);
+    if (unTypedVariables && unTypedVariables.length > 0) {
+      warnings.push(`Found ${unTypedVariables.length} variable(s) that could benefit from explicit type annotations`);
+    }
+    
+    // Check for semicolons that could be optional
+    const explicitSemicolons = content.match(/;\s*$/gm);
+    if (explicitSemicolons && explicitSemicolons.length > 5) {
+      warnings.push(`File uses explicit semicolons - could adopt optional semicolon style`);
+    }
+    
+    return warnings;
   }
 
   /**
@@ -718,14 +822,43 @@ if (import.meta.hot) {
     console.log('[MTM] Hot reload:', data);
     
     if (window.mtmErrorOverlay) {
-      const loadingElement = window.mtmErrorOverlay.showLoading(
-        'Reloading component...',
-        data.file
-      );
+      let message = 'Reloading component...';
+      
+      // Enhanced messaging for modern syntax
+      if (data.syntaxVersion === 'modern') {
+        message = '🔥 Reloading modern MTM component...';
+        if (data.modernFeatures && data.modernFeatures.length > 0) {
+          console.log('[MTM] Modern features detected:', data.modernFeatures.join(', '));
+        }
+      } else if (data.syntaxVersion === 'legacy') {
+        message = '📋 Reloading legacy MTM component...';
+        if (data.migrationWarnings && data.migrationWarnings.length > 0) {
+          console.log('[MTM] Migration opportunities detected:', data.migrationWarnings.length);
+          data.migrationWarnings.forEach(warning => {
+            console.log('[MTM] ⚠️ ', warning);
+          });
+        }
+      }
+      
+      const loadingElement = window.mtmErrorOverlay.showLoading(message, data.file);
       
       setTimeout(() => {
         if (loadingElement) {
           window.mtmErrorOverlay.hideLoading(loadingElement);
+        }
+        
+        // Show success message with syntax info and migration hints
+        if (data.syntaxVersion === 'modern') {
+          window.mtmErrorOverlay.showSuccess(
+            '🔥 Modern MTM component reloaded successfully',
+            data.file
+          );
+        } else if (data.syntaxVersion === 'legacy') {
+          let successMessage = '📋 Legacy MTM component reloaded successfully';
+          if (data.migrationWarnings && data.migrationWarnings.length > 0) {
+            successMessage += \` (💡 \${data.migrationWarnings.length} migration opportunities available)\`;
+          }
+          window.mtmErrorOverlay.showSuccess(successMessage, data.file);
         }
       }, 2000);
     }
@@ -812,7 +945,13 @@ if (import.meta.hot) {
                 }))
               });
 
-              // Send custom message for MTM hot reload with frontmatter change info
+              // Detect syntax version and migration info for enhanced HMR messaging
+              const content = existsSync(file) ? readFileSync(file, 'utf-8') : '';
+              const syntaxVersion = enhancedParser.detectSyntaxVersion(content);
+              const modernFeatures = syntaxVersion === 'modern' ? enhancedParser.detectModernFeatures(content) : undefined;
+              const migrationWarnings = syntaxVersion === 'legacy' ? detectMigrationOpportunities(content, file) : [];
+
+              // Send custom message for MTM hot reload with syntax and migration info
               server.ws.send({
                 type: 'custom',
                 event: 'mtm:hot-reload',
@@ -822,7 +961,13 @@ if (import.meta.hot) {
                   preserveState: hotReloadOrchestrator.getConfig().preserveState,
                   modules: modules.length,
                   changeType: 'mtm',
-                  frontmatterSupported: true
+                  frontmatterSupported: true,
+                  syntaxVersion,
+                  modernFeatures: modernFeatures ? Object.entries(modernFeatures)
+                    .filter(([_, enabled]) => enabled)
+                    .map(([feature, _]) => feature) : [],
+                  migrationWarnings: migrationWarnings,
+                  backwardCompatible: true
                 }
               });
 

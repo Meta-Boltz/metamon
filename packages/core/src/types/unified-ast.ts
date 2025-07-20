@@ -39,7 +39,7 @@ export interface TypeAnnotationNode extends ASTNode {
  * Expression nodes
  */
 export interface ExpressionNode extends ASTNode {
-  type: 'Expression' | 'Literal' | 'Identifier' | 'CallExpression' | 'MemberExpression' | 'ArrowFunctionExpression';
+  type: 'Expression' | 'Literal' | 'Identifier' | 'CallExpression' | 'MemberExpression' | 'ArrowFunctionExpression' | 'ArrayExpression' | 'ObjectExpression';
 }
 
 export interface LiteralNode extends ExpressionNode {
@@ -72,6 +72,26 @@ export interface ArrowFunctionExpressionNode extends ExpressionNode {
   body: BlockStatementNode | ExpressionNode;
   async: boolean;
   returnType?: TypeAnnotationNode;
+}
+
+export interface ArrayExpressionNode extends ExpressionNode {
+  type: 'ArrayExpression';
+  elements: (ExpressionNode | null)[];
+}
+
+export interface ObjectExpressionNode extends ExpressionNode {
+  type: 'ObjectExpression';
+  properties: PropertyNode[];
+}
+
+export interface PropertyNode extends ASTNode {
+  type: 'Property';
+  key: ExpressionNode;
+  value: ExpressionNode;
+  kind: 'init' | 'get' | 'set';
+  method: boolean;
+  shorthand: boolean;
+  computed: boolean;
 }
 
 /**

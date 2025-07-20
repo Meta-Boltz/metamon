@@ -127,3 +127,31 @@ export * as ReactRuntime from './runtime/adapters/react-runtime.js';
 export * as VueRuntime from './runtime/adapters/vue-runtime.js';
 export * as SolidRuntime from './runtime/adapters/solid-runtime.js';
 export * as SvelteRuntime from './runtime/adapters/svelte-runtime.js';
+
+// Framework-specific transformers
+export {
+  ReactTransformer,
+  createReactTransformer,
+  type ReactHookCode,
+  type ReactComponentCode,
+  type JSXCode,
+  type ReactStateCode
+} from './transformers/react-transformer.js';
+
+export {
+  VueTransformer,
+  createVueTransformer,
+  type VueRefCode,
+  type VueMethodCode,
+  type VueTemplateCode,
+  type VueSetupCode
+} from './transformers/vue-transformer.js';
+
+export {
+  SvelteTransformer,
+  createSvelteTransformer,
+  type SvelteStoreCode,
+  type SvelteFunctionCode,
+  type SvelteMarkupCode,
+  type SvelteReactiveCode
+} from './transformers/svelte-transformer.js';
