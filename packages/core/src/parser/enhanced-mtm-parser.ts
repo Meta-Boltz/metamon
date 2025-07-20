@@ -997,35 +997,6 @@ export class EnhancedMTMParser implements FileParser {
 
     return patterns;
   }
-  validateSemicolonUsage(content: string): { warnings: string[]; suggestions: string[] } {
-    const warnings: string[] = [];
-    const suggestions: string[] = [];
-
-    // Check for mixed semicolon usage
-    const usesASI = this.usesAutomaticSemicolonInsertion(content);
-    const hasExplicitSemicolons = content.includes(';');
-
-    if (usesASI && hasExplicitSemicolons) {
-      warnings.push('Mixed semicolon usage detected. Consider using consistent style throughout the file.');
-      suggestions.push('Choose either explicit semicolons everywhere or rely on ASI consistently.');
-    }
-
-    // Check for potential ambiguities
-    const ambiguities = this.checkForSemicolonAmbiguity(content);
-    if (ambiguities.length > 0) {
-      warnings.push(`Found ${ambiguities.length} potential semicolon ambiguities.`);
-      suggestions.push('Review ambiguous cases and add explicit semicolons where needed.');
-    }
-
-    // Check for dangerous ASI patterns
-    const dangerousPatterns = this.findDangerousASIPatterns(content);
-    if (dangerousPatterns.length > 0) {
-      warnings.push('Found potentially dangerous ASI patterns that could cause unexpected behavior.');
-      suggestions.push('Add explicit semicolons in these cases for clarity.');
-    }
-
-    return { warnings, suggestions };
-  }
 
   /**
    * Find dangerous ASI patterns that could cause issues

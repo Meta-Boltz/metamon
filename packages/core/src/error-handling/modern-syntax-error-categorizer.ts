@@ -294,9 +294,9 @@ export class ModernSyntaxErrorCategorizer {
     const nextLine = currentLineIndex + 1 < lines.length ? lines[currentLineIndex + 1].trim() : '';
     
     // Check for common ASI ambiguity patterns
-    return (
+    return Boolean(
       (currentLine && !currentLine.endsWith(';') && !currentLine.endsWith('{') && !currentLine.endsWith('}')) &&
-      (nextLine.startsWith('(') || nextLine.startsWith('[') || nextLine.startsWith('.') || nextLine.startsWith('`'))
+      (nextLine && (nextLine.startsWith('(') || nextLine.startsWith('[') || nextLine.startsWith('.') || nextLine.startsWith('`')))
     );
   }
 

@@ -11,6 +11,9 @@ import type {
   VariableDeclarationNode
 } from './unified-ast.js';
 
+// Re-export TypeInfo for external use
+export type { TypeInfo } from './unified-ast.js';
+
 /**
  * Type conflict information
  */

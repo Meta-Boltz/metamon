@@ -3,7 +3,8 @@
  * Implements performance optimization through batched and debounced updates
  */
 
-import type { ReactiveVariableNode, UpdateTrigger } from './reactive-analyzer.js';
+import type { ReactiveVariableNode } from '../types/unified-ast.js';
+import type { UpdateTrigger } from './reactive-analyzer.js';
 
 /**
  * Update batch configuration

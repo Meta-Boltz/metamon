@@ -3,6 +3,9 @@ import type {
   DataBindingNode, 
   TemplateExpressionNode,
   ExpressionNode,
+  IdentifierNode,
+  CallExpressionNode,
+  LiteralNode,
   SourceLocation
 } from '../types/unified-ast.js';
 
@@ -179,7 +182,7 @@ export class TemplateParser {
         type: 'Identifier',
         name: trimmed,
         location
-      };
+      } as IdentifierNode;
     }
 
     // Check if it's a function call like $function()
@@ -194,10 +197,10 @@ export class TemplateParser {
           type: 'Identifier',
           name: functionName,
           location
-        },
+        } as IdentifierNode,
         arguments: args,
         location
-      };
+      } as CallExpressionNode;
     }
 
     // For more complex expressions, treat as literal for now
@@ -206,7 +209,7 @@ export class TemplateParser {
       value: trimmed,
       raw: trimmed,
       location
-    };
+    } as LiteralNode;
   }
 
   /**

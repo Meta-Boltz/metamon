@@ -306,6 +306,7 @@ export class CompilationPerformanceOptimizer {
       fromCache: false,
       parseTime,
       typeInferenceTime,
+      totalTime: parseTime + typeInferenceTime,
       dependencies: cachedEntry.dependencies
     };
   }

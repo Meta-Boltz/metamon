@@ -5,7 +5,7 @@
 
 import { performance } from 'perf_hooks';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { CompilationPerformanceOptimizer } from './performance-optimizer.js';
 import { EnhancedMTMParser } from '../parser/enhanced-mtm-parser.js';
 import { TypeInferenceEngine } from '../types/type-inference.js';

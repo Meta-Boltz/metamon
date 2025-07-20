@@ -573,10 +573,12 @@ export class RuntimePerformanceOptimizer {
 
     // Remove variables with no dependencies or dependents
     for (const [variableName, variable] of optimizedGraph.variables) {
-      const hasDependencies = optimizedGraph.dependencies.get(variableName)?.length > 0;
+      const dependencies = optimizedGraph.dependencies.get(variableName);
+      const hasDependencies = dependencies && dependencies.length > 0;
       const hasDependents = Array.from(optimizedGraph.dependencies.values())
-        .some(deps => deps.includes(variableName));
-      const hasTriggers = optimizedGraph.triggers.get(variableName)?.length > 0;
+        .some(deps => deps && deps.includes(variableName));
+      const triggers = optimizedGraph.triggers.get(variableName);
+      const hasTriggers = triggers && triggers.length > 0;
 
       if (!hasDependencies && !hasDependents && !hasTriggers) {
         optimizedGraph.variables.delete(variableName);

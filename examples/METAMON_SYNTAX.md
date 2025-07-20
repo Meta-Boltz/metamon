@@ -1,12 +1,12 @@
-# 🎯 Metamon .mtm Syntax Specification
+# 🚀 Modern MTM Syntax Specification
 
 ## **Design Principles**
 
-1. **IDE-Friendly**: Standard JavaScript with full autocomplete/IntelliSense
-2. **Framework-Agnostic**: Universal patterns that compile to any framework
-3. **Simple Templates**: Easy-to-understand template syntax
-4. **Type-Safe**: Full TypeScript support
-5. **Developer-Friendly**: Familiar patterns, minimal learning curve
+1. **Modern & Clean**: $ prefix variables with automatic type inference
+2. **Reactive by Default**: ! suffix for reactive variables that auto-update UI
+3. **Framework-Agnostic**: Universal patterns that compile to any framework
+4. **Type-Safe**: Full TypeScript support with optional explicit typing
+5. **Developer-Friendly**: Familiar JavaScript patterns with enhanced features
 
 ## **File Structure**
 
@@ -18,79 +18,93 @@ channels:
     emit: handlerName
 ---
 
-// Standard JavaScript with Metamon APIs
 export default function ComponentName() {
-  // Component logic here
-  return template(`...`);
+  // Modern MTM syntax with $ prefix and reactive variables
+  $state! = initialValue
+  $computed = () => derivedValue
+
+  return template(`...`)
 }
 ```
 
-## **Core APIs**
+## **Modern Syntax Features**
 
-### **State Management**
+### **Variable Declarations**
 
 ```javascript
-// Create reactive state
-const count = useSignal("globalCount", 0); // Global signal
-const localState = useSignal(null, "initial"); // Local signal
+// Reactive variables with automatic type inference
+$counter! = 0                    // number (reactive)
+$message! = "Hello"              // string (reactive)
+$items! = []                     // array (reactive)
+$user! = { name: '', age: 0 }    // object (reactive)
 
-// Update state
-count.update(newValue);
-count.update((prev) => prev + 1);
+// Explicit type annotations
+$price: float = 99.99            // explicit float type
+$name: string = "MTM"            // explicit string type
+$isActive: boolean = true        // explicit boolean type
 
-// Read state
-console.log(count.value);
+// Non-reactive variables (computed/derived)
+$total = $items.length           // computed from reactive variables
+$greeting = `Hello, ${$name}!`   // template literal with reactive data
 ```
 
-### **Event Communication**
+### **Function Declarations**
 
 ```javascript
-const { emit, subscribe } = usePubSub();
+// Simplified arrow function syntax
+$increment = () => {
+  $counter++; // Direct reactive variable update
+  emit("counter-changed", $counter);
+};
 
-// Emit events
-emit('user-action', { type: 'click', data: {...} });
+// Functions with parameters and type annotations
+$addItem = ($text: string) => {
+  $items = [...$items, { id: Date.now(), text: $text }];
+};
 
-// Subscribe to events
-subscribe('user-action', (data) => {
-  console.log('Received:', data);
-});
+// Async functions
+$fetchData = async ($url: string) => {
+  $loading = true;
+  $data = await fetch($url).then((r) => r.json());
+  $loading = false;
+};
 ```
 
 ### **Template Syntax**
 
 ```html
 <!-- Variable interpolation -->
-<span>{{variable}}</span>
-<span>{{object.property}}</span>
-<span>{{computedValue()}}</span>
+<span>{{$counter}}</span>
+<span>{{$user.name}}</span>
+<span>{{$total * 2}}</span>
 
 <!-- Event handlers -->
-<button onclick="{{handleClick}}">Click</button>
-<input oninput="{{(e) => updateValue(e.target.value)}}" />
+<button click="{{$increment}}">Click</button>
+<input input="{{(e) => $name = e.target.value}}" />
 
 <!-- Conditional rendering -->
-{{#if condition}}
+{{#if $isVisible}}
 <div>Shown when true</div>
-{{/if}} {{#if condition}}
-<div>True branch</div>
+{{/if}} {{#if $counter > 5}}
+<div>High count!</div>
 {{else}}
-<div>False branch</div>
+<div>Low count</div>
 {{/if}}
 
 <!-- List rendering -->
-{{#each items as item}}
-<div key="{{item.id}}">{{item.name}}</div>
+{{#each $items as item}}
+<div key="{{item.id}}">{{item.text}}</div>
 {{/each}}
 
-<!-- Attributes -->
-<div class="{{dynamicClass}}" style="{{dynamicStyle}}">
-  <input value="{{inputValue}}" disabled="{{isDisabled}}" />
+<!-- Attributes and properties -->
+<div class="{{$theme}}" style="color: {{$textColor}}">
+  <input value="{{$inputValue}}" disabled="{{$isDisabled}}" />
 </div>
 ```
 
 ## **Example Components**
 
-### **Counter Component**
+### **Counter Component (Modern Syntax)**
 
 ```javascript
 ---
@@ -101,33 +115,33 @@ channels:
 ---
 
 export default function Counter() {
-  const count = useSignal('globalCount', 0);
-  const { emit } = usePubSub();
+  // Modern MTM syntax with reactive variables
+  $count! = useSignal('globalCount', 0)
 
-  const increment = () => {
-    count.update(count.value + 1);
-    emit('counter-updated', { value: count.value });
-  };
+  $increment = () => {
+    $count++
+    emit('counter-updated', { value: $count })
+  }
 
-  const decrement = () => {
-    count.update(Math.max(0, count.value - 1));
-  };
+  $decrement = () => {
+    $count = Math.max(0, $count - 1)
+  }
 
   return template(`
     <div class="counter">
       <h3>Counter</h3>
       <div class="counter-display">
-        <button onclick="{{decrement}}">-</button>
-        <span class="count">{{count.value}}</span>
-        <button onclick="{{increment}}">+</button>
+        <button click="{{$decrement}}">-</button>
+        <span class="count">{{$count}}</span>
+        <button click="{{$increment}}">+</button>
       </div>
       <small>Global count shared across frameworks</small>
     </div>
-  `);
+  `)
 }
 ```
 
-### **Form Component**
+### **Form Component (Modern Syntax)**
 
 ```javascript
 ---
@@ -138,46 +152,43 @@ channels:
 ---
 
 export default function ContactForm() {
-  const name = useSignal(null, '');
-  const email = useSignal(null, '');
-  const message = useSignal(null, '');
-  const { emit } = usePubSub();
+  // Reactive form state with type annotations
+  $name! = ''
+  $email! = ''
+  $message! = ''
 
-  const isValid = () => {
-    return name.value.trim() &&
-           email.value.includes('@') &&
-           message.value.trim();
-  };
+  // Computed validation
+  $isValid = $name.trim() && $email.includes('@') && $message.trim()
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!isValid()) return;
+  $handleSubmit = ($e) => {
+    $e.preventDefault()
+    if (!$isValid) return
 
-    const formData = {
-      name: name.value,
-      email: email.value,
-      message: message.value,
+    $formData = {
+      name: $name,
+      email: $email,
+      message: $message,
       timestamp: Date.now()
-    };
+    }
 
-    emit('form-submitted', formData);
+    emit('form-submitted', $formData)
 
     // Reset form
-    name.update('');
-    email.update('');
-    message.update('');
-  };
+    $name = ''
+    $email = ''
+    $message = ''
+  }
 
   return template(`
-    <form class="contact-form" onsubmit="{{handleSubmit}}">
+    <form class="contact-form" submit="{{$handleSubmit}}">
       <h3>Contact Form</h3>
 
       <div class="form-group">
         <label>Name:</label>
         <input
           type="text"
-          value="{{name.value}}"
-          oninput="{{(e) => name.update(e.target.value)}}"
+          value="{{$name}}"
+          input="{{(e) => $name = e.target.value}}"
           required
         />
       </div>
@@ -186,8 +197,8 @@ export default function ContactForm() {
         <label>Email:</label>
         <input
           type="email"
-          value="{{email.value}}"
-          oninput="{{(e) => email.update(e.target.value)}}"
+          value="{{$email}}"
+          input="{{(e) => $email = e.target.value}}"
           required
         />
       </div>
@@ -195,36 +206,73 @@ export default function ContactForm() {
       <div class="form-group">
         <label>Message:</label>
         <textarea
-          value="{{message.value}}"
-          oninput="{{(e) => message.update(e.target.value)}}"
+          value="{{$message}}"
+          input="{{(e) => $message = e.target.value}}"
           required
         ></textarea>
       </div>
 
-      <button type="submit" disabled="{{!isValid()}}">
+      <button type="submit" disabled="{{!$isValid}}">
         Send Message
       </button>
     </form>
-  `);
+  `)
 }
 ```
 
 ## **Compilation Examples**
 
-### **React Output**
+### **Modern MTM Input**
+
+```javascript
+---
+target: reactjs
+---
+
+export default function Counter() {
+  $count! = useSignal('globalCount', 0)
+
+  $increment = () => {
+    $count++
+    emit('counter-updated', { value: $count })
+  }
+
+  $decrement = () => {
+    $count = Math.max(0, $count - 1)
+  }
+
+  return template(`
+    <div class="counter">
+      <h3>Counter</h3>
+      <div class="counter-display">
+        <button click="{{$decrement}}">-</button>
+        <span class="count">{{$count}}</span>
+        <button click="{{$increment}}">+</button>
+      </div>
+      <small>Global count shared across frameworks</small>
+    </div>
+  `)
+}
+```
+
+### **React Output (Compiled)**
 
 ```jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useMetamonSignal, useMetamonPubSub } from "@metamon/adapters/react";
 
 export default function Counter() {
   const [count, setCount] = useMetamonSignal("globalCount", 0);
   const { emit } = useMetamonPubSub();
 
-  const increment = () => {
-    setCount(count + 1);
-    emit("counter-updated", { value: count });
-  };
+  const increment = useCallback(() => {
+    setCount((prev) => prev + 1);
+    emit("counter-updated", { value: count + 1 });
+  }, [count, setCount, emit]);
+
+  const decrement = useCallback(() => {
+    setCount((prev) => Math.max(0, prev - 1));
+  }, [setCount]);
 
   return (
     <div className="counter">
@@ -240,7 +288,7 @@ export default function Counter() {
 }
 ```
 
-### **Vue Output**
+### **Vue Output (Compiled)**
 
 ```vue
 <template>
@@ -256,6 +304,7 @@ export default function Counter() {
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
 import { useMetamonSignal, useMetamonPubSub } from "@metamon/adapters/vue";
 
 const [count, setCount] = useMetamonSignal("globalCount", 0);
@@ -263,9 +312,44 @@ const { emit } = useMetamonPubSub();
 
 const increment = () => {
   setCount(count.value + 1);
-  emit("counter-updated", { value: count.value });
+  emit("counter-updated", { value: count.value + 1 });
+};
+
+const decrement = () => {
+  setCount(Math.max(0, count.value - 1));
 };
 </script>
+```
+
+### **Svelte Output (Compiled)**
+
+```svelte
+<script>
+  import { writable } from "svelte/store";
+  import { useMetamonSignal, useMetamonPubSub } from "@metamon/adapters/svelte";
+
+  const [count, setCount] = useMetamonSignal("globalCount", 0);
+  const { emit } = useMetamonPubSub();
+
+  function increment() {
+    setCount($count + 1);
+    emit("counter-updated", { value: $count + 1 });
+  }
+
+  function decrement() {
+    setCount(Math.max(0, $count - 1));
+  }
+</script>
+
+<div class="counter">
+  <h3>Counter</h3>
+  <div class="counter-display">
+    <button on:click={decrement}>-</button>
+    <span class="count">{$count}</span>
+    <button on:click={increment}>+</button>
+  </div>
+  <small>Global count shared across frameworks</small>
+</div>
 ```
 
 ## **IDE Support Strategy**
@@ -296,31 +380,56 @@ declare function template(str: string): ComponentTemplate;
 - Autocomplete for Metamon APIs
 - Error checking and validation
 
-## **Benefits**
+## **Benefits of Modern MTM Syntax**
 
 ### **For Developers**
 
-- ✅ **Full IDE Support**: Autocomplete, error checking, refactoring
-- ✅ **Familiar Syntax**: Standard JavaScript + simple templates
-- ✅ **Type Safety**: Full TypeScript support
-- ✅ **Framework Agnostic**: Same code, multiple targets
+- ✅ **Clean & Modern**: $ prefix variables feel natural and modern
+- ✅ **Reactive by Default**: ! suffix makes reactive variables explicit
+- ✅ **Type Safety**: Automatic inference + optional explicit typing
+- ✅ **Framework Agnostic**: Same code compiles to React, Vue, Svelte
+- ✅ **Simplified Functions**: Arrow syntax with automatic this binding
+- ✅ **Template Binding**: Clean {{}} syntax for data binding
 
 ### **For Teams**
 
-- ✅ **Easy Learning**: Minimal new syntax to learn
-- ✅ **Consistent Patterns**: Same patterns across all frameworks
-- ✅ **Better DX**: Full development tool support
-- ✅ **Gradual Adoption**: Can start with simple components
+- ✅ **Consistent Patterns**: Same reactive patterns across all frameworks
+- ✅ **Better Performance**: Optimized reactive updates and batching
+- ✅ **Easy Migration**: Gradual migration from legacy syntax
+- ✅ **Developer Experience**: Enhanced error messages and type hints
+
+### **Key Improvements Over Legacy Syntax**
+
+| Feature   | Legacy Syntax                                    | Modern Syntax                           |
+| --------- | ------------------------------------------------ | --------------------------------------- |
+| Variables | `const count = useSignal('count', 0)`            | `$count! = 0`                           |
+| Functions | `const increment = useCallback(() => {...}, [])` | `$increment = () => {...}`              |
+| Templates | `{count.value}`                                  | `{{$count}}`                            |
+| Events    | `onClick={increment}`                            | `click="{{$increment}}"`                |
+| Types     | Manual TypeScript annotations                    | Automatic inference + optional explicit |
 
 ---
 
-## **Recommendation: Use Primitive Syntax**
+## **Migration Guide**
 
-Until we have full IDE support for .mtm files, using primitive/universal syntax gives us:
+### **From Legacy to Modern Syntax**
 
-1. **Full IDE Support** - Autocomplete, error checking, refactoring
-2. **Framework Flexibility** - Same code compiles to any framework
-3. **Developer Experience** - Familiar JavaScript patterns
-4. **Future-Proof** - Easy to extend with more features
+1. **Replace useSignal calls**: `const count = useSignal('count', 0)` → `$count! = 0`
+2. **Update function declarations**: `const func = useCallback(...)` → `$func = (...) => {...}`
+3. **Modernize templates**: `{count.value}` → `{{$count}}`
+4. **Update event handlers**: `onClick={handler}` → `click="{{$handler}}"`
+5. **Add type annotations where needed**: `$price: float = 99.99`
 
-This approach makes .mtm files practical for real development work! 🚀
+### **Automatic Migration Tool**
+
+The MTM compiler includes an automatic migration tool that can convert legacy syntax to modern syntax:
+
+```bash
+# Analyze migration opportunities
+mtm migrate analyze src/components/
+
+# Apply automatic migration
+mtm migrate apply src/components/legacy-component.mtm
+```
+
+This modern syntax makes MTM development faster, cleaner, and more intuitive! 🚀

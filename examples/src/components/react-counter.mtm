@@ -7,79 +7,75 @@ channels:
     emit: onUserAction
 ---
 
-import React, { useState, useCallback } from 'react';
-import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
-
 export default function ReactCounter() {
-  const [userCount, setUserCount] = useMetamonSignal('userCount');
-  const [localCount, setLocalCount] = useState(0);
-  const { emit, subscribe } = useMetamonPubSub();
-
-  const incrementGlobal = useCallback(() => {
-    const newCount = userCount + 1;
-    setUserCount(newCount);
+  // Modern MTM syntax with $ prefix and reactive variables
+  $userCount! = useSignal('userCount', 0)
+  $localCount! = 0
+  
+  // Simplified function syntax with automatic type inference
+  $incrementGlobal = () => {
+    $userCount++
     emit('counter-updated', { 
       framework: 'React', 
-      value: newCount,
+      value: $userCount,
       timestamp: Date.now()
-    });
+    })
     emit('user-action', {
       action: 'increment_global',
       framework: 'React',
-      data: { newValue: newCount }
-    });
-  }, [userCount, setUserCount, emit]);
+      data: { newValue: $userCount }
+    })
+  }
 
-  const incrementLocal = useCallback(() => {
-    const newCount = localCount + 1;
-    setLocalCount(newCount);
+  $incrementLocal = () => {
+    $localCount++
     emit('user-action', {
       action: 'increment_local',
       framework: 'React',
-      data: { newValue: newCount }
-    });
-  }, [localCount, emit]);
+      data: { newValue: $localCount }
+    })
+  }
 
-  const reset = useCallback(() => {
-    setUserCount(0);
-    setLocalCount(0);
+  $reset = () => {
+    $userCount = 0
+    $localCount = 0
     emit('counter-updated', { 
       framework: 'React', 
       value: 0,
       timestamp: Date.now()
-    });
+    })
     emit('user-action', {
       action: 'reset_counters',
       framework: 'React'
-    });
-  }, [setUserCount, emit]);
+    })
+  }
 
-  return (
-    <div className="component-demo">
-      <div className="counter">
+  return template(`
+    <div class="component-demo">
+      <div class="counter">
         <span>Global Count:</span>
-        <span className="counter-value">{userCount}</span>
-        <button className="button" onClick={incrementGlobal}>
+        <span class="counter-value">{{$userCount}}</span>
+        <button class="button" click="{{$incrementGlobal}}">
           +1 Global
         </button>
       </div>
       
-      <div className="counter">
+      <div class="counter">
         <span>Local Count:</span>
-        <span className="counter-value">{localCount}</span>
-        <button className="button secondary" onClick={incrementLocal}>
+        <span class="counter-value">{{$localCount}}</span>
+        <button class="button secondary" click="{{$incrementLocal}}">
           +1 Local
         </button>
       </div>
 
-      <button className="button" onClick={reset} style={{ marginTop: '10px' }}>
+      <button class="button" click="{{$reset}}" style="margin-top: 10px;">
         Reset All
       </button>
 
-      <div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
+      <div style="margin-top: 10px; font-size: 12px; color: #666;">
         Global count is shared across all frameworks via signals.
         Local count demonstrates React-specific state.
       </div>
     </div>
-  );
+  `)
 }

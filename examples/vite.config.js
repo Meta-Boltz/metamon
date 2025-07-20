@@ -3,16 +3,16 @@ import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
 import solid from 'vite-plugin-solid';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { mtmPlugin } from '@metamon/build-tools';
+// import { mtmPlugin } from '@metamon/build-tools';
 
 export default defineConfig({
   plugins: [
-    // MTM Plugin - processes .mtm files
-    mtmPlugin({
-      include: ['**/*.mtm'],
-      hmr: true,
-      sourceMaps: true
-    }),
+    // MTM Plugin - temporarily disabled while fixing core compilation
+    // mtmPlugin({
+    //   include: ['**/*.mtm'],
+    //   hmr: true,
+    //   sourceMaps: true
+    // }),
     react({
       include: ['**/*.jsx', '**/*.tsx'],
       exclude: ['**/components/Solid*.jsx', '**/components/Svelte*.svelte']
