@@ -1,0 +1,33 @@
+---
+target: reactjs
+---
+
+$counter! = 0
+$name: string = "Test"
+$items = [1, 2, 3, 4, 5]
+
+$increment = () => {
+  $counter = $counter + 1
+}
+
+$greet = (name: string): string => {
+  return `Hello, ${name}!`
+}
+
+$asyncFetch = async (url: string) => {
+  const response = await fetch(url)
+  return response.json()
+}
+
+template(`
+  <div>
+    <h1>{{$name}}</h1>
+    <p>Counter: {{$counter}}</p>
+    <button click="$increment()">Increment</button>
+    <ul>
+      {{#each $items as item}}
+        <li>{{item}}</li>
+      {{/each}}
+    </ul>
+  </div>
+`)

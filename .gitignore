@@ -1,5 +1,4 @@
 node_modules
-.kiro/specs/mtm-syntax-evolution/**
 
 # Build outputs
 dist/

@@ -80,6 +80,64 @@ export class ErrorCategorizer {
       suggestion: 'Check your channels configuration in the MTM frontmatter. Ensure channel names are valid strings.'
     },
 
+    // Modern MTM Syntax Errors
+    {
+      pattern: /Invalid \$ prefix|Dollar prefix.*error/i,
+      type: 'syntax_error',
+      category: 'Modern MTM Syntax',
+      severity: 'high',
+      recoverable: true,
+      suggestion: 'Check your $ prefix variable declarations. Use $variableName = value or $variableName: type = value syntax.'
+    },
+    {
+      pattern: /Reactive variable.*error|Invalid ! suffix/i,
+      type: 'syntax_error',
+      category: 'Modern MTM Syntax',
+      severity: 'high',
+      recoverable: true,
+      suggestion: 'Check your reactive variable syntax. Use $variableName! = value to declare reactive variables.'
+    },
+    {
+      pattern: /Type annotation.*error|Invalid type.*annotation/i,
+      type: 'syntax_error',
+      category: 'Modern MTM Syntax',
+      severity: 'medium',
+      recoverable: true,
+      suggestion: 'Check your type annotations. Use $variableName: type = value syntax with valid types (string, number, boolean, float).'
+    },
+    {
+      pattern: /Arrow function.*error|Invalid arrow syntax/i,
+      type: 'syntax_error',
+      category: 'Modern MTM Syntax',
+      severity: 'high',
+      recoverable: true,
+      suggestion: 'Check your arrow function syntax. Use $functionName = (params) => body or $functionName = async (params) => body.'
+    },
+    {
+      pattern: /Template binding.*error|Invalid template syntax/i,
+      type: 'syntax_error',
+      category: 'Modern MTM Syntax',
+      severity: 'high',
+      recoverable: true,
+      suggestion: 'Check your template binding syntax. Use {{$variableName}} for data binding and click="$functionName()" for event handlers.'
+    },
+    {
+      pattern: /Semicolon.*ambiguity|ASI.*error|Automatic semicolon/i,
+      type: 'syntax_error',
+      category: 'Modern MTM Syntax',
+      severity: 'medium',
+      recoverable: true,
+      suggestion: 'Add explicit semicolons to resolve ambiguity, or move statements to the same line to clarify intent.'
+    },
+    {
+      pattern: /Type inference.*failed|Cannot infer type/i,
+      type: 'compilation_error',
+      category: 'Modern MTM Syntax',
+      severity: 'medium',
+      recoverable: true,
+      suggestion: 'Add explicit type annotations where type inference fails. Use $variableName: type = value syntax.'
+    },
+
     // Framework-specific Errors
     {
       pattern: /React.*Hook.*called conditionally|Invalid hook call/i,
