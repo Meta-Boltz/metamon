@@ -1,0 +1,5 @@
+<div class="no-frontmatter-page">
+  <h1>No Frontmatter</h1>
+  <p>This page has no frontmatter at all.</p>
+  <p>It should still be processed correctly.</p>
+</div>

@@ -1,0 +1,50 @@
+export default function Counter() {
+  // Modern MTM syntax with reactive variables
+  $count! = signal('globalCount', 0)
+  $localCount! = 0
+  
+  // Simplified function syntax
+  $increment = () => {
+    $count++
+    signal.emit('counter-updated', { value: $count })
+  }
+
+  $incrementLocal = () => {
+    $localCount++
+  }
+
+  $reset = () => {
+    $count = 0
+    $localCount = 0
+    signal.emit('counter-updated', { value: 0 })
+  }
+
+  <template>
+    <div class="component-demo">
+      <div class="counter">
+        <span>Global Count:</span>
+        <span class="counter-value">{$count}</span>
+        <button class="button" click={$increment}>
+          +1 Global
+        </button>
+      </div>
+      
+      <div class="counter">
+        <span>Local Count:</span>
+        <span class="counter-value">{$localCount}</span>
+        <button class="button secondary" click={$incrementLocal}>
+          +1 Local
+        </button>
+      </div>
+
+      <button class="button" click={$reset} style="margin-top: 10px;">
+        Reset All
+      </button>
+
+      <div style="margin-top: 10px; font-size: 12px; color: #666;">
+        Global count is shared across all frameworks via signals.
+        Local count demonstrates React-specific state.
+      </div>
+    </div>
+  </template>
+}

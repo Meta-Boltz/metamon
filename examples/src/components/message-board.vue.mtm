@@ -1,19 +1,10 @@
----
-target: vue
-channels:
-  - event: message-sent
-    emit: onMessageSent
-  - event: user-action
-    emit: onUserAction
----
-
-export default function VueMessageBoard() {
+export default function MessageBoard() {
   // Modern MTM syntax with reactive variables
-  $messages! = useSignal('messages', [])
+  $messages! = signal('messages', [])
   $newMessage! = ''
 
   // Listen for user actions from other frameworks
-  subscribe('user-action', ($data) => {
+  signal.on('user-action', ($data) => {
     if ($data.framework !== 'Vue') {
       $actionMessage = {
         id: Date.now() + Math.random(),
@@ -39,8 +30,8 @@ export default function VueMessageBoard() {
     
     $messages = [...$messages, $message]
     
-    emit('message-sent', $message)
-    emit('user-action', {
+    signal.emit('message-sent', $message)
+    signal.emit('user-action', {
       action: 'send_message',
       framework: 'Vue',
       data: { message: $newMessage }
@@ -49,51 +40,51 @@ export default function VueMessageBoard() {
     $newMessage = ''
   }
 
-  $formatTime = ($timestamp) => {
+  $formatTime = ($timestamp: number) => {
     return new Date($timestamp).toLocaleTimeString()
   }
 
-  return template(`
+  <template>
     <div class="component-demo">
       <div class="message-input">
         <input 
-          value="{{$newMessage}}"
-          input="{{(e) => $newMessage = e.target.value}}"
-          keyup.enter="{{$sendMessage}}"
+          value={$newMessage}
+          input={(e) => $newMessage = e.target.value}
+          keyup.enter={$sendMessage}
           class="input" 
           placeholder="Type a message and press Enter..."
         />
-        <button click="{{$sendMessage}}" class="button" disabled="{{!$newMessage.trim()}}">
+        <button click={$sendMessage} class="button" disabled={!$newMessage.trim()}>
           Send Message
         </button>
       </div>
 
       <div class="message-list">
-        {{#if $messages.length === 0}}
+        {#if $messages.length === 0}
           <div style="text-align: center; color: #666;">
             No messages yet. Send the first one!
           </div>
-        {{/if}}
+        {/if}
         
-        {{#each $messages as message}}
-          <div class="message-item" key="{{message.id}}">
+        {#each $messages as message}
+          <div class="message-item" key={message.id}>
             <div>
-              <strong>{{message.text}}</strong>
+              <strong>{message.text}</strong>
               <div style="font-size: 11px; color: #666;">
-                {{$formatTime(message.timestamp)}}
+                {$formatTime(message.timestamp)}
               </div>
             </div>
-            <span class="framework-indicator">{{message.framework}}</span>
+            <span class="framework-indicator">{message.framework}</span>
           </div>
-        {{/each}}
+        {/each}
       </div>
 
       <div class="message-stats">
         <small>
-          Total messages: {{$messages.length}} | 
+          Total messages: {$messages.length} | 
           Listening for messages from all frameworks
         </small>
       </div>
     </div>
-  `)
+  </template>
 }

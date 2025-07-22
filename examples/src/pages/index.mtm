@@ -1,94 +1,179 @@
 ---
-target: reactjs
 route: /
-channels:
-  - event: framework-demo-loaded
-    emit: onDemoLoaded
+title: Ultra-Modern MTM Framework
+description: Server-side rendered pages with reactive components
+keywords: MTM, SSR, reactive, framework
+layout: default
 ---
 
-import React, { useEffect } from 'react';
-import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
-import ReactCounter from '@components/react-counter';
-import VueMessageBoard from '@components/vue-message-board';
-import SolidThemeToggle from '@components/solid-theme-toggle';
-import SvelteUserList from '@components/svelte-user-list';
+// Server-side data fetching
+$userCount! = signal('userCount', 0)
+$messages! = signal('messages', [])
+$theme! = signal('theme', 'light')
+$demoStats! = signal('demoStats', {
+  totalComponents: 4,
+  frameworks: ['React', 'Vue', 'Solid', 'Svelte'],
+  lastUpdated: new Date().toISOString()
+})
 
-export default function HomePage() {
-  const [userCount] = useMetamonSignal('userCount');
-  const [messages] = useMetamonSignal('messages');
-  const [theme] = useMetamonSignal('theme');
-  const { emit } = useMetamonPubSub();
+  // Page lifecycle - runs on server and client
+  $onMount = () => {
+    signal.emit('page-loaded', { 
+      page: 'home', 
+      timestamp: Date.now() 
+    })
+    
+    // Initialize demo data
+    if (typeof window !== 'undefined') {
+      $userCount = Math.floor(Math.random() * 100) + 50
+      $messages = [
+        { id: 1, text: 'Welcome to MTM!', timestamp: new Date().toLocaleTimeString() },
+        { id: 2, text: 'Multi-framework magic ✨', timestamp: new Date().toLocaleTimeString() }
+      ]
+    }
+  }
 
-  useEffect(() => {
-    emit('framework-demo-loaded', { timestamp: Date.now() });
-  }, []);
+  $incrementUsers = () => {
+    $userCount++
+    signal.emit('user-count-changed', { count: $userCount })
+  }
 
-  return (
-    <div className="app-container">
-      <header className="header">
-        <h1>🚀 Metamon Framework Demo</h1>
-        <p>Multi-framework components working together seamlessly</p>
+  $addMessage = (text) => {
+    $message = {
+      id: Date.now(),
+      text,
+      timestamp: new Date().toLocaleTimeString()
+    }
+    $messages = [...$messages, $message]
+    signal.emit('message-added', $message)
+  }
+
+  $toggleTheme = () => {
+    $theme = $theme === 'light' ? 'dark' : 'light'
+    signal.emit('theme-changed', { theme: $theme })
+  }
+
+  <template>
+    <div class="app-container" data-theme={$theme}>
+      <header class="header">
+        <h1>🚀 Ultra-Modern MTM Framework</h1>
+        <p>Server-side rendered pages with reactive components</p>
+        <div class="theme-toggle">
+          <button click={$toggleTheme} class="button secondary">
+            {$theme === 'light' ? '🌙' : '☀️'} {$theme} mode
+          </button>
+        </div>
       </header>
 
-      <div className="shared-state-display">
-        <h3>🔄 Shared State (Live Updates)</h3>
-        <div className="state-item">
-          <span>Active Users:</span>
-          <span className="metric-value">{userCount}</span>
-        </div>
-        <div className="state-item">
-          <span>Messages:</span>
-          <span className="metric-value">{messages.length}</span>
-        </div>
-        <div className="state-item">
-          <span>Theme:</span>
-          <span className="metric-value">{theme}</span>
-        </div>
-      </div>
-
-      <div className="framework-grid">
-        <div className="framework-card">
-          <div className="react-badge framework-badge">React</div>
-          <h3>Counter Component</h3>
-          <p>Demonstrates signal-based state management</p>
-          <ReactCounter />
-        </div>
-
-        <div className="framework-card">
-          <div className="vue-badge framework-badge">Vue</div>
-          <h3>Message Board</h3>
-          <p>Shows cross-framework event communication</p>
-          <VueMessageBoard />
-        </div>
-
-        <div className="framework-card">
-          <div className="solid-badge framework-badge">Solid</div>
-          <h3>Theme Toggle</h3>
-          <p>Native Solid signals integration</p>
-          <SolidThemeToggle />
-        </div>
-
-        <div className="framework-card">
-          <div className="svelte-badge framework-badge">Svelte</div>
-          <h3>User Management</h3>
-          <p>Svelte stores with Metamon signals</p>
-          <SvelteUserList />
+      <div class="shared-state-display">
+        <h3>🔄 Live State (SSR + Hydration)</h3>
+        <div class="state-grid">
+          <div class="state-item">
+            <span class="state-label">Active Users:</span>
+            <span class="metric-value">{$userCount}</span>
+            <button click={$incrementUsers} class="button small">+1</button>
+          </div>
+          <div class="state-item">
+            <span class="state-label">Messages:</span>
+            <span class="metric-value">{$messages.length}</span>
+            <button click={() => $addMessage('New message!')} class="button small">Add</button>
+          </div>
+          <div class="state-item">
+            <span class="state-label">Theme:</span>
+            <span class="metric-value">{$theme}</span>
+          </div>
+          <div class="state-item">
+            <span class="state-label">Frameworks:</span>
+            <span class="metric-value">{$demoStats.frameworks.length}</span>
+          </div>
         </div>
       </div>
 
-      <div className="shared-state">
-        <h3>📊 Framework Communication Demo</h3>
-        <p>
-          Each component above is built with a different framework, but they all share state
-          and communicate through Metamon's unified pub/sub system and signals.
-        </p>
-        <ul>
-          <li>React Counter updates the global user count signal</li>
-          <li>Vue Message Board listens for messages from all frameworks</li>
-          <li>Solid Theme Toggle changes the global theme signal</li>
-          <li>Svelte User List manages users and emits events</li>
-        </ul>
+      <div class="framework-showcase">
+        <h3>📦 Component Showcase</h3>
+        <p>Each component below demonstrates different framework integrations:</p>
+        
+        <div class="component-grid">
+          <div class="component-card">
+            <h4>⚛️ React Counter</h4>
+            <p>Reactive state with hooks integration</p>
+            <div class="component-embed" data-component="counter.react.mtm"></div>
+          </div>
+          
+          <div class="component-card">
+            <h4>💚 Vue Message Board</h4>
+            <p>Composition API with reactive refs</p>
+            <div class="component-embed" data-component="message-board.vue.mtm"></div>
+          </div>
+          
+          <div class="component-card">
+            <h4>🔷 Solid Theme Toggle</h4>
+            <p>Native signals integration</p>
+            <div class="component-embed" data-component="theme-toggle.solid.mtm"></div>
+          </div>
+          
+          <div class="component-card">
+            <h4>🧡 Svelte User List</h4>
+            <p>Store-based state management</p>
+            <div class="component-embed" data-component="user-list.svelte.mtm"></div>
+          </div>
+        </div>
       </div>
+
+      <div class="messages-section">
+        <h3>💬 Live Messages</h3>
+        <div class="message-list">
+          {#if $messages.length === 0}
+            <div class="empty-state">No messages yet</div>
+          {:else}
+            {#each $messages as message}
+              <div class="message-item" key={message.id}>
+                <span class="message-text">{message.text}</span>
+                <span class="message-time">{message.timestamp}</span>
+              </div>
+            {/each}
+          {/if}
+        </div>
+        
+        <div class="message-input">
+          <input 
+            type="text" 
+            placeholder="Type a message..." 
+            keyup={(e) => e.key === 'Enter' && $addMessage(e.target.value) && (e.target.value = '')}
+            class="input"
+          />
+        </div>
+      </div>
+
+      <div class="features-section">
+        <h3>✨ Ultra-Modern Features</h3>
+        <div class="features-grid">
+          <div class="feature-item">
+            <h4>🚀 Server-Side Rendering</h4>
+            <p>Pages render on the server for optimal SEO and performance</p>
+          </div>
+          <div class="feature-item">
+            <h4>⚡ Progressive Hydration</h4>
+            <p>Components hydrate progressively for instant interactivity</p>
+          </div>
+          <div class="feature-item">
+            <h4>🔄 Universal Signals</h4>
+            <p>Shared state works seamlessly across server and client</p>
+          </div>
+          <div class="feature-item">
+            <h4>🎯 Zero Configuration</h4>
+            <p>File-based routing with automatic framework detection</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>Built with Ultra-Modern MTM • Last updated: {$demoStats.lastUpdated}</p>
+        <nav class="footer-nav">
+          <a href="/docs">📚 Documentation</a>
+          <a href="/performance">📊 Performance</a>
+          <a href="https://github.com/metamon/mtm">🔗 GitHub</a>
+        </nav>
+      </footer>
     </div>
-  );
-}
+  </template>

@@ -1,30 +1,19 @@
----
-target: svelte
-channels:
-  - event: user-added
-    emit: onUserAdded
-  - event: user-removed
-    emit: onUserRemoved
-  - event: user-action
-    emit: onUserAction
----
-
-export default function SvelteUserList() {
+export default function UserList() {
   // Modern MTM syntax with reactive variables
-  $userCount! = useSignal('userCount', 0)
+  $userCount! = signal('userCount', 0)
   $users! = []
   $newUserName! = ''
   $userIdCounter! = 1
 
   // Subscribe to user actions from other frameworks
-  subscribe('user-action', ($data) => {
+  signal.on('user-action', ($data) => {
     if ($data.framework !== 'Svelte') {
       console.log(`Received action from ${$data.framework}:`, $data.action)
     }
   })
 
   // Subscribe to counter updates to sync user count
-  subscribe('counter-updated', ($data) => {
+  signal.on('counter-updated', ($data) => {
     // Sync local user list with global counter when possible
     $diff = $userCount - $users.length
     if ($diff > 0) {
@@ -55,8 +44,8 @@ export default function SvelteUserList() {
     $users = [...$users, $user]
     $userCount = $userCount + 1
     
-    emit('user-added', $user)
-    emit('user-action', {
+    signal.emit('user-added', $user)
+    signal.emit('user-action', {
       action: 'add_user',
       framework: 'Svelte',
       data: { userName: $user.name }
@@ -65,15 +54,15 @@ export default function SvelteUserList() {
     $newUserName = ''
   }
 
-  $removeUser = ($userId) => {
+  $removeUser = ($userId: number) => {
     $removedUser = $users.find($u => $u.id === $userId)
     $users = $users.filter($u => $u.id !== $userId)
     
     if ($removedUser) {
       $userCount = Math.max(0, $userCount - 1)
       
-      emit('user-removed', $removedUser)
-      emit('user-action', {
+      signal.emit('user-removed', $removedUser)
+      signal.emit('user-action', {
         action: 'remove_user',
         framework: 'Svelte',
         data: { userName: $removedUser.name }
@@ -85,27 +74,27 @@ export default function SvelteUserList() {
     $users = []
     $userCount = 0
     
-    emit('user-action', {
+    signal.emit('user-action', {
       action: 'clear_all_users',
       framework: 'Svelte'
     })
   }
 
-  $formatTime = ($timestamp) => {
+  $formatTime = ($timestamp: number) => {
     return new Date($timestamp).toLocaleTimeString()
   }
 
-  return template(`
+  <template>
     <div class="component-demo">
       <div class="user-input">
         <input 
-          value="{{$newUserName}}"
-          input="{{(e) => $newUserName = e.target.value}}"
-          keyup="{{(e) => e.key === 'Enter' && $addUser()}}"
+          value={$newUserName}
+          input={(e) => $newUserName = e.target.value}
+          keyup={(e) => e.key === 'Enter' && $addUser()}
           class="input" 
           placeholder="Enter user name..."
         />
-        <button click="{{$addUser}}" class="button" disabled="{{!$newUserName.trim()}}">
+        <button click={$addUser} class="button" disabled={!$newUserName.trim()}>
           Add User
         </button>
       </div>
@@ -113,14 +102,14 @@ export default function SvelteUserList() {
       <div class="user-stats">
         <div class="counter">
           <span>Total Users:</span>
-          <span class="counter-value">{{$userCount}}</span>
+          <span class="counter-value">{$userCount}</span>
           <span style="font-size: 12px; color: #666;">
             (Global Signal)
           </span>
         </div>
         <div class="user-stats">
           <span>Local Users:</span>
-          <span class="counter-value">{{$users.length}}</span>
+          <span class="counter-value">{$users.length}</span>
           <span style="font-size: 12px; color: #666;">
             (Svelte Store)
           </span>
@@ -128,36 +117,36 @@ export default function SvelteUserList() {
       </div>
 
       <div class="user-list">
-        {{#if $users.length === 0}}
+        {#if $users.length === 0}
           <div style="text-align: center; color: #666; padding: 20px;">
             No users added yet. Add the first one!
           </div>
-        {{else}}
-          {{#each $users as user}}
-            <div class="user-item" key="{{user.id}}">
+        {:else}
+          {#each $users as user}
+            <div class="user-item" key={user.id}>
               <div class="user-info">
-                <strong>{{user.name}}</strong>
+                <strong>{user.name}</strong>
                 <div style="font-size: 11px; color: #666;">
-                  Added via {{user.framework}} at {{$formatTime(user.timestamp)}}
+                  Added via {user.framework} at {$formatTime(user.timestamp)}
                 </div>
               </div>
               <button 
-                click="{{() => $removeUser(user.id)}}"
+                click={() => $removeUser(user.id)}
                 class="button secondary"
                 style="padding: 4px 8px; font-size: 12px;"
               >
                 Remove
               </button>
             </div>
-          {{/each}}
-        {{/if}}
+          {/each}
+        {/if}
       </div>
 
-      {{#if $users.length > 0}}
-        <button click="{{$clearAllUsers}}" class="button" style="margin-top: 10px; width: 100%;">
+      {#if $users.length > 0}
+        <button click={$clearAllUsers} class="button" style="margin-top: 10px; width: 100%;">
           Clear All Users
         </button>
-      {{/if}}
+      {/if}
 
       <div style="margin-top: 15px; font-size: 12px; color: #666; padding: 10px; background: #f9fafb; border-radius: 6px;">
         <strong>Svelte Integration:</strong><br/>
@@ -165,5 +154,5 @@ export default function SvelteUserList() {
         User additions update the global counter signal shared across all frameworks.
       </div>
     </div>
-  `)
+  </template>
 }

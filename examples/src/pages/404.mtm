@@ -1,0 +1,159 @@
+---
+route: /404
+title: 404 - Page Not Found
+description: The requested page could not be found
+keywords: 404, not found, error
+layout: default
+status: 404
+---
+
+// Page state
+$searchQuery! = signal('searchQuery', '')
+$suggestions! = signal('404-suggestions', [])
+$searchResults! = signal('404-search-results', [])
+$isSearching! = signal('404-is-searching', false)
+$originalPath! = signal('originalPath', '')
+
+// Page lifecycle
+$onMount = () => {
+  // Get original path from router params if available
+  if (typeof window !== 'undefined' && window.router) {
+    const params = window.router.getCurrentParams()
+    if (params.originalPath) {
+      $originalPath = params.originalPath
+    }
+  }
+
+  signal.emit('404-page-loaded', { 
+    timestamp: Date.now(),
+    referrer: typeof window !== 'undefined' ? document.referrer : '',
+    originalPath: $originalPath
+  })
+}
+
+$searchSite = async () => {
+  if ($searchQuery.trim() && typeof window !== 'undefined' && window.router && window.router.notFoundHandler) {
+    const results = await window.router.notFoundHandler.searchSite($searchQuery)
+    console.log('Search results:', results)
+  }
+}
+
+$clearSearch = () => {
+  $searchQuery = ''
+  $searchResults = []
+}
+
+$goHome = () => {
+  if (typeof window !== 'undefined') {
+    window.location.href = '/'
+  }
+}
+
+<template>
+  <div class="app-container">
+    <header class="header">
+      <h1>🚫 404 - Page Not Found</h1>
+      <p>Sorry, the page you're looking for doesn't exist</p>
+    </header>
+
+    <div class="error-content">
+      <div class="error-illustration">
+        <div class="error-code">404</div>
+        <div class="error-message">Oops! This page seems to have vanished into the digital void.</div>
+      </div>
+
+      <div class="error-actions">
+        <h3>What would you like to do?</h3>
+        
+        <div class="action-buttons">
+          <button click={$goHome} class="button primary">
+            🏠 Go Home
+          </button>
+          
+          <button click={() => window.history.back()} class="button secondary">
+            ← Go Back
+          </button>
+        </div>
+
+        <div class="search-section">
+          <h4>Search our site:</h4>
+          <div class="search-input">
+            <input 
+              type="text" 
+              placeholder="What are you looking for?" 
+              value={$searchQuery}
+              input={(e) => $searchQuery = e.target.value}
+              keyup={(e) => e.key === 'Enter' && $searchSite()}
+              class="input"
+            />
+            <button click={$searchSite} class="button" disabled={$isSearching}>
+              {$isSearching ? 'Searching...' : 'Search'}
+            </button>
+            {#if $searchQuery}
+              <button click={$clearSearch} class="button secondary">Clear</button>
+            {/if}
+          </div>
+          
+          {#if $searchResults.length > 0}
+            <div class="search-results">
+              <h5>Search Results:</h5>
+              <div class="results-list">
+                {#each $searchResults as result}
+                  <div class="result-item" key={result.route}>
+                    <h6><a href={result.route}>{result.title}</a></h6>
+                    <p>{result.description}</p>
+                    <small>Relevance: {Math.round(result.relevance * 100)}%</small>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
+          
+          {#if $searchQuery && $searchResults.length === 0 && !$isSearching}
+            <div class="no-results">
+              <p>No results found for "{$searchQuery}". Try different keywords or check the suggestions below.</p>
+            </div>
+          {/if}
+        </div>
+      </div>
+
+      <div class="suggestions-section">
+        <h3>Popular Pages</h3>
+        <div class="suggestions-grid">
+          {#each $suggestions as suggestion}
+            <div class="suggestion-card" key={suggestion.url}>
+              <h4>
+                <a href={suggestion.url}>{suggestion.title}</a>
+              </h4>
+              <p>{suggestion.description}</p>
+            </div>
+          {/each}
+        </div>
+      </div>
+
+      <div class="help-section">
+        <h3>Need Help?</h3>
+        <p>
+          If you believe this is an error, please check the URL for typos or 
+          <a href="https://github.com/metamon/mtm/issues">report an issue</a> 
+          on our GitHub repository.
+        </p>
+        
+        <div class="technical-info">
+          <details>
+            <summary>Technical Information</summary>
+            <ul>
+              <li>Status Code: 404</li>
+              <li>Timestamp: {new Date().toISOString()}</li>
+              <li>User Agent: {typeof window !== 'undefined' ? window.navigator.userAgent : 'Server'}</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>Ultra-Modern MTM Framework • <a href="/">Home</a> • <a href="/docs">Documentation</a></p>
+    </footer>
+  </div>
+</template>

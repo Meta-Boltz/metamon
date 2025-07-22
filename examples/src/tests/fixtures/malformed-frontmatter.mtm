@@ -1,0 +1,15 @@
+---
+route: /malformed
+title: Malformed Frontmatter Test
+invalid line without colon
+: empty key
+missing_value:
+"unclosed quote: test
+array_without_closing: [1, 2, 3
+object_malformed: {"key": "value"
+---
+
+<div class="malformed-page">
+  <h1>Malformed Frontmatter Test</h1>
+  <p>This page tests error handling for malformed frontmatter.</p>
+</div>

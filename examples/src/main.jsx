@@ -1,153 +1,202 @@
 import './style.css';
-import { signals, pubsub } from './shared/state.js';
+import { signal } from './shared/signal-system.js';
+import router from './shared/ultra-modern-router.js';
 
-// Make state globally accessible for vanilla JS components
-window.metamonState = { signals, pubsub };
+// Make signal system globally accessible
+window.signal = signal;
+window.router = router;
 
-// Create the main app structure
+// Create the main app structure with navigation
 const appContainer = document.getElementById('app');
 appContainer.innerHTML = `
-  <div class="app-container">
-    <header class="header">
-      <h1>🚀 Metamon Framework Demo</h1>
-      <p>Multi-framework components working together seamlessly</p>
-    </header>
-
-    <div id="shared-state-display"></div>
-
-    <div class="framework-grid">
-      <div class="framework-card">
-        <div class="react-badge framework-badge">React</div>
-        <h3>Counter Component</h3>
-        <p>Demonstrates signal-based state management</p>
-        <div id="react-counter"></div>
+  <div class="ultra-modern-app">
+    <nav class="main-navigation">
+      <div class="nav-brand">
+        <a href="/">🚀 Ultra-Modern MTM</a>
       </div>
-
-      <div class="framework-card">
-        <div class="vue-badge framework-badge">Vue</div>
-        <h3>Message Board</h3>
-        <p>Shows cross-framework event communication</p>
-        <div id="vue-message-board"></div>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/docs" class="nav-link">Documentation</a>
+        <a href="/performance" class="nav-link">Performance</a>
       </div>
-
-      <div class="framework-card">
-        <div class="solid-badge framework-badge">Solid</div>
-        <h3>Theme Toggle</h3>
-        <p>Native Solid signals integration</p>
-        <div id="solid-theme-toggle"></div>
+    </nav>
+    
+    <main id="page-content">
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Loading Ultra-Modern MTM...</p>
       </div>
-
-      <div class="framework-card">
-        <div class="svelte-badge framework-badge">Svelte</div>
-        <h3>User Management</h3>
-        <p>Svelte stores with shared signals</p>
-        <div id="svelte-user-list"></div>
-      </div>
-    </div>
-
-    <div class="shared-state">
-      <h3>📊 Framework Communication Demo</h3>
-      <p>
-        Each component above is built with a different framework, but they all share state
-        and communicate through a unified pub/sub system and signals.
-      </p>
-      <ul>
-        <li>React Counter updates the global user count signal</li>
-        <li>Vue Message Board listens for messages from all frameworks</li>
-        <li>Solid Theme Toggle changes the global theme signal</li>
-        <li>Svelte User List manages users and emits events</li>
-      </ul>
+    </main>
+    
+    <div id="component-mounts" style="display: none;">
+      <!-- Framework component mount points -->
+      <div id="react-counter"></div>
+      <div id="vue-message-board"></div>
+      <div id="solid-theme-toggle"></div>
+      <div id="svelte-user-list"></div>
     </div>
   </div>
 `;
 
-// Mount each framework's components sequentially to avoid cross-contamination
-async function mountComponents() {
+// Initialize Ultra-Modern MTM Application
+async function initializeApp() {
   try {
-    // Mount React components first
-    await import('./mount-react.jsx');
-    console.log('✅ React components mounted');
+    console.log('🚀 Initializing Ultra-Modern MTM Application...');
 
-    // Mount Vue components
-    await import('./mount-vue.js');
-    console.log('✅ Vue components mounted');
+    // Initialize router and handle initial route
+    console.log('🛣️ Router initialized');
 
-    // Mount Svelte components (working)
-    await import('./mount-svelte.js');
-    console.log('✅ Svelte components mounted');
+    // Mount framework components for embedded components (if needed)
+    await mountFrameworkComponents();
 
-    // Create a working theme toggle using vanilla JS for now
-    const solidElement = document.getElementById('solid-theme-toggle');
-    if (solidElement) {
-      let currentTheme = 'light';
+    // Set up navigation event handlers
+    setupNavigation();
 
-      solidElement.innerHTML = `
-        <div class="component-demo">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-            <span>Current Theme:</span>
-            <span class="counter-value" id="theme-display" style="color: #3b82f6; text-transform: capitalize;">
-              ${currentTheme}
-            </span>
-          </div>
-          <button class="button" id="theme-toggle" style="background: #3b82f6;">
-            🌙 Switch to Dark
-          </button>
-          <div style="margin-top: 15px; padding: 10px; border-radius: 6px; background: #f3f4f6; color: #1f2937; font-size: 12px;">
-            <strong>Theme Toggle (Vanilla JS):</strong><br/>
-            This demonstrates theme switching functionality while we work on Solid integration.
-            Theme changes are reflected across all framework components.
-          </div>
-        </div>
-      `;
+    // Add loading styles
+    addLoadingStyles();
 
-      const themeButton = solidElement.querySelector('#theme-toggle');
-      const themeDisplay = solidElement.querySelector('#theme-display');
-
-      themeButton.addEventListener('click', () => {
-        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-        // Update global state
-        const { signals, pubsub } = window.metamonState || {};
-        if (signals && signals.theme) {
-          signals.theme.update(currentTheme);
-        }
-
-        // Update display
-        themeDisplay.textContent = currentTheme;
-        themeDisplay.style.color = currentTheme === 'dark' ? '#fbbf24' : '#3b82f6';
-        themeButton.style.background = currentTheme === 'dark' ? '#fbbf24' : '#3b82f6';
-        themeButton.textContent = currentTheme === 'light' ? '🌙 Switch to Dark' : '☀️ Switch to Light';
-
-        // Apply theme to document
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        document.body.style.filter = currentTheme === 'dark' ? 'invert(1) hue-rotate(180deg)' : 'none';
-
-        // Emit events
-        if (pubsub) {
-          pubsub.emit('theme-changed', {
-            framework: 'Vanilla JS',
-            theme: currentTheme,
-            timestamp: Date.now()
-          });
-
-          pubsub.emit('user-action', {
-            action: 'toggle_theme',
-            framework: 'Vanilla JS',
-            data: { newTheme: currentTheme }
-          });
-        }
-      });
-    }
-
-    console.log('🎉 Framework components mounting completed!');
+    console.log('✅ Ultra-Modern MTM Application ready!');
   } catch (error) {
-    console.error('❌ Error mounting components:', error);
+    console.error('❌ Error initializing app:', error);
+    showError('Failed to initialize application');
   }
 }
 
-// Start mounting after DOM is ready
+// Mount framework components for embedded use
+async function mountFrameworkComponents() {
+  try {
+    // These are for embedded components within pages
+    await import('./mount-react.jsx');
+    await import('./mount-vue.js');
+    await import('./mount-svelte.js');
+    console.log('✅ Framework components available for embedding');
+  } catch (error) {
+    console.warn('⚠️ Some framework components failed to load:', error);
+  }
+}
+
+// Set up navigation event handlers
+function setupNavigation() {
+  // Handle navigation link clicks
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#')) {
+      return; // External link or anchor
+    }
+
+    // Prevent default navigation for internal links
+    event.preventDefault();
+    router.push(href);
+  });
+
+  // Update active navigation state
+  signal.on('currentRoute', (newRoute) => {
+    updateActiveNavigation(newRoute);
+  });
+}
+
+// Update active navigation styling
+function updateActiveNavigation(currentRoute) {
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === currentRoute) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+// Add loading and navigation styles
+function addLoadingStyles() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .main-navigation {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-brand a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .nav-link {
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    
+    .loading-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      color: #666;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #page-content {
+      min-height: calc(100vh - 80px);
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Show error message
+function showError(message) {
+  const pageContent = document.getElementById('page-content');
+  if (pageContent) {
+    pageContent.innerHTML = `
+      <div class="error-container" style="text-align: center; padding: 2rem; color: #dc2626;">
+        <h2>❌ Error</h2>
+        <p>${message}</p>
+        <button onclick="location.reload()" class="button">Reload Page</button>
+      </div>
+    `;
+  }
+}
+
+// Start the application
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', mountComponents);
+  document.addEventListener('DOMContentLoaded', initializeApp);
 } else {
-  mountComponents();
+  initializeApp();
 }
