@@ -1,0 +1,7 @@
+{
+  "name": "mtm-netlify-deploy",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo \"Building for Netlify\" && mkdir -p dist && echo \"<html><body>MTM App</body></html>\" > dist/index.html"
+  }
+}

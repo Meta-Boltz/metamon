@@ -1,0 +1,24 @@
+---
+page_title: Legacy Home Page
+page_description: This is a legacy format page
+meta_keywords: legacy, old, format
+template: main
+http_status: 200
+route: en:/home, fr:/accueil, es:/inicio
+---
+
+$count = createSignal(0)
+$message = createSignal('Hello World')
+
+$mount = () => {
+  console.log('Page mounted')
+}
+
+$increment = () => {
+  $count++
+}
+
+<div class="legacy-page">
+  <h1>{$message}</h1>
+  <button onClick={$increment}>Count: {$count}</button>
+</div>

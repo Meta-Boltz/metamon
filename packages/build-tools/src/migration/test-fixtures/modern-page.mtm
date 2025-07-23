@@ -1,0 +1,32 @@
+---
+route: /modern
+title: Modern Page
+description: This page uses the modern format
+keywords: [modern, new, format]
+layout: default
+status: 200
+---
+
+$count! = signal('counter', 0)
+$message! = signal('message', 'Hello Modern World')
+
+$onMount = () => {
+  console.log('Page mounted with modern syntax')
+  signal.emit('page-loaded', { page: 'modern' })
+}
+
+$increment = () => {
+  $count++
+  signal.emit('counter-updated', { value: $count })
+}
+
+<template>
+  <div class="modern-page">
+    <h1>{$message}</h1>
+    <button click={$increment}>Count: {$count}</button>
+    
+    {#if $count > 5}
+      <p>You've clicked many times!</p>
+    {/if}
+  </div>
+</template>
