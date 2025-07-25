@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Enhanced MTM</title>
+    <meta name="description" content="Learn more about the Enhanced MTM Framework and its capabilities">
+    <meta name="route" content="/about">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .navigation a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .link-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .link-examples a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .link-examples a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .counter-component, .vue-button, .react-component {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="about-page">
+<header>
+<h1>About Us - Enhanced MTM</h1>
+<nav>
+<a href="/" data-link="true">← Back to Home</a>
+<a href="/contact" data-link="true">Contact Us</a>
+</nav>
+</header>
+<main>
+<Card title="About Enhanced MTM Framework">
+<p>The Enhanced MTM Framework brings professional-grade features to meta-framework development:</p>
+<ul>
+<li><strong>Link-Based Routing:</strong> Use standard HTML links for navigation</li>
+<li><strong>Component Imports:</strong> Import React, Vue, and Svelte components seamlessly</li>
+<li><strong>External JS Compilation:</strong> Optimize performance with separate JavaScript files</li>
+<li><strong>Route Definitions:</strong> Define routes directly in MTM files</li>
+</ul>
+<p>Page views: <span data-bind="$pageViews">Loading...</span></p>
+<button data-event-onClick="$incrementViews">Track View</button>
+</Card>
+<section class="demo-section">
+<h2>Component Integration Demo</h2>
+<p>This page demonstrates importing and using components from different frameworks:</p>
+<button data-event-onClick="$openModal">Open Modal (React Component)</button>
+<div data-if="$showModal" style="display: none;">
+<Modal
+title="Enhanced MTM Modal"
+data-event-onClose="$closeModal"
+data-event-isOpen="$showModal"
+>
+<p>This modal is a React component imported into an MTM page!</p>
+<p>It demonstrates seamless integration between frameworks.</p>
+</Modal>
+</div>
+</section>
+<section class="routing-demo">
+<h2>Routing Examples</h2>
+<p>Try these navigation links:</p>
+<div class="link-examples">
+<a href="/contact">Standard anchor tag (intercepted)</a>
+<a href="/blog" data-link="true">Link component</a>
+<a href="https://github.com" data-link="true" external>External link</a>
+</div>
+</section>
+</main>
+<footer>
+<p>
+<a href="/">Home</a> |
+<a href="/contact">Contact</a> |
+<a href="/blog">Blog</a>
+</p>
+</footer>
+</div></div>
+    
+        <script src="./js/mtm-router.js"></script>
+        <script src="./js/components.js"></script>
+        <script src="./js/about.js"></script>
+      
+</body>
+</html>

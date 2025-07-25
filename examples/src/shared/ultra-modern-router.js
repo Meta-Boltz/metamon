@@ -6,7 +6,7 @@
 import { signal } from './signal-system.js';
 import { createNotFoundHandler } from './404-handler.js';
 import { createErrorBoundary } from './error-boundary.js';
-import { createCodeSplitter } from './code-splitter.js';
+import { simpleChunkLoader } from './simple-chunk-loader.js';
 
 class UltraModernRouter {
   constructor() {
@@ -27,14 +27,8 @@ class UltraModernRouter {
     // Initialize error boundary
     this.errorBoundary = null;
 
-    // Initialize code splitter for lazy loading
-    this.codeSplitter = createCodeSplitter({
-      preloadThreshold: 0.6,
-      preloadDelay: 150,
-      maxConcurrentLoads: 2,
-      enablePreloading: true,
-      enablePrefetching: true
-    });
+    // Initialize simple chunk loader
+    this.chunkLoader = simpleChunkLoader;
 
     // Initialize router
     this.init();
@@ -54,6 +48,11 @@ class UltraModernRouter {
     });
     this.registerRoute('/performance', () => import('../pages/performance.mtm'), {
       title: 'Performance',
+      priority: 'normal'
+    });
+    this.registerRoute('/chunk-loading', () => import('../examples/chunk-loading-comprehensive.js'), {
+      title: 'Chunk Loading Examples',
+      description: 'Comprehensive examples of safe chunk loading patterns',
       priority: 'normal'
     });
     this.registerRoute('/404', () => import('../pages/404.mtm'), {
@@ -110,19 +109,8 @@ class UltraModernRouter {
       }
     };
 
-    // Create lazy route with code splitter if enabled
-    if (routeEntry.metadata.lazy && this.codeSplitter) {
-      const lazyRoute = this.codeSplitter.createLazyRoute(loader, {
-        preload: routeEntry.metadata.preload,
-        priority: routeEntry.metadata.priority,
-        chunk: path.replace(/[^a-zA-Z0-9]/g, '_')
-      });
-
-      routeEntry.loader = lazyRoute.loader;
-      routeEntry.preloadFn = lazyRoute.preload;
-      routeEntry.prefetchFn = lazyRoute.prefetch;
-      routeEntry.isLazy = true;
-    }
+    // All routes are now handled by the simple chunk loader
+    routeEntry.isLazy = true; // All routes are lazy loaded
 
     if (this.isDynamicRoute(path)) {
       // Dynamic route with parameters
@@ -306,9 +294,10 @@ class UltraModernRouter {
 
     // Define route relationships for intelligent preloading
     const routeRelationships = {
-      '/': ['/docs', '/performance'],
-      '/docs': ['/performance', '/'],
-      '/performance': ['/docs', '/']
+      '/': ['/docs', '/performance', '/chunk-loading'],
+      '/docs': ['/performance', '/chunk-loading', '/'],
+      '/performance': ['/docs', '/chunk-loading', '/'],
+      '/chunk-loading': ['/docs', '/performance', '/']
     };
 
     if (routeRelationships[currentPath]) {
@@ -373,7 +362,8 @@ class UltraModernRouter {
         console.log(`📦 Loading ${route.isLazy ? 'lazy ' : ''}component for:`, pathname);
         try {
           const startTime = performance.now();
-          const module = await route.loader();
+          const chunkId = `${pathname}_${route.path || 'route'}`;
+          const module = await this.chunkLoader.loadChunk(chunkId, route.loader);
           const loadTime = performance.now() - startTime;
 
           route.component = module.default || module;
@@ -804,15 +794,15 @@ class UltraModernRouter {
    * Get code splitting statistics
    */
   getCodeSplittingStats() {
-    return this.codeSplitter ? this.codeSplitter.getLoadStats() : {};
+    return this.chunkLoader ? this.chunkLoader.getCacheStats() : {};
   }
 
   /**
    * Clear code splitting cache
    */
   clearCodeSplittingCache() {
-    if (this.codeSplitter) {
-      this.codeSplitter.clearCache();
+    if (this.chunkLoader) {
+      this.chunkLoader.clearCache();
     }
   }
 
@@ -820,8 +810,9 @@ class UltraModernRouter {
    * Cleanup resources
    */
   destroy() {
-    if (this.codeSplitter) {
-      this.codeSplitter.destroy();
+    if (this.chunkLoader) {
+      // Simple chunk loader doesn't need explicit destroy
+      this.chunkLoader.clearCache();
     }
 
     if (this.notFoundHandler) {

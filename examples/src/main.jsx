@@ -18,6 +18,7 @@ appContainer.innerHTML = `
         <a href="/" class="nav-link">Home</a>
         <a href="/docs" class="nav-link">Documentation</a>
         <a href="/performance" class="nav-link">Performance</a>
+        <a href="/chunk-loading" class="nav-link">Chunk Loading</a>
       </div>
     </nav>
     

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primitive Metamon Page</title>
+    <meta name="description" content="Ultra-minimal MTM framework demonstration with client-side routing and reactive components">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .primitive-app { max-width: 100%; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .header h1 { color: #2c3e50; margin-bottom: 0.5rem; }
+        
+        .page-info {
+            color: #666;
+            font-size: 0.9rem;
+            background: #e8f4fd;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #bee5eb;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status {
+            color: #666;
+            font-style: italic;
+            background: #f8f9ff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .nav-btn:hover { background: #5a6fd8; }
+        
+        .current-page {
+            margin-left: auto;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .content { min-height: 300px; }
+        
+        .content h2 {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .description {
+            color: #666;
+            font-style: italic;
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .counter-section {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+            margin: 1rem 0;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-display button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.2rem;
+            min-width: 50px;
+            transition: background 0.2s;
+        }
+        
+        .counter-display button:hover { background: #5a6fd8; }
+        
+        .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 80px;
+            text-align: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #667eea;
+        }
+        
+        .reset-btn { background: #e74c3c !important; }
+        .reset-btn:hover { background: #c0392b !important; }
+        
+        .home-content, .about-content, .contact-content {
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .about-content ul { list-style: none; padding: 0; }
+        .about-content li { padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+        
+        .contact-info {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="primitive-app">
+<header class="header">
+<h1>🔮 Ultra-Minimal MTM</h1>
+<p class="page-info">Route: / | Title: Primitive Metamon Page</p>
+<p class="status"><span data-bind="$message">Loading...</span></p>
+</header>
+<nav class="navigation">
+<button data-click="$goHome" class="nav-btn">Home</button>
+<button data-click="$goAbout" class="nav-btn">About</button>
+<button data-click="$goContact" class="nav-btn">Contact</button>
+<span class="current-page">Current: <span data-bind="$currentPage">Loading...</span></span>
+</nav>
+<main class="content">
+<h2>Page: <span data-bind="$currentPage">Loading...</span></h2>
+<p class="description">Ultra-minimal MTM framework demonstration with client-side routing and reactive components</p>
+<div data-if="$currentPage === 'home'" style="display: none;">
+<section class="home-content">
+<h3>🏠 Home Page</h3>
+<p>Welcome to the ultra-minimal MTM framework!</p>
+<div class="counter-section">
+<h4>Interactive Counter</h4>
+<div class="counter-display">
+<button data-click="$decrement">-</button>
+<span class="count"><span data-bind="$counter">Loading...</span></span>
+<button data-click="$increment">+</button>
+<button data-click="$reset" class="reset-btn">Reset</button>
+</div>
+</div>
+</section>
+</div>
+<div data-if="$currentPage === 'about'" style="display: none;">
+<section class="about-content">
+<h3>ℹ️ About Ultra-Minimal MTM</h3>
+<p>No more function wrappers! Just pure reactive code.</p>
+<ul>
+<li>✅ No export default function needed</li>
+<li>✅ Page metadata with route, title, description</li>
+<li>✅ Ultra-clean syntax</li>
+<li>✅ Pure reactive variables and functions</li>
+</ul>
+<p>Current counter value: <span data-bind="$counter">Loading...</span></p>
+</section>
+</div>
+<div data-if="$currentPage === 'contact'" style="display: none;">
+<section class="contact-content">
+<h3>📧 Contact Information</h3>
+<p>Get in touch with the MTM team!</p>
+<div class="contact-info">
+<p>Email: hello@mtm-framework.dev</p>
+<p>GitHub: github.com/mtm-framework</p>
+<p>Route: /</p>
+<p>Counter state: <span data-bind="$counter">Loading...</span></p>
+</div>
+</section>
+</div>
+</main>
+<footer class="footer">
+<p>Ultra-Minimal MTM Framework - No function wrappers needed!</p>
+<p>State: counter=<span data-bind="$counter">Loading...</span>, page=<span data-bind="$currentPage">Loading...</span></p>
+</footer>
+</div></div>
+    <script>
+// Ultra-Minimal MTM Signal System
+const MTMSignal = {
+  _signals: new Map(),
+  _subscribers: new Map(),
+  
+  create(key, initialValue) {
+    if (!this._signals.has(key)) {
+      this._signals.set(key, initialValue);
+      this._subscribers.set(key, new Set());
+    }
+    
+    return {
+      get value() { return MTMSignal._signals.get(key); },
+      set value(newValue) {
+        MTMSignal._signals.set(key, newValue);
+        MTMSignal._notifySubscribers(key, newValue);
+      },
+      subscribe(callback) { MTMSignal._subscribers.get(key).add(callback); }
+    };
+  },
+  
+  _notifySubscribers(key, value) {
+    if (this._subscribers.has(key)) {
+      this._subscribers.get(key).forEach(callback => callback(value));
+    }
+  },
+  
+  emit(event, data) {
+    console.log('MTM Signal:', event, data);
+    window.dispatchEvent(new CustomEvent('mtm-' + event, { detail: data }));
+  }
+};
+
+window.signal = MTMSignal;
+
+// Page metadata
+const pageMetadata = {
+  "route": "/",
+  "title": "Primitive Metamon Page",
+  "description": "Ultra-minimal MTM framework demonstration with client-side routing and reactive components"
+};
+
+// Ultra-Minimal Component: PrimitiveminimalComponent
+function PrimitiveminimalComponent() {
+  // Variables
+  const $currentPage = MTMSignal.create('currentPage', 'home');
+  const $counter = MTMSignal.create('counter', 0);
+  const $message = MTMSignal.create('message', 'Welcome to Ultra-Minimal MTM!');
+
+  // Functions  
+  const $goHome = () => {
+    $currentPage.value = 'home'
+$message.value = 'Navigated to Home page'
+signal.emit('page-changed', { page: 'home' })
+  };
+
+  const $goAbout = () => {
+    $currentPage.value = 'about'
+$message.value = 'Navigated to About page'
+signal.emit('page-changed', { page: 'about' })
+  };
+
+  const $goContact = () => {
+    $currentPage.value = 'contact'
+$message.value = 'Navigated to Contact page'
+signal.emit('page-changed', { page: 'contact' })
+  };
+
+  const $increment = () => {
+    $counter.value++
+$message.value = `Counter incremented to ${$counter.value}`
+signal.emit('counter-updated', { value: $counter.value })
+  };
+
+  const $decrement = () => {
+    $counter.value--
+$message.value = `Counter decremented to ${$counter.value}`
+signal.emit('counter-updated', { value: $counter.value })
+  };
+
+  const $reset = () => {
+    $counter.value = 0
+$message.value = 'Counter reset to zero'
+signal.emit('counter-reset', { value: 0 })
+  };
+
+  // DOM Management
+  const container = document.getElementById('app');
+  
+  const updateAll = () => {
+    // Update data-bind elements
+    container.querySelectorAll('[data-bind="$currentPage"]').forEach(el => {
+      el.textContent = $currentPage.value;
+    });
+    container.querySelectorAll('[data-bind="$counter"]').forEach(el => {
+      el.textContent = $counter.value;
+    });
+    container.querySelectorAll('[data-bind="$message"]').forEach(el => {
+      el.textContent = $message.value;
+    });
+    
+    // Update conditional rendering
+    container.querySelectorAll('[data-if]').forEach(el => {
+      const condition = el.getAttribute('data-if');
+      let shouldShow = false;
+      
+      try {
+        let evalStr = condition;
+        evalStr = evalStr.replace(/\$currentPage/g, '$currentPage.value');
+        evalStr = evalStr.replace(/\$counter/g, '$counter.value');
+        evalStr = evalStr.replace(/\$message/g, '$message.value');
+        shouldShow = eval(evalStr);
+      } catch (e) {
+        console.warn('Condition failed:', condition, e);
+      }
+      
+      el.style.display = shouldShow ? 'block' : 'none';
+    });
+  };
+  
+  // Initial update
+  updateAll();
+  
+  // Subscribe to changes
+  $currentPage.subscribe(() => updateAll());
+  $counter.subscribe(() => updateAll());
+  $message.subscribe(() => updateAll());
+  
+  // Bind events
+  container.querySelectorAll('[data-click="$goHome"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $goHome();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$goAbout"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $goAbout();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$goContact"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $goContact();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$increment"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $increment();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$decrement"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $decrement();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$reset"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $reset();
+    });
+  });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  PrimitiveminimalComponent();
+  console.log('🔮 Ultra-Minimal MTM Component loaded:', pageMetadata);
+});</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+// simple-counter.mtm - Simplified version for testing
+export default function SimpleCounter() {
+  $count! = 0
+
+  $increment = () => {
+    $count++
+  }
+
+  $decrement = () => {
+    $count--
+  }
+
+  <template>
+    <div class="counter">
+      <h3>Simple Counter</h3>
+      <div class="counter-display">
+        <button click={$decrement}>-</button>
+        <span class="count">{$count}</span>
+        <button click={$increment}>+</button>
+      </div>
+      <p>This works like PHP + Next.js - pure HTML/JS!</p>
+    </div>
+  </template>
+}

@@ -1,0 +1,100 @@
+{
+  "config": {
+    "configFile": "D:\\Project\\ideas\\examples\\tests\\production-build.config.js",
+    "rootDir": "D:/Project/ideas/examples/tests/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "test-results/production-build-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/production-build-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "chromium-production",
+        "name": "chromium-production",
+        "testDir": "D:/Project/ideas/examples/tests/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "production-build.spec.js"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "firefox-production",
+        "name": "firefox-production",
+        "testDir": "D:/Project/ideas/examples/tests/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "production-build.spec.js"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "webkit-production",
+        "name": "webkit-production",
+        "testDir": "D:/Project/ideas/examples/tests/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "production-build.spec.js"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
+      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+    }
+  ],
+  "stats": {
+    "startTime": "2025-07-24T13:24:31.708Z",
+    "duration": 9.161000000000058,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

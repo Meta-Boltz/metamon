@@ -3,6 +3,8 @@
  * Implements code splitting, lazy loading, and intelligent preloading
  */
 
+import { withRetry, createRetryController, createRetryQueue } from '../../../packages/core/src/utils/chunk-retry.js';
+
 export class CodeSplitter {
   constructor(options = {}) {
     this.options = {
@@ -12,6 +14,14 @@ export class CodeSplitter {
       chunkTimeout: 10000, // Chunk load timeout (ms)
       enablePreloading: true,
       enablePrefetching: true,
+      safeAssignment: true, // Use safe property assignment
+      errorHandling: "strict", // How to handle loading errors: "strict" or "tolerant"
+      defaultTransforms: null, // Default transformations to apply to all modules
+      retryStrategy: "exponential", // Retry strategy: "exponential", "linear", or "none"
+      maxRetries: 3, // Maximum number of retry attempts
+      retryBaseDelay: 1000, // Base delay for retry (ms)
+      retryMaxDelay: 30000, // Maximum delay for retry (ms)
+      retryJitter: 0.1, // Jitter factor for randomizing retry delays (0-1)
       ...options
     };
 
@@ -27,8 +37,25 @@ export class CodeSplitter {
       successfulLoads: 0,
       failedLoads: 0,
       averageLoadTime: 0,
-      cacheHits: 0
+      cacheHits: 0,
+      retryAttempts: 0,
+      retrySuccesses: 0
     };
+
+    // Create retry queue for chunk loading
+    this.retryQueue = createRetryQueue({
+      concurrency: this.options.maxConcurrentLoads,
+      maxSize: 100,
+      maxRetries: this.options.maxRetries,
+      strategy: this.options.retryStrategy,
+      baseDelay: this.options.retryBaseDelay,
+      maxDelay: this.options.retryMaxDelay,
+      jitter: this.options.retryJitter,
+      onRetry: (count, error, delay, item) => {
+        this.loadStats.retryAttempts++;
+        console.log(`⚠️ Retry queue: Retrying chunk ${item?.chunkId || 'unknown'} (attempt ${count}/${this.options.maxRetries})`);
+      }
+    });
 
     this.init();
   }
@@ -68,6 +95,8 @@ export class CodeSplitter {
   async loadChunk(importFn, options = {}) {
     const chunkId = this.getChunkId(importFn);
     const startTime = performance.now();
+    // Try to extract the file path from the import function
+    const filePath = this.extractFilePath(importFn);
 
     try {
       // Check cache first
@@ -103,8 +132,90 @@ export class CodeSplitter {
       this.loadingChunks.delete(chunkId);
       this.updateLoadStats(false, performance.now() - startTime);
 
-      console.error(`❌ Failed to load chunk ${chunkId}:`, error);
-      throw new ChunkLoadError(`Failed to load chunk ${chunkId}`, error, chunkId);
+      // Create context for error classification
+      const context = {
+        chunkId,
+        filePath,
+        options: { ...options, chunkTimeout: undefined }, // Exclude large objects
+        timeout: options.chunkTimeout || this.options.chunkTimeout,
+        url: this.getChunkUrl(importFn, chunkId),
+        loadTime: performance.now() - startTime,
+        browserInfo: typeof navigator !== 'undefined' ? {
+          userAgent: navigator.userAgent,
+          platform: navigator.platform
+        } : 'not-browser'
+      };
+
+      // Classify the error
+      const classifiedError = classifyChunkError(error, context);
+
+      // Log with detailed information
+      console.error(`❌ Failed to load chunk ${chunkId} [${classifiedError.phase}]:`, classifiedError);
+
+      // Create a detailed error report for logging or telemetry
+      const errorReport = createErrorReport(classifiedError);
+
+      // Handle based on error handling strategy
+      if (this.options.errorHandling === 'tolerant') {
+        if (classifiedError instanceof ChunkPropertyError) {
+          console.warn('Continuing despite property descriptor error due to tolerant error handling');
+
+          try {
+            // Try to import the safe assignment utility directly
+            const { safeAssign } = await import('../../../packages/core/src/utils/safe-assign.js');
+
+            // Attempt to recover the module using our safe assignment utility
+            const recoveredModule = await importFn().catch(() => null);
+
+            if (recoveredModule) {
+              console.log(`🔄 Attempting to recover chunk ${chunkId} using safe assignment`);
+
+              // Return a wrapped module that uses safe assignment for all property access
+              return new Proxy(recoveredModule, {
+                set(target, prop, value) {
+                  const result = safeAssign(target, prop, value);
+                  return true; // Proxy set handlers must return true on success
+                },
+                get(target, prop) {
+                  if (prop === '__recovered') return true;
+                  if (prop === '__diagnostics') return errorReport;
+                  return target[prop];
+                }
+              });
+            }
+          } catch (recoveryError) {
+            console.warn(`Recovery attempt failed for chunk ${chunkId}:`, recoveryError);
+          }
+
+          // Return a minimal valid module to prevent complete failure
+          return {
+            default: () => {
+              console.warn(`Using fallback for chunk ${chunkId} due to loading error`);
+              return null;
+            },
+            __loadError: classifiedError,
+            __diagnostics: errorReport,
+            __recovered: false,
+            __errorMessage: classifiedError.getUserMessage()
+          };
+        }
+      }
+
+      // For strict error handling or non-property descriptor errors
+      throw classifiedError;
+    }
+  }
+
+  /**
+   * Extract file path from import function
+   */
+  extractFilePath(importFn) {
+    try {
+      const fnString = importFn.toString();
+      const match = fnString.match(/import\(['"`]([^'"`]+)['"`]\)/);
+      return match ? match[1] : 'unknown';
+    } catch (e) {
+      return 'unknown';
     }
   }
 
@@ -112,38 +223,271 @@ export class CodeSplitter {
    * Perform the actual chunk loading with timeout and retry
    */
   async performChunkLoad(importFn, options, chunkId) {
-    const { chunkTimeout = this.options.chunkTimeout } = options;
+    const {
+      chunkTimeout = this.options.chunkTimeout,
+      maxRetries = 3,
+      retryStrategy = this.options.retryStrategy || 'exponential'
+    } = options;
+
     let retryCount = 0;
-    const maxRetries = 3;
+    const filePath = this.extractFilePath(importFn);
+
+    // Import the safe assignment utilities
+    let safeAssignUtil, safeAssignAllUtil;
+    try {
+      // Dynamic import to avoid circular dependencies
+      console.log('🔧 Importing safe assignment utilities...');
+      const utils = await import('../../../packages/core/src/utils/safe-assign.js');
+      safeAssignUtil = utils.safeAssign;
+      safeAssignAllUtil = utils.safeAssignAll;
+      console.log('✅ Safe assignment utilities imported successfully');
+      console.log('safeAssign function:', typeof safeAssignUtil);
+    } catch (error) {
+      console.warn('Safe assignment utility not available, falling back to safe implementation:', error);
+      // Fallback implementation that handles getter-only properties
+      safeAssignUtil = (obj, prop, value) => {
+        if (obj == null) {
+          return obj;
+        }
+
+        try {
+          // Check if property has getter but no setter
+          const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+
+          if (descriptor && descriptor.get && !descriptor.set) {
+            console.log(`Property ${prop} has getter but no setter, creating new object`);
+            // Create a new object with the desired property
+            const newObj = Object.create(Object.getPrototypeOf(obj));
+
+            // Copy existing properties
+            Object.getOwnPropertyNames(obj).forEach(key => {
+              if (key !== prop) {
+                try {
+                  const keyDescriptor = Object.getOwnPropertyDescriptor(obj, key);
+                  if (keyDescriptor) {
+                    Object.defineProperty(newObj, key, keyDescriptor);
+                  }
+                } catch (e) {
+                  // Skip properties that can't be copied
+                }
+              }
+            });
+
+            // Add our property
+            newObj[prop] = value;
+            return newObj;
+          } else {
+            // Normal assignment
+            obj[prop] = value;
+            return obj;
+          }
+        } catch (e) {
+          console.warn(`Failed to assign property ${prop}, creating new object:`, e);
+          // Create a completely new object as last resort
+          const newObj = { ...obj };
+          newObj[prop] = value;
+          return newObj;
+        }
+      };
+      safeAssignAllUtil = (obj, props) => {
+        let result = obj;
+        for (const [key, value] of Object.entries(props)) {
+          result = safeAssignUtil(result, key, value);
+        }
+        return result;
+      };
+    }
+
+    // Create an AbortController for timeout handling
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    // Configure backoff options based on retry strategy
+    const backoffOptions = {
+      baseDelay: 1000,
+      maxDelay: 30000,
+      factor: retryStrategy === 'exponential' ? 2 : 1,
+      jitter: 0.1
+    };
 
     while (retryCount <= maxRetries) {
       try {
-        const loadPromise = importFn();
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Chunk load timeout')), chunkTimeout);
-        });
+        // Set up timeout
+        const timeoutId = setTimeout(() => {
+          controller.abort('timeout');
+        }, chunkTimeout);
 
-        const module = await Promise.race([loadPromise, timeoutPromise]);
+        // Start loading with abort signal if supported
+        let module;
+        try {
+          // Modern browsers support passing signal to dynamic import
+          if (typeof AbortController !== 'undefined' && 'signal' in AbortController.prototype) {
+            // This is a theoretical API that might be supported in the future
+            // Currently, dynamic imports can't be aborted directly
+            module = await importFn();
+          } else {
+            module = await importFn();
+          }
+        } catch (importError) {
+          // Check if this was an abort
+          if (signal.aborted) {
+            throw new Error('Chunk load timeout');
+          }
+
+          // Check if this is a property descriptor error that we can fix
+          if (importError.message && importError.message.includes('Cannot set property') && importError.message.includes('which has only a getter')) {
+            console.warn('🔧 Attempting to recover from property descriptor error using safe assignment');
+
+            try {
+              // Try to load the module again with a wrapper that prevents property assignment
+              const moduleFactory = async () => {
+                // Create a safe import wrapper
+                const originalImport = importFn;
+                return await originalImport();
+              };
+
+              module = await moduleFactory();
+
+              // If we got here, the module loaded but might have getter-only properties
+              // Apply safe assignment to ensure we can add our metadata
+              if (module && typeof module === 'object') {
+                console.log('🔧 Applying safe assignment to recovered module...');
+                console.log('safeAssignUtil type:', typeof safeAssignUtil);
+                console.log('Module before assignment:', module);
+                const originalModule = module;
+                module = safeAssignUtil(module, 'data', {
+                  chunkId,
+                  loaded: true,
+                  timestamp: Date.now(),
+                  recoveredFromError: true
+                });
+                console.log('✅ Safe assignment completed, module changed:', module !== originalModule);
+                console.log('Module after assignment:', module);
+              }
+
+              console.log('✅ Successfully recovered from property descriptor error');
+            } catch (recoveryError) {
+              console.error('❌ Failed to recover from property descriptor error:', recoveryError);
+              throw importError; // Throw the original error
+            }
+          } else {
+            throw importError;
+          }
+        } finally {
+          clearTimeout(timeoutId);
+        }
+
+        // Process the module with safe property assignment
+        if (module) {
+          // Always try to add chunk metadata using safe assignment
+          try {
+            console.log('🔧 Adding chunk metadata using safe assignment...');
+            const originalModule = module;
+            module = safeAssignUtil(module, 'data', {
+              chunkId,
+              loaded: true,
+              timestamp: Date.now(),
+              loadTime: performance.now() - startTime
+            });
+            console.log('✅ Chunk metadata added successfully, module changed:', module !== originalModule);
+          } catch (metadataError) {
+            console.warn('⚠️ Could not add chunk metadata:', metadataError);
+            // Continue without metadata - this is not critical
+          }
+
+          // Apply any necessary transformations to the module using safe assignment
+          if (options.moduleTransforms) {
+            // Use safeAssignAll for bulk property assignments
+            module = safeAssignAllUtil(module, options.moduleTransforms);
+          }
+
+          // Apply any default transformations needed for all modules
+          if (this.options.defaultTransforms) {
+            module = safeAssignAllUtil(module, this.options.defaultTransforms);
+          }
+
+          // Handle special MTM module properties that might have getter-only issues
+          if (module.__mtm && typeof module.__mtm === 'object') {
+            // Ensure MTM metadata can be modified safely
+            module = safeAssignUtil(module, '__mtm', {
+              ...module.__mtm,
+              loadedBy: 'chunk-loader',
+              loadTime: new Date().toISOString()
+            });
+          } else {
+            // Create MTM metadata if it doesn't exist
+            try {
+              module = safeAssignUtil(module, '__mtm', {
+                loadedBy: 'chunk-loader',
+                loadTime: new Date().toISOString(),
+                chunkId,
+                framework: 'unknown'
+              });
+            } catch (mtmError) {
+              console.warn('⚠️ Could not add MTM metadata:', mtmError);
+            }
+          }
+        }
 
         // Validate the loaded module
         if (!module || (!module.default && !module.render && !module.renderPage)) {
-          throw new Error('Invalid module: missing default export or render function');
+          throw new ChunkInvalidModuleError(
+            'Invalid module structure',
+            {
+              chunkId,
+              filePath,
+              expectedExports: ['default', 'render', 'renderPage'],
+              actualExports: module ? Object.keys(module) : []
+            }
+          );
         }
 
         return module;
 
       } catch (error) {
-        retryCount++;
-        if (retryCount > maxRetries) {
-          throw error;
+        // Create context for error classification
+        const context = {
+          chunkId,
+          filePath,
+          retryCount,
+          maxRetries,
+          timeout: chunkTimeout
+        };
+
+        // Classify the error
+        const classifiedError = classifyChunkError(error, context);
+
+        // Check if we should retry
+        const shouldRetry = retryCount < maxRetries && isRetryableError(classifiedError);
+
+        if (!shouldRetry) {
+          throw classifiedError;
         }
 
-        // Exponential backoff for retries
-        const delay = Math.min(1000 * Math.pow(2, retryCount - 1), 5000);
-        console.warn(`⚠️ Chunk load failed, retrying in ${delay}ms (attempt ${retryCount}/${maxRetries})`);
+        retryCount++;
+
+        // Calculate backoff delay based on retry strategy
+        let delay;
+        if (retryStrategy === 'exponential') {
+          delay = calculateBackoff(retryCount, backoffOptions);
+        } else if (retryStrategy === 'linear') {
+          delay = backoffOptions.baseDelay * retryCount;
+        } else {
+          delay = backoffOptions.baseDelay;
+        }
+
+        console.warn(
+          `⚠️ Chunk load failed [${classifiedError.phase}], retrying in ${delay}ms ` +
+          `(attempt ${retryCount}/${maxRetries}): ${classifiedError.message}`
+        );
+
+        // Wait before retrying
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
+
+    // This should never be reached due to the throw in the catch block
+    throw new Error(`Failed to load chunk ${chunkId} after ${maxRetries} retries`);
   }
 
   /**
@@ -463,17 +807,43 @@ export class CodeSplitter {
 }
 
 /**
- * Custom error class for chunk loading failures
+ * Import and re-export error classes from the chunk-error module
  */
-export class ChunkLoadError extends Error {
-  constructor(message, originalError, chunkId) {
-    super(message);
-    this.name = 'ChunkLoadError';
-    this.originalError = originalError;
-    this.chunkId = chunkId;
-    this.timestamp = new Date().toISOString();
-  }
-}
+import {
+  ChunkError,
+  ChunkNetworkError,
+  ChunkParseError,
+  ChunkExecutionError,
+  ChunkPropertyError,
+  ChunkTimeoutError,
+  ChunkInvalidModuleError,
+  ChunkAbortError,
+  classifyChunkError,
+  isRetryableError,
+  calculateBackoff,
+  collectDiagnostics,
+  createErrorReport
+} from '../../../packages/core/src/utils/chunk-error.js';
+
+// Re-export all error classes
+export {
+  ChunkError,
+  ChunkNetworkError,
+  ChunkParseError,
+  ChunkExecutionError,
+  ChunkPropertyError,
+  ChunkTimeoutError,
+  ChunkInvalidModuleError,
+  ChunkAbortError,
+  classifyChunkError,
+  isRetryableError,
+  calculateBackoff,
+  collectDiagnostics,
+  createErrorReport
+};
+
+// For backward compatibility
+export const ChunkLoadError = ChunkError;
 
 /**
  * Create a code splitter instance

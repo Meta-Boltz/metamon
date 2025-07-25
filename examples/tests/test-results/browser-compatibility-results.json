@@ -1,0 +1,1149 @@
+{
+  "config": {
+    "configFile": "D:\\Project\\ideas\\examples\\tests\\browser-compatibility.config.js",
+    "rootDir": "D:/Project/ideas/examples/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 8
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "test-results/browser-compatibility"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/browser-compatibility-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chrome-latest",
+        "name": "chrome-latest",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chrome-stable",
+        "name": "chrome-stable",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "firefox-latest",
+        "name": "firefox-latest",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "safari-webkit",
+        "name": "safari-webkit",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "mobile-chrome",
+        "name": "mobile-chrome",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "mobile-safari",
+        "name": "mobile-safari",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "edge",
+        "name": "edge",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/ideas/examples/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chrome-legacy",
+        "name": "chrome-legacy",
+        "testDir": "D:/Project/ideas/examples/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/chunk-loading-browser-compatibility.spec.js"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 8,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "chunk-loading-browser-compatibility.spec.js",
+      "file": "chunk-loading-browser-compatibility.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Chunk Loading Browser Compatibility",
+          "file": "chunk-loading-browser-compatibility.spec.js",
+          "line": 11,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Browser-Specific Edge Cases",
+              "file": "chunk-loading-browser-compatibility.spec.js",
+              "line": 212,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-latest",
+                      "projectName": "chrome-latest",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 1033,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            },
+                            {
+                              "text": "Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.514Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-3d01db82cb0783b9f8e0",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-latest",
+                      "projectName": "chrome-latest",
+                      "results": [
+                        {
+                          "workerIndex": 1,
+                          "parallelIndex": 1,
+                          "status": "passed",
+                          "duration": 1079,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            },
+                            {
+                              "text": "Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.493Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-f37f3d450de195de4b0e",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-latest",
+                      "projectName": "chrome-latest",
+                      "results": [
+                        {
+                          "workerIndex": 2,
+                          "parallelIndex": 2,
+                          "status": "passed",
+                          "duration": 1095,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            },
+                            {
+                              "text": "Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.511Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-a81ee6105d7a3d025219",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-stable",
+                      "projectName": "chrome-stable",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 3,
+                          "status": "passed",
+                          "duration": 2461,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.517Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-8e8ae181b1943d55f85f",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-stable",
+                      "projectName": "chrome-stable",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 4,
+                          "status": "passed",
+                          "duration": 2432,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.545Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-9fb7db69f1358f70a5b6",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-stable",
+                      "projectName": "chrome-stable",
+                      "results": [
+                        {
+                          "workerIndex": 5,
+                          "parallelIndex": 5,
+                          "status": "passed",
+                          "duration": 2436,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.542Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-01d233dfddbbd411e311",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "firefox-latest",
+                      "projectName": "firefox-latest",
+                      "results": [
+                        {
+                          "workerIndex": 6,
+                          "parallelIndex": 6,
+                          "status": "passed",
+                          "duration": 4408,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.547Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-2a55778cd47f3881c21a",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "firefox-latest",
+                      "projectName": "firefox-latest",
+                      "results": [
+                        {
+                          "workerIndex": 7,
+                          "parallelIndex": 7,
+                          "status": "passed",
+                          "duration": 4286,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:13:58.584Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-8665afa1656320e3eda8",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "firefox-latest",
+                      "projectName": "firefox-latest",
+                      "results": [
+                        {
+                          "workerIndex": 8,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 4530,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:01.378Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-36585efbde6d0d1ef086",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "safari-webkit",
+                      "projectName": "safari-webkit",
+                      "results": [
+                        {
+                          "workerIndex": 10,
+                          "parallelIndex": 1,
+                          "status": "passed",
+                          "duration": 1376,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: Can't find variable: ChunkError\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:01.498Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-50ee204ff2e6f1dc69be",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "safari-webkit",
+                      "projectName": "safari-webkit",
+                      "results": [
+                        {
+                          "workerIndex": 9,
+                          "parallelIndex": 2,
+                          "status": "passed",
+                          "duration": 1451,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: Can't find variable: ChunkError\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:01.440Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-b9ea5466a65bdb8c39c5",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "safari-webkit",
+                      "projectName": "safari-webkit",
+                      "results": [
+                        {
+                          "workerIndex": 13,
+                          "parallelIndex": 4,
+                          "status": "passed",
+                          "duration": 1811,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: Can't find variable: ChunkError\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:03.451Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-01d0dfde28c55a0c10f6",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "mobile-chrome",
+                      "projectName": "mobile-chrome",
+                      "results": [
+                        {
+                          "workerIndex": 11,
+                          "parallelIndex": 3,
+                          "status": "passed",
+                          "duration": 2204,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:03.362Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-cd09a60d4375829a88a8",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "mobile-chrome",
+                      "projectName": "mobile-chrome",
+                      "results": [
+                        {
+                          "workerIndex": 12,
+                          "parallelIndex": 5,
+                          "status": "passed",
+                          "duration": 2183,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:03.390Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-feca88812131d9756b90",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "mobile-chrome",
+                      "projectName": "mobile-chrome",
+                      "results": [
+                        {
+                          "workerIndex": 14,
+                          "parallelIndex": 1,
+                          "status": "passed",
+                          "duration": 2113,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:04.620Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-b867ea93132901f30f70",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "mobile-safari",
+                      "projectName": "mobile-safari",
+                      "results": [
+                        {
+                          "workerIndex": 15,
+                          "parallelIndex": 2,
+                          "status": "passed",
+                          "duration": 1200,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: Can't find variable: ChunkError\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:04.680Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-7073c39e567f110a41f4",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "mobile-safari",
+                      "projectName": "mobile-safari",
+                      "results": [
+                        {
+                          "workerIndex": 16,
+                          "parallelIndex": 7,
+                          "status": "passed",
+                          "duration": 1427,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: Can't find variable: ChunkError\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:06.500Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-30f56f1dc3d652106128",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "mobile-safari",
+                      "projectName": "mobile-safari",
+                      "results": [
+                        {
+                          "workerIndex": 21,
+                          "parallelIndex": 6,
+                          "status": "passed",
+                          "duration": 1537,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: Can't find variable: ChunkError\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:07.550Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-82ffbe807322b7a43814",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "edge",
+                      "projectName": "edge",
+                      "results": [
+                        {
+                          "workerIndex": 17,
+                          "parallelIndex": 4,
+                          "status": "passed",
+                          "duration": 1316,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            },
+                            {
+                              "text": "Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:06.581Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-897bbf926076057b8c25",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "edge",
+                      "projectName": "edge",
+                      "results": [
+                        {
+                          "workerIndex": 19,
+                          "parallelIndex": 3,
+                          "status": "passed",
+                          "duration": 1153,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            },
+                            {
+                              "text": "Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:07.413Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-db92aa0a9ad73bd71155",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "edge",
+                      "projectName": "edge",
+                      "results": [
+                        {
+                          "workerIndex": 18,
+                          "parallelIndex": 5,
+                          "status": "passed",
+                          "duration": 1220,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            },
+                            {
+                              "text": "Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:07.418Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-fe1108a63d69f036756c",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                },
+                {
+                  "title": "should handle Object.defineProperty differences",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-legacy",
+                      "projectName": "chrome-legacy",
+                      "results": [
+                        {
+                          "workerIndex": 20,
+                          "parallelIndex": 2,
+                          "status": "passed",
+                          "duration": 1163,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:07.430Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-d4fa1ae9e0b58ab857a9",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 213,
+                  "column": 5
+                },
+                {
+                  "title": "should handle frozen objects correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-legacy",
+                      "projectName": "chrome-legacy",
+                      "results": [
+                        {
+                          "workerIndex": 22,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 969,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:09.189Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-926b72ece628a8fa3f6f",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 278,
+                  "column": 5
+                },
+                {
+                  "title": "should handle prototype chain correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 60000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chrome-legacy",
+                      "projectName": "chrome-legacy",
+                      "results": [
+                        {
+                          "workerIndex": 23,
+                          "parallelIndex": 1,
+                          "status": "passed",
+                          "duration": 869,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [
+                            {
+                              "text": "Page error: ChunkError is not defined\n"
+                            }
+                          ],
+                          "retry": 0,
+                          "startTime": "2025-07-24T13:14:09.390Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "ac503b90a8dd8c1eaa7e-fca66589d5c8f6de7838",
+                  "file": "chunk-loading-browser-compatibility.spec.js",
+                  "line": 319,
+                  "column": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-07-24T13:13:55.289Z",
+    "duration": 15753.105,
+    "expected": 24,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

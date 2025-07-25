@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTM Client-Side Routing Demo</title>
+    <meta name="description" content="Real client-side routing with URL updates and browser history">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .routing-app { max-width: 100%; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .header h1 { color: #2c3e50; margin-bottom: 0.5rem; }
+        
+        .page-info {
+            color: #666;
+            font-size: 0.9rem;
+            background: #e8f4fd;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #bee5eb;
+            margin-bottom: 0.5rem;
+        }
+        
+        .url-info {
+            color: #666;
+            font-size: 0.9rem;
+            background: #fff3cd;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status {
+            color: #666;
+            font-style: italic;
+            background: #f8f9ff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .nav-btn:hover { background: #5a6fd8; }
+        
+        .current-page {
+            margin-left: auto;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .content { min-height: 300px; }
+        
+        .content h2 {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .description {
+            color: #666;
+            font-style: italic;
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .routing-info, .routing-details, .url-test {
+            background: #f0f8ff;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #b3d9ff;
+            margin: 1rem 0;
+        }
+        
+        .routing-info h4, .routing-details h4, .url-test h4 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .routing-info ul, .routing-details ul, .url-test ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .routing-info li, .routing-details li, .url-test li {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #e6f3ff;
+        }
+        
+        .counter-section {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+            margin: 1rem 0;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-display button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.2rem;
+            min-width: 50px;
+            transition: background 0.2s;
+        }
+        
+        .counter-display button:hover { background: #5a6fd8; }
+        
+        .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 80px;
+            text-align: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #667eea;
+        }
+        
+        .reset-btn { background: #e74c3c !important; }
+        .reset-btn:hover { background: #c0392b !important; }
+        
+        .home-content, .about-content, .contact-content {
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .contact-info {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            margin: 1rem 0;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="routing-app">
+<header class="header">
+<h1>🔮 MTM Client-Side Routing</h1>
+<p class="page-info">Route: / | Title: MTM Client-Side Routing Demo</p>
+<p class="status"><span data-bind="$message">Loading...</span></p>
+<p class="url-info">Current URL: <span id="current-url">Loading...</span></p>
+</header>
+<nav class="navigation">
+<button data-click="$goHome" class="nav-btn">Home (/)</button>
+<button data-click="$goAbout" class="nav-btn">About (/about)</button>
+<button data-click="$goContact" class="nav-btn">Contact (/contact)</button>
+<span class="current-page">Current: <span data-bind="$currentPage">Loading...</span></span>
+</nav>
+<main class="content">
+<h2>Page: <span data-bind="$currentPage">Loading...</span></h2>
+<p class="description">Real client-side routing with URL updates and browser history</p>
+<div data-if="$currentPage === 'home'" style="display: none;">
+<section class="home-content">
+<h3>🏠 Home Page</h3>
+<p>Welcome to real client-side routing with URL updates!</p>
+<div class="routing-info">
+<h4>🔗 Routing Features:</h4>
+<ul>
+<li>✅ URL updates when navigating</li>
+<li>✅ Browser back/forward buttons work</li>
+<li>✅ Direct URL access works</li>
+<li>✅ Document title updates</li>
+<li>✅ History API integration</li>
+</ul>
+</div>
+<div class="counter-section">
+<h4>Interactive Counter</h4>
+<div class="counter-display">
+<button data-click="$decrement">-</button>
+<span class="count"><span data-bind="$counter">Loading...</span></span>
+<button data-click="$increment">+</button>
+<button data-click="$reset" class="reset-btn">Reset</button>
+</div>
+</div>
+</section>
+</div>
+<div data-if="$currentPage === 'about'" style="display: none;">
+<section class="about-content">
+<h3>ℹ️ About Real Client-Side Routing</h3>
+<p>This is a real single-page application with proper routing!</p>
+<div class="routing-details">
+<h4>🚀 Technical Implementation:</h4>
+<ul>
+<li>✅ Uses History API (pushState/popState)</li>
+<li>✅ Updates browser URL bar</li>
+<li>✅ Handles browser navigation</li>
+<li>✅ Maintains application state</li>
+<li>✅ SEO-friendly URLs</li>
+</ul>
+</div>
+<p>Current counter value: <span data-bind="$counter">Loading...</span></p>
+<p>Try using browser back/forward buttons!</p>
+</section>
+</div>
+<div data-if="$currentPage === 'contact'" style="display: none;">
+<section class="contact-content">
+<h3>📧 Contact Information</h3>
+<p>Get in touch with the MTM team!</p>
+<div class="contact-info">
+<p>Email: hello@mtm-framework.dev</p>
+<p>GitHub: github.com/mtm-framework</p>
+<p>Current URL: <span id="contact-url">Loading...</span></p>
+<p>Counter state: <span data-bind="$counter">Loading...</span></p>
+</div>
+<div class="url-test">
+<h4>🔗 URL Testing:</h4>
+<p>Try these actions:</p>
+<ul>
+<li>Copy the current URL and open in new tab</li>
+<li>Use browser back/forward buttons</li>
+<li>Refresh the page</li>
+<li>Bookmark this page</li>
+</ul>
+</div>
+</section>
+</div>
+</main>
+<footer class="footer">
+<p>MTM Framework - Real Client-Side Routing Demo</p>
+<p>State: counter=<span data-bind="$counter">Loading...</span>, page=<span data-bind="$currentPage">Loading...</span></p>
+<p>URL updates automatically with navigation!</p>
+</footer>
+</div></div>
+    <script>
+// MTM Client-Side Routing System
+const MTMRouter = {
+  _signals: new Map(),
+  _subscribers: new Map(),
+  
+  create(key, initialValue) {
+    if (!this._signals.has(key)) {
+      this._signals.set(key, initialValue);
+      this._subscribers.set(key, new Set());
+    }
+    
+    return {
+      get value() { return MTMRouter._signals.get(key); },
+      set value(newValue) {
+        MTMRouter._signals.set(key, newValue);
+        MTMRouter._notifySubscribers(key, newValue);
+      },
+      subscribe(callback) { MTMRouter._subscribers.get(key).add(callback); }
+    };
+  },
+  
+  _notifySubscribers(key, value) {
+    if (this._subscribers.has(key)) {
+      this._subscribers.get(key).forEach(callback => callback(value));
+    }
+  },
+  
+  emit(event, data) {
+    console.log('MTM Router Event:', event, data);
+    window.dispatchEvent(new CustomEvent('mtm-' + event, { detail: data }));
+  },
+  
+  // URL update utilities
+  updateURL() {
+    const urlElements = document.querySelectorAll('#current-url, #contact-url');
+    urlElements.forEach(el => {
+      if (el) el.textContent = window.location.pathname;
+    });
+  }
+};
+
+window.signal = MTMRouter;
+
+// Page metadata
+const pageMetadata = {
+  "route": "/",
+  "title": "MTM Client-Side Routing Demo",
+  "description": "Real client-side routing with URL updates and browser history"
+};
+
+// Router App: PrimitiveroutingApp
+function PrimitiveroutingApp() {
+  // Variables
+  const $currentPage = MTMRouter.create('currentPage', 'home');
+  const $counter = MTMRouter.create('counter', 0);
+  const $message = MTMRouter.create('message', 'Welcome to Real Client-Side Routing!');
+
+  // Functions  
+  const $navigateTo = () => {
+    $currentPage.value = page
+$message.value = `Navigated to ${page} page`
+const url = page === 'home' ? '/' : `/${page}`
+window.history.pushState({ page }, '', url)
+document.title = `${page.charAt(0).toUpperCase() + page.slice(1)} - MTM Routing Demo`
+signal.emit('route-changed', { page, url })
+  };
+
+  const $goHome = () => {
+    $navigateTo('home')
+  };
+
+  const $goAbout = () => {
+    $navigateTo('about')
+  };
+
+  const $goContact = () => {
+    $navigateTo('contact')
+  };
+
+  const $handlePopState = (event) => {
+    const page = event.state?.page || 'home'
+$currentPage.value = page
+$message.value = `Browser navigation to ${page} page`
+signal.emit('popstate-navigation', { page })
+  };
+
+  const $initializeRouting = () => {
+    const path = window.location.pathname
+let page = 'home'
+if (path === '/about') page = 'about'
+else if (path === '/contact') page = 'contact'
+$currentPage.value = page
+$message.value = `Initialized on ${page} page`
+  };
+
+  const $increment = () => {
+    $counter.value++
+$message.value = `Counter incremented to ${$counter.value} on ${$currentPage.value} page`
+signal.emit('counter-updated', { value: $counter.value, page: $currentPage.value })
+  };
+
+  const $decrement = () => {
+    $counter.value--
+$message.value = `Counter decremented to ${$counter.value} on ${$currentPage.value} page`
+signal.emit('counter-updated', { value: $counter.value, page: $currentPage.value })
+  };
+
+  const $reset = () => {
+    $counter.value = 0
+$message.value = `Counter reset on ${$currentPage.value} page`
+signal.emit('counter-reset', { page: $currentPage.value })
+  };
+
+  // DOM Management
+  const container = document.getElementById('app');
+  
+  const updateAll = () => {
+    // Update data-bind elements
+    container.querySelectorAll('[data-bind="$currentPage"]').forEach(el => {
+      el.textContent = $currentPage.value;
+    });
+    container.querySelectorAll('[data-bind="$counter"]').forEach(el => {
+      el.textContent = $counter.value;
+    });
+    container.querySelectorAll('[data-bind="$message"]').forEach(el => {
+      el.textContent = $message.value;
+    });
+    
+    // Update URL displays
+    MTMRouter.updateURL();
+    
+    // Update conditional rendering
+    container.querySelectorAll('[data-if]').forEach(el => {
+      const condition = el.getAttribute('data-if');
+      let shouldShow = false;
+      
+      try {
+        let evalStr = condition;
+        evalStr = evalStr.replace(/\$currentPage/g, '$currentPage.value');
+        evalStr = evalStr.replace(/\$counter/g, '$counter.value');
+        evalStr = evalStr.replace(/\$message/g, '$message.value');
+        shouldShow = eval(evalStr);
+      } catch (e) {
+        console.warn('Condition failed:', condition, e);
+      }
+      
+      el.style.display = shouldShow ? 'block' : 'none';
+    });
+  };
+  
+  // Initialize routing
+  const initializeRouting = () => {
+    // Set up popstate handler for browser back/forward
+    window.addEventListener('popstate', (event) => {
+      const path = window.location.pathname;
+      let page = 'home';
+      
+      if (path === '/about') page = 'about';
+      else if (path === '/contact') page = 'contact';
+      
+      $currentPage.value = page;
+      $message.value = `Browser navigation to ${page} page`;
+      updateAll();
+    });
+    
+    // Initialize based on current URL
+    const path = window.location.pathname;
+    let page = 'home';
+    
+    if (path === '/about') page = 'about';
+    else if (path === '/contact') page = 'contact';
+    
+    $currentPage.value = page;
+    $message.value = `Initialized on ${page} page from URL`;
+  };
+  
+  // Initial update
+  updateAll();
+  initializeRouting();
+  
+  // Subscribe to changes
+  $currentPage.subscribe(() => updateAll());
+  $counter.subscribe(() => updateAll());
+  $message.subscribe(() => updateAll());
+  
+  // Bind events
+  container.querySelectorAll('[data-click="$navigateTo"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $navigateTo();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$goHome"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $goHome();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$goAbout"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $goAbout();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$goContact"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $goContact();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$handlePopState"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $handlePopState();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$initializeRouting"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $initializeRouting();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$increment"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $increment();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$decrement"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $decrement();
+    });
+  });
+
+  container.querySelectorAll('[data-click="$reset"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      $reset();
+    });
+  });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  PrimitiveroutingApp();
+  console.log('🔮 MTM Router App loaded with real client-side routing!');
+  console.log('📍 Current URL:', window.location.pathname);
+  console.log('📄 Page metadata:', pageMetadata);
+});</script>
+</body>
+</html>

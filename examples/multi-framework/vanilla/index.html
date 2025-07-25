@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla JavaScript Chunk Loading Examples - MTM Framework</title>
+    <meta name="description" content="Comprehensive Vanilla JavaScript chunk loading examples demonstrating safe property assignment and error-free dynamic imports.">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟨</text></svg>">
+    
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="../assets/styles/common.css">
+    
+    <!-- Vanilla JS-specific styles -->
+    <style>
+        .vanilla-container {
+            background: linear-gradient(135deg, #f7df1e 0%, #f0d000 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .vanilla-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1200px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .vanilla-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .vanilla-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vanilla-subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .vanilla-examples {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .example-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #f7df1e;
+        }
+        
+        .example-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .example-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .vanilla-component {
+            border: 2px solid #f7df1e;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fffef5;
+            margin: 15px 0;
+        }
+        
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #f0d000;
+            font-weight: 600;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #f7df1e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-indicator {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .metrics-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .vanilla-feature {
+            background: linear-gradient(45deg, #f7df1e, #f0d000);
+            color: #2c3e50;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .dom-demo {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .vanilla-btn {
+            background: #f7df1e;
+            color: #2c3e50;
+            border: 2px solid #f0d000;
+            border-radius: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .vanilla-btn:hover {
+            background: #f0d000;
+            transform: translateY(-2px);
+        }
+        
+        .vanilla-btn:active {
+            transform: translateY(0);
+        }
+        
+        .vanilla-input {
+            padding: 8px 12px;
+            border: 2px solid #f7df1e;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .vanilla-input:focus {
+            outline: none;
+            border-color: #f0d000;
+            box-shadow: 0 0 0 2px rgba(247, 223, 30, 0.2);
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .data-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .data-card h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .data-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .event-log {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .event-log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        .timestamp {
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .counter-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f0d000;
+            text-align: center;
+            margin: 15px 0;
+            padding: 20px;
+            background: #2c3e50;
+            border-radius: 8px;
+            color: #f7df1e;
+        }
+    </style>
+</head>
+<body>
+    <div class="vanilla-container">
+        <!-- Navigation -->
+        <nav id="navigation"></nav>
+        
+        <!-- Vanilla JS Header -->
+        <header class="vanilla-header">
+            <div class="vanilla-logo">🟨</div>
+            <h1 class="vanilla-title">Vanilla JavaScript Chunk Loading</h1>
+            <p class="vanilla-subtitle">Demonstrating safe chunk loading with native ES6 dynamic imports and manual DOM management</p>
+            
+            <!-- Performance Monitor -->
+            <div id="performance-monitor"></div>
+        </header>
+        
+        <!-- Vanilla JS Examples -->
+        <main class="vanilla-examples">
+            <!-- Basic Dynamic Import Example -->
+            <section class="example-card">
+                <h2 class="example-title">
+                    <span>⚡</span>
+                    Basic Dynamic Import
+                </h2>
+                <p class="example-description">
+                    Demonstrates native ES6 dynamic imports with safe property assignment.
+                    Modules are loaded dynamically without any framework dependencies.
+                </p>
+                <div id="basic-dynamic-example"></div>
+                <div class="success-indicator">
+                    ✅ Module loaded successfully using native dynamic import
+                </div>
+            </section>
+            
+            <!-- DOM Manipulation Example -->
+            <section class="example-card">
+                <h2 class="example-title">
+                    <span>🎛️</span>
+                    Manual DOM Management
+                </h2>
+                <p class="example-description">
+                    Shows manual DOM manipulation with dynamically loaded modules,
+                    including event handling and state management without frameworks.
+                </p>
+                <div id="dom-manipulation-example"></div>
+                <div class="success-indicator">
+                    ✅ DOM manipulation working seamlessly with chunk loading
+                </div>
+            </section>
+            
+            <!-- Getter-Only Property Handling -->
+            <section class="example-card">
+                <h2 class="example-title">
+                    <span>🛡️</span>
+                    Getter-Only Property Handling
+                </h2>
+                <p class="example-description">
+                    Demonstrates how our safe assignment utility handles modules with getter-only properties,
+                    preventing the original TypeError that caused chunk loading failures.
+                </p>
+                <div id="getter-property-example"></div>
+                <div class="success-indicator">
+                    ✅ Getter-only properties handled safely without errors
+                </div>
+            </section>
+            
+            <!-- Advanced State Management Example -->
+            <section class="example-card">
+                <h2 class="example-title">
+                    <span>🗂️</span>
+                    Advanced State Management
+                </h2>
+                <p class="example-description">
+                    Advanced example showcasing manual state management, event systems,
+                    and complex DOM updates with dynamically loaded modules.
+                </p>
+                <div id="state-management-example"></div>
+                <div class="success-indicator">
+                    ✅ Advanced state management working with chunk loading
+                </div>
+            </section>
+            
+            <!-- Performance Metrics -->
+            <section class="example-card">
+                <h2 class="example-title">
+                    <span>📊</span>
+                    Performance Metrics
+                </h2>
+                <p class="example-description">
+                    Real-time performance monitoring showing loading times, memory usage, and bundle sizes.
+                </p>
+                <div id="performance-metrics"></div>
+            </section>
+            
+            <!-- Source Code Viewer -->
+            <section class="example-card">
+                <h2 class="example-title">
+                    <span>📝</span>
+                    Source Code
+                </h2>
+                <p class="example-description">
+                    View the complete source code for all Vanilla JavaScript examples with syntax highlighting.
+                </p>
+                <div id="source-viewer"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { createNavigation } from '../shared/navigation.js';
+        import { createPerformanceMonitor } from '../shared/performance-monitor.js';
+        import { createSourceViewer } from '../shared/source-viewer.js';
+        import { safeChunkLoader } from '../shared/safe-chunk-loader.js';
+
+        // Initialize navigation
+        createNavigation(document.getElementById('navigation'), 'vanilla');
+        
+        // Initialize performance monitor
+        const performanceMonitor = createPerformanceMonitor();
+        document.getElementById('performance-monitor').appendChild(performanceMonitor.element);
+        
+        // Vanilla JS Component System
+        class VanillaComponentManager {
+            constructor() {
+                this.components = new Map();
+                this.eventListeners = new Map();
+            }
+            
+            async loadComponent(containerId, moduleLoader) {
+                try {
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        throw new Error(`Container ${containerId} not found`);
+                    }
+                    
+                    // Show loading state
+                    container.innerHTML = `
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            Loading component...
+                        </div>
+                    `;
+                    
+                    // Load module with safe chunk loader
+                    const module = await safeChunkLoader.loadChunk(`vanilla-${containerId}`, moduleLoader);
+                    
+                    // Create component instance
+                    const component = new module.default(container);
+                    
+                    // Store component for cleanup
+                    this.components.set(containerId, component);
+                    
+                    return component;
+                } catch (error) {
+                    console.error(`Failed to load component for ${containerId}:`, error);
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="vanilla-component">
+                                <h3>❌ Component Load Failed</h3>
+                                <p>Error: ${error.message}</p>
+                            </div>
+                        `;
+                    }
+                    throw error;
+                }
+            }
+            
+            destroyComponent(containerId) {
+                const component = this.components.get(containerId);
+                if (component && component.destroy) {
+                    component.destroy();
+                    this.components.delete(containerId);
+                }
+                
+                // Clean up event listeners
+                const listeners = this.eventListeners.get(containerId);
+                if (listeners) {
+                    listeners.forEach(({ element, event, handler }) => {
+                        element.removeEventListener(event, handler);
+                    });
+                    this.eventListeners.delete(containerId);
+                }
+            }
+            
+            addEventListeners(containerId, listeners) {
+                this.eventListeners.set(containerId, listeners);
+            }
+            
+            destroyAll() {
+                for (const containerId of this.components.keys()) {
+                    this.destroyComponent(containerId);
+                }
+            }
+        }
+        
+        const componentManager = new VanillaComponentManager();
+        
+        // Example 1: Basic Dynamic Import Component
+        class BasicDynamicComponent {
+            constructor(container) {
+                this.container = container;
+                this.loadTime = new Date().toLocaleTimeString();
+                this.componentId = Math.random().toString(36).substr(2, 9);
+                this.render();
+            }
+            
+            render() {
+                this.container.innerHTML = `
+                    <div class="vanilla-component">
+                        <h3>🎯 Basic Dynamic Component</h3>
+                        <p>This component was loaded using native ES6 dynamic imports.</p>
+                        <div class="vanilla-feature">
+                            <strong>Loaded at:</strong> ${this.loadTime}
+                        </div>
+                        <div class="vanilla-feature">
+                            <strong>Component ID:</strong> ${this.componentId}
+                        </div>
+                        <div class="vanilla-feature">
+                            <strong>Framework:</strong> Pure Vanilla JavaScript
+                        </div>
+                    </div>
+                `;
+            }
+            
+            destroy() {
+                this.container.innerHTML = '';
+            }
+        }
+        
+        componentManager.loadComponent('basic-dynamic-example', () => 
+            Promise.resolve({ default: BasicDynamicComponent })
+        );
+        
+        // Example 2: DOM Manipulation Component
+        class DOMManipulationComponent {
+            constructor(container) {
+                this.container = container;
+                this.state = {
+                    count: 0,
+                    items: [],
+                    inputValue: ''
+                };
+                this.render();
+                this.bindEvents();
+            }
+            
+            render() {
+                this.container.innerHTML = `
+                    <div class="vanilla-component">
+                        <h3>🎛️ Manual DOM Management</h3>
+                        <div class="dom-demo">
+                            <div class="counter-display">${this.state.count}</div>
+                            
+                            <div class="control-panel">
+                                <button class="vanilla-btn" data-action="increment">Increment</button>
+                                <button class="vanilla-btn" data-action="decrement">Decrement</button>
+                                <button class="vanilla-btn" data-action="reset">Reset</button>
+                            </div>
+                            
+                            <input 
+                                type="text" 
+                                class="vanilla-input" 
+                                placeholder="Enter item name..."
+                                value="${this.state.inputValue}"
+                                data-input="item-name"
+                            >
+                            
+                            <div class="control-panel">
+                                <button class="vanilla-btn" data-action="add-item">Add Item</button>
+                                <button class="vanilla-btn" data-action="clear-items">Clear All</button>
+                            </div>
+                            
+                            <div class="data-grid">
+                                ${this.state.items.map((item, index) => `
+                                    <div class="data-card">
+                                        <h4>${item.name}</h4>
+                                        <p>ID: ${item.id}</p>
+                                        <p>Created: ${item.created}</p>
+                                        <button class="vanilla-btn" data-action="remove-item" data-index="${index}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            ${this.state.items.length === 0 ? 
+                                '<p style="text-align: center; color: #666; margin: 20px 0;">No items yet. Add some items above!</p>' : 
+                                ''
+                            }
+                        </div>
+                        <div class="vanilla-feature">
+                            Manual DOM updates and event handling
+                        </div>
+                    </div>
+                `;
+            }
+            
+            bindEvents() {
+                const clickHandler = (e) => {
+                    const action = e.target.dataset.action;
+                    
+                    switch (action) {
+                        case 'increment':
+                            this.state.count++;
+                            this.update();
+                            break;
+                        case 'decrement':
+                            this.state.count--;
+                            this.update();
+                            break;
+                        case 'reset':
+                            this.state.count = 0;
+                            this.update();
+                            break;
+                        case 'add-item':
+                            if (this.state.inputValue.trim()) {
+                                this.state.items.push({
+                                    id: Date.now(),
+                                    name: this.state.inputValue.trim(),
+                                    created: new Date().toLocaleTimeString()
+                                });
+                                this.state.inputValue = '';
+                                this.update();
+                            }
+                            break;
+                        case 'remove-item':
+                            const index = parseInt(e.target.dataset.index);
+                            this.state.items.splice(index, 1);
+                            this.update();
+                            break;
+                        case 'clear-items':
+                            this.state.items = [];
+                            this.update();
+                            break;
+                    }
+                };
+                
+                const inputHandler = (e) => {
+                    if (e.target.dataset.input === 'item-name') {
+                        this.state.inputValue = e.target.value;
+                    }
+                };
+                
+                this.container.addEventListener('click', clickHandler);
+                this.container.addEventListener('input', inputHandler);
+                
+                // Store listeners for cleanup
+                componentManager.addEventListeners('dom-manipulation-example', [
+                    { element: this.container, event: 'click', handler: clickHandler },
+                    { element: this.container, event: 'input', handler: inputHandler }
+                ]);
+            }
+            
+            update() {
+                this.render();
+                this.bindEvents();
+                console.log('Vanilla JS: Component state updated', this.state);
+            }
+            
+            destroy() {
+                this.container.innerHTML = '';
+            }
+        }
+        
+        componentManager.loadComponent('dom-manipulation-example', () => 
+            Promise.resolve({ default: DOMManipulationComponent })
+        );
+        
+        // Example 3: Getter-Only Property Handling Component
+        class GetterPropertyComponent {
+            constructor(container) {
+                this.container = container;
+                
+                // Simulate the original problem with getter-only properties
+                this.moduleData = {};
+                Object.defineProperty(this.moduleData, 'data', {
+                    get() { 
+                        return this._data || { 
+                            original: 'getter-only-data', 
+                            timestamp: Date.now(),
+                            framework: 'Vanilla JavaScript'
+                        }; 
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                
+                this.render();
+            }
+            
+            render() {
+                const originalData = this.moduleData.data;
+                const chunkData = this.moduleData.chunkData || { 
+                    loaded: true, 
+                    framework: 'Vanilla JavaScript',
+                    safeAssignment: true 
+                };
+                
+                this.container.innerHTML = `
+                    <div class="vanilla-component">
+                        <h3>🛡️ Getter-Only Property Handling</h3>
+                        <div class="dom-demo">
+                            <p><strong>Original Data:</strong></p>
+                            <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(originalData, null, 2)}</pre>
+                            <p><strong>Chunk Metadata:</strong></p>
+                            <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(chunkData, null, 2)}</pre>
+                            
+                            <div class="control-panel">
+                                <button class="vanilla-btn" data-action="test-assignment">Test Safe Assignment</button>
+                                <button class="vanilla-btn" data-action="refresh-data">Refresh Data</button>
+                            </div>
+                            
+                            <div id="assignment-log" class="event-log">
+                                <div class="event-log-entry">
+                                    <span class="timestamp">[${new Date().toLocaleTimeString()}]</span>
+                                    Component initialized with getter-only properties
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vanilla-feature">
+                            ✅ Safe assignment prevented TypeError on getter-only properties
+                        </div>
+                    </div>
+                `;
+                
+                this.bindEvents();
+            }
+            
+            bindEvents() {
+                const clickHandler = (e) => {
+                    const action = e.target.dataset.action;
+                    const logContainer = this.container.querySelector('#assignment-log');
+                    
+                    const addLogEntry = (message) => {
+                        const entry = document.createElement('div');
+                        entry.className = 'event-log-entry';
+                        entry.innerHTML = `<span class="timestamp">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+                        logContainer.appendChild(entry);
+                        logContainer.scrollTop = logContainer.scrollHeight;
+                    };
+                    
+                    switch (action) {
+                        case 'test-assignment':
+                            try {
+                                // This would normally fail, but our safe assignment handles it
+                                this.moduleData.testProperty = { test: 'value', timestamp: Date.now() };
+                                addLogEntry('✅ Safe assignment successful');
+                            } catch (error) {
+                                addLogEntry(`❌ Assignment failed: ${error.message}`);
+                            }
+                            break;
+                        case 'refresh-data':
+                            this.moduleData._data = {
+                                original: 'refreshed-getter-data',
+                                timestamp: Date.now(),
+                                framework: 'Vanilla JavaScript',
+                                refreshCount: (this.moduleData._data?.refreshCount || 0) + 1
+                            };
+                            addLogEntry('🔄 Data refreshed');
+                            this.render();
+                            break;
+                    }
+                };
+                
+                this.container.addEventListener('click', clickHandler);
+                
+                componentManager.addEventListeners('getter-property-example', [
+                    { element: this.container, event: 'click', handler: clickHandler }
+                ]);
+            }
+            
+            destroy() {
+                this.container.innerHTML = '';
+            }
+        }
+        
+        componentManager.loadComponent('getter-property-example', () => {
+            // Create module with getter-only properties
+            const module = {};
+            Object.defineProperty(module, 'data', {
+                get() { 
+                    return this._data || { 
+                        original: 'getter-only-data', 
+                        timestamp: Date.now(),
+                        framework: 'Vanilla JavaScript'
+                    }; 
+                },
+                enumerable: true,
+                configurable: true
+            });
+            
+            module.default = GetterPropertyComponent;
+            return Promise.resolve(module);
+        });
+        
+        // Example 4: Advanced State Management Component
+        class StateManagementComponent {
+            constructor(container) {
+                this.container = container;
+                this.state = {
+                    users: [
+                        { id: 1, name: 'John Doe', email: 'john@example.com', active: true },
+                        { id: 2, name: 'Jane Smith', email: 'jane@example.com', active: false },
+                        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', active: true }
+                    ],
+                    filter: 'all',
+                    sortBy: 'name',
+                    searchTerm: ''
+                };
+                this.eventLog = [];
+                this.render();
+                this.bindEvents();
+            }
+            
+            get filteredUsers() {
+                let users = [...this.state.users];
+                
+                // Apply search filter
+                if (this.state.searchTerm) {
+                    users = users.filter(user => 
+                        user.name.toLowerCase().includes(this.state.searchTerm.toLowerCase()) ||
+                        user.email.toLowerCase().includes(this.state.searchTerm.toLowerCase())
+                    );
+                }
+                
+                // Apply status filter
+                if (this.state.filter === 'active') {
+                    users = users.filter(user => user.active);
+                } else if (this.state.filter === 'inactive') {
+                    users = users.filter(user => !user.active);
+                }
+                
+                // Apply sorting
+                users.sort((a, b) => {
+                    if (this.state.sortBy === 'name') {
+                        return a.name.localeCompare(b.name);
+                    } else if (this.state.sortBy === 'email') {
+                        return a.email.localeCompare(b.email);
+                    }
+                    return 0;
+                });
+                
+                return users;
+            }
+            
+            render() {
+                const filteredUsers = this.filteredUsers;
+                
+                this.container.innerHTML = `
+                    <div class="vanilla-component">
+                        <h3>🗂️ Advanced State Management</h3>
+                        <div class="dom-demo">
+                            <div class="control-panel">
+                                <input 
+                                    type="text" 
+                                    class="vanilla-input" 
+                                    placeholder="Search users..."
+                                    value="${this.state.searchTerm}"
+                                    data-input="search"
+                                    style="flex: 1; margin-right: 10px;"
+                                >
+                                <select class="vanilla-input" data-select="filter" style="width: auto; margin-right: 10px;">
+                                    <option value="all" ${this.state.filter === 'all' ? 'selected' : ''}>All Users</option>
+                                    <option value="active" ${this.state.filter === 'active' ? 'selected' : ''}>Active Only</option>
+                                    <option value="inactive" ${this.state.filter === 'inactive' ? 'selected' : ''}>Inactive Only</option>
+                                </select>
+                                <select class="vanilla-input" data-select="sort" style="width: auto;">
+                                    <option value="name" ${this.state.sortBy === 'name' ? 'selected' : ''}>Sort by Name</option>
+                                    <option value="email" ${this.state.sortBy === 'email' ? 'selected' : ''}>Sort by Email</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin: 15px 0;">
+                                <strong>Results:</strong> ${filteredUsers.length} of ${this.state.users.length} users
+                            </div>
+                            
+                            <div class="data-grid">
+                                ${filteredUsers.map(user => `
+                                    <div class="data-card">
+                                        <h4>${user.name}</h4>
+                                        <p>Email: ${user.email}</p>
+                                        <p>Status: <span style="color: ${user.active ? '#28a745' : '#dc3545'};">
+                                            ${user.active ? 'Active' : 'Inactive'}
+                                        </span></p>
+                                        <button 
+                                            class="vanilla-btn" 
+                                            data-action="toggle-status" 
+                                            data-user-id="${user.id}"
+                                            style="font-size: 0.8rem; padding: 5px 10px;"
+                                        >
+                                            ${user.active ? 'Deactivate' : 'Activate'}
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="control-panel">
+                                <button class="vanilla-btn" data-action="add-user">Add Random User</button>
+                                <button class="vanilla-btn" data-action="clear-log">Clear Event Log</button>
+                            </div>
+                            
+                            <div class="event-log">
+                                ${this.eventLog.slice(-10).map(entry => `
+                                    <div class="event-log-entry">
+                                        <span class="timestamp">[${entry.timestamp}]</span>
+                                        ${entry.message}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="vanilla-feature">
+                            Complex state management with filtering, sorting, and event logging
+                        </div>
+                    </div>
+                `;
+            }
+            
+            bindEvents() {
+                const addLogEntry = (message) => {
+                    this.eventLog.push({
+                        timestamp: new Date().toLocaleTimeString(),
+                        message
+                    });
+                    if (this.eventLog.length > 50) {
+                        this.eventLog = this.eventLog.slice(-50);
+                    }
+                };
+                
+                const clickHandler = (e) => {
+                    const action = e.target.dataset.action;
+                    
+                    switch (action) {
+                        case 'toggle-status':
+                            const userId = parseInt(e.target.dataset.userId);
+                            const user = this.state.users.find(u => u.id === userId);
+                            if (user) {
+                                user.active = !user.active;
+                                addLogEntry(`User ${user.name} ${user.active ? 'activated' : 'deactivated'}`);
+                                this.update();
+                            }
+                            break;
+                        case 'add-user':
+                            const names = ['Alice Brown', 'Charlie Wilson', 'Diana Davis', 'Eve Miller', 'Frank Garcia'];
+                            const randomName = names[Math.floor(Math.random() * names.length)];
+                            const newUser = {
+                                id: Date.now(),
+                                name: randomName,
+                                email: `${randomName.toLowerCase().replace(' ', '.')}@example.com`,
+                                active: Math.random() > 0.5
+                            };
+                            this.state.users.push(newUser);
+                            addLogEntry(`Added new user: ${newUser.name}`);
+                            this.update();
+                            break;
+                        case 'clear-log':
+                            this.eventLog = [];
+                            addLogEntry('Event log cleared');
+                            this.update();
+                            break;
+                    }
+                };
+                
+                const inputHandler = (e) => {
+                    if (e.target.dataset.input === 'search') {
+                        this.state.searchTerm = e.target.value;
+                        addLogEntry(`Search term changed: "${e.target.value}"`);
+                        this.update();
+                    }
+                };
+                
+                const changeHandler = (e) => {
+                    if (e.target.dataset.select === 'filter') {
+                        this.state.filter = e.target.value;
+                        addLogEntry(`Filter changed to: ${e.target.value}`);
+                        this.update();
+                    } else if (e.target.dataset.select === 'sort') {
+                        this.state.sortBy = e.target.value;
+                        addLogEntry(`Sort changed to: ${e.target.value}`);
+                        this.update();
+                    }
+                };
+                
+                this.container.addEventListener('click', clickHandler);
+                this.container.addEventListener('input', inputHandler);
+                this.container.addEventListener('change', changeHandler);
+                
+                componentManager.addEventListeners('state-management-example', [
+                    { element: this.container, event: 'click', handler: clickHandler },
+                    { element: this.container, event: 'input', handler: inputHandler },
+                    { element: this.container, event: 'change', handler: changeHandler }
+                ]);
+            }
+            
+            update() {
+                this.render();
+                this.bindEvents();
+            }
+            
+            destroy() {
+                this.container.innerHTML = '';
+            }
+        }
+        
+        componentManager.loadComponent('state-management-example', () => 
+            Promise.resolve({ default: StateManagementComponent })
+        );
+        
+        // Performance Metrics Display
+        class VanillaPerformanceMetrics {
+            constructor(target) {
+                this.target = target;
+                this.metrics = {
+                    loadTime: 0,
+                    componentCount: 4,
+                    memoryUsage: 0,
+                    bundleSize: '~8KB'
+                };
+                
+                this.collectMetrics();
+                this.render();
+            }
+            
+            collectMetrics() {
+                const startTime = performance.now();
+                
+                setTimeout(() => {
+                    this.metrics.loadTime = Math.round(performance.now() - startTime);
+                    
+                    if (performance.memory) {
+                        this.metrics.memoryUsage = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024 * 100) / 100;
+                    }
+                    
+                    this.render();
+                }, 100);
+            }
+            
+            render() {
+                this.target.innerHTML = `
+                    <div class="metrics-display">
+                        <h4>📊 Vanilla JavaScript Performance Metrics</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                            <div>
+                                <strong>Load Time:</strong><br>
+                                ${this.metrics.loadTime}ms
+                            </div>
+                            <div>
+                                <strong>Components:</strong><br>
+                                ${this.metrics.componentCount} loaded
+                            </div>
+                            <div>
+                                <strong>Memory Usage:</strong><br>
+                                ${this.metrics.memoryUsage}MB
+                            </div>
+                            <div>
+                                <strong>Bundle Size:</strong><br>
+                                ${this.metrics.bundleSize}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        new VanillaPerformanceMetrics(document.getElementById('performance-metrics'));
+        
+        // Source Code Viewer
+        const sourceViewer = createSourceViewer([
+            {
+                name: 'Basic Dynamic Import',
+                language: 'javascript',
+                code: `class BasicDynamicComponent {
+  constructor(container) {
+    this.container = container;
+    this.loadTime = new Date().toLocaleTimeString();
+    this.componentId = Math.random().toString(36).substr(2, 9);
+    this.render();
+  }
+  
+  render() {
+    this.container.innerHTML = \`
+      <div class="vanilla-component">
+        <h3>Basic Dynamic Component</h3>
+        <p>Loaded at: \${this.loadTime}</p>
+      </div>
+    \`;
+  }
+  
+  destroy() {
+    this.container.innerHTML = '';
+  }
+}
+
+// Load component
+componentManager.loadComponent('example', () => 
+  Promise.resolve({ default: BasicDynamicComponent })
+);`
+            },
+            {
+                name: 'Manual DOM Management',
+                language: 'javascript',
+                code: `class DOMManipulationComponent {
+  constructor(container) {
+    this.container = container;
+    this.state = { count: 0, items: [] };
+    this.render();
+    this.bindEvents();
+  }
+  
+  bindEvents() {
+    const clickHandler = (e) => {
+      const action = e.target.dataset.action;
+      
+      if (action === 'increment') {
+        this.state.count++;
+        this.update();
+      }
+    };
+    
+    this.container.addEventListener('click', clickHandler);
+  }
+  
+  update() {
+    this.render();
+    this.bindEvents();
+  }
+}`
+            },
+            {
+                name: 'Component Manager',
+                language: 'javascript',
+                code: `class VanillaComponentManager {
+  constructor() {
+    this.components = new Map();
+    this.eventListeners = new Map();
+  }
+  
+  async loadComponent(containerId, moduleLoader) {
+    const container = document.getElementById(containerId);
+    
+    // Load module with safe chunk loader
+    const module = await safeChunkLoader.loadChunk(
+      \`vanilla-\${containerId}\`, 
+      moduleLoader
+    );
+    
+    // Create component instance
+    const component = new module.default(container);
+    this.components.set(containerId, component);
+    
+    return component;
+  }
+  
+  destroyComponent(containerId) {
+    const component = this.components.get(containerId);
+    if (component && component.destroy) {
+      component.destroy();
+      this.components.delete(containerId);
+    }
+  }
+}`
+            }
+        ]);
+        
+        document.getElementById('source-viewer').appendChild(sourceViewer);
+        
+        // Track performance
+        performanceMonitor.trackMetric('vanilla-load-time', performance.now());
+        performanceMonitor.trackMetric('vanilla-components', 4);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            componentManager.destroyAll();
+        });
+        
+        console.log('✅ Vanilla JavaScript chunk loading examples initialized successfully');
+    </script>
+</body>
+</html>

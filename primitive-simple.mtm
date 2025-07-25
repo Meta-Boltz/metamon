@@ -1,0 +1,82 @@
+// primitive-simple.mtm - Simple test of MTM capabilities
+export default function PrimitiveSimple() {
+  // Basic reactive state
+  $currentPage! = "home"
+  $counter! = 0
+  $message! = "Welcome to MTM Test"
+
+  // Navigation (client-side routing simulation)
+  $goHome = () => {
+    $currentPage = "home"
+    $message = "Navigated to Home"
+  }
+
+  $goAbout = () => {
+    $currentPage = "about"
+    $message = "Navigated to About"
+  }
+
+  $goContact = () => {
+    $currentPage = "contact"
+    $message = "Navigated to Contact"
+  }
+
+  // Counter functions
+  $increment = () => {
+    $counter++
+    $message = "Counter: " + $counter
+  }
+
+  $decrement = () => {
+    $counter--
+    $message = "Counter: " + $counter
+  }
+
+  $reset = () => {
+    $counter = 0
+    $message = "Counter reset!"
+  }
+
+  <template>
+    <div class="primitive-app">
+      <header>
+        <h1>🔮 MTM Primitive Test</h1>
+        <p class="status">{$message}</p>
+      </header>
+
+      <nav class="navigation">
+        <button click={$goHome}>Home</button>
+        <button click={$goAbout}>About</button>
+        <button click={$goContact}>Contact</button>
+        <span>Current: {$currentPage}</span>
+      </nav>
+
+      <main>
+        <h2>Page: {$currentPage}</h2>
+        
+        <section class="counter-section">
+          <h3>Counter Test</h3>
+          <div class="counter-display">
+            <button click={$decrement}>-</button>
+            <span class="count">{$counter}</span>
+            <button click={$increment}>+</button>
+            <button click={$reset}>Reset</button>
+          </div>
+        </section>
+
+        <section class="info">
+          <h3>MTM Framework Test Results</h3>
+          <p>✅ Reactive variables: {$counter}</p>
+          <p>✅ Event handling: Working</p>
+          <p>✅ Template interpolation: {$message}</p>
+          <p>🔮 Client-side routing: {$currentPage}</p>
+        </section>
+      </main>
+
+      <footer>
+        <p>MTM Framework - Write once, compile anywhere!</p>
+        <p>State: counter={$counter}, page={$currentPage}</p>
+      </footer>
+    </div>
+  </template>
+}

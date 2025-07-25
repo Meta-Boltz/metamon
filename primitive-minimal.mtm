@@ -1,0 +1,117 @@
+// primitive-minimal.mtm - Ultra-minimal MTM syntax
+route: "/"
+title: "Primitive Metamon Page"
+description: "Ultra-minimal MTM framework demonstration with client-side routing and reactive components"
+
+// Reactive state - no function wrapper needed!
+$currentPage! = signal('currentPage', 'home')
+$counter! = signal('counter', 0)
+$message! = signal('message', 'Welcome to Ultra-Minimal MTM!')
+
+// Navigation functions (client-side routing)
+$goHome = () => {
+  $currentPage = 'home'
+  $message = 'Navigated to Home page'
+  signal.emit('page-changed', { page: 'home' })
+}
+
+$goAbout = () => {
+  $currentPage = 'about'
+  $message = 'Navigated to About page'
+  signal.emit('page-changed', { page: 'about' })
+}
+
+$goContact = () => {
+  $currentPage = 'contact'
+  $message = 'Navigated to Contact page'
+  signal.emit('page-changed', { page: 'contact' })
+}
+
+// Counter functions
+$increment = () => {
+  $counter++
+  $message = `Counter incremented to ${$counter}`
+  signal.emit('counter-updated', { value: $counter })
+}
+
+$decrement = () => {
+  $counter--
+  $message = `Counter decremented to ${$counter}`
+  signal.emit('counter-updated', { value: $counter })
+}
+
+$reset = () => {
+  $counter = 0
+  $message = 'Counter reset to zero'
+  signal.emit('counter-reset', { value: 0 })
+}
+
+<template>
+  <div class="primitive-app">
+    <header class="header">
+      <h1>🔮 Ultra-Minimal MTM</h1>
+      <p class="page-info">Route: {route} | Title: {title}</p>
+      <p class="status">{$message}</p>
+    </header>
+
+    <nav class="navigation">
+      <button click={$goHome} class="nav-btn">Home</button>
+      <button click={$goAbout} class="nav-btn">About</button>
+      <button click={$goContact} class="nav-btn">Contact</button>
+      <span class="current-page">Current: {$currentPage}</span>
+    </nav>
+
+    <main class="content">
+      <h2>Page: {$currentPage}</h2>
+      <p class="description">{description}</p>
+      
+      {#if $currentPage === 'home'}
+        <section class="home-content">
+          <h3>🏠 Home Page</h3>
+          <p>Welcome to the ultra-minimal MTM framework!</p>
+          <div class="counter-section">
+            <h4>Interactive Counter</h4>
+            <div class="counter-display">
+              <button click={$decrement}>-</button>
+              <span class="count">{$counter}</span>
+              <button click={$increment}>+</button>
+              <button click={$reset} class="reset-btn">Reset</button>
+            </div>
+          </div>
+        </section>
+      {/if}
+
+      {#if $currentPage === 'about'}
+        <section class="about-content">
+          <h3>ℹ️ About Ultra-Minimal MTM</h3>
+          <p>No more function wrappers! Just pure reactive code.</p>
+          <ul>
+            <li>✅ No export default function needed</li>
+            <li>✅ Page metadata with route, title, description</li>
+            <li>✅ Ultra-clean syntax</li>
+            <li>✅ Pure reactive variables and functions</li>
+          </ul>
+          <p>Current counter value: {$counter}</p>
+        </section>
+      {/if}
+
+      {#if $currentPage === 'contact'}
+        <section class="contact-content">
+          <h3>📧 Contact Information</h3>
+          <p>Get in touch with the MTM team!</p>
+          <div class="contact-info">
+            <p>Email: hello@mtm-framework.dev</p>
+            <p>GitHub: github.com/mtm-framework</p>
+            <p>Route: {route}</p>
+            <p>Counter state: {$counter}</p>
+          </div>
+        </section>
+      {/if}
+    </main>
+
+    <footer class="footer">
+      <p>Ultra-Minimal MTM Framework - No function wrappers needed!</p>
+      <p>State: counter={$counter}, page={$currentPage}</p>
+    </footer>
+  </div>
+</template>

@@ -1,0 +1,23 @@
+// my-example.mtm - Your custom component
+export default function MyExample() {
+  $message! = "Hello MTM Framework!"
+  $count! = 0
+
+  $changeMessage = () => {
+    $message = "MTM is working! Count: " + $count
+  }
+
+  $increment = () => {
+    $count++
+    $changeMessage()
+  }
+
+  <template>
+    <div class="counter">
+      <h2>{$message}</h2>
+      <p>Current count: {$count}</p>
+      <button click={$increment}>Click me!</button>
+      <button click={$changeMessage}>Change message</button>
+    </div>
+  </template>
+}

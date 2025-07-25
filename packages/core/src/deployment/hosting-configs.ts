@@ -14,7 +14,7 @@ interface HostingConfig {
   instructions: string[];
 }
 
-interface DeploymentOptions {
+export interface DeploymentOptions {
   projectName: string;
   buildCommand?: string;
   outputDir?: string;
@@ -132,7 +132,7 @@ export function generateVercelConfig(options: DeploymentOptions): HostingConfig 
     withSSR = false
   } = options;
 
-  const vercelJson = {
+  const vercelJson: any = {
     version: 2,
     builds: [
       {
@@ -439,8 +439,8 @@ coverage
   }
 
   const instructions = [
-    'Build the Docker image: `docker build -t ${projectName} .`',
-    'Run the container: `docker run -p ${withSSR ? '3000:3000' : '80:80'} ${projectName}`',
+    `Build the Docker image: \`docker build -t ${projectName} .\``,
+    `Run the container: \`docker run -p ${withSSR ? '3000:3000' : '80:80'} ${projectName}\``,
     'Or use Docker Compose: `docker-compose up -d`'
   ];
 

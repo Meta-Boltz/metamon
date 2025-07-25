@@ -1,0 +1,67 @@
+route: "/"
+title: "Home - Enhanced MTM Framework"
+description: "Welcome to the enhanced MTM framework with link-based routing and component imports"
+compileJs: "external.js"
+
+import Counter from "@components/Counter.tsx"
+import Button from "@components/Button.vue"
+
+// Reactive state
+$welcomeMessage! = signal('welcomeMessage', 'Welcome to Enhanced MTM!')
+$clickCount! = signal('clickCount', 0)
+
+// Functions
+$handleClick = () => {
+  $clickCount++
+  $welcomeMessage = `You've clicked ${$clickCount} times!`
+}
+
+<template>
+  <div class="home-page">
+    <header>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </header>
+    
+    <nav class="navigation">
+      <Link href="/about">About Us</Link>
+      <Link href="/contact">Contact</Link>
+      <Link href="/blog">Blog</Link>
+    </nav>
+    
+    <main>
+      <section class="welcome">
+        <h2>{$welcomeMessage}</h2>
+        
+        <Counter 
+          initialValue={$clickCount} 
+          onIncrement={$handleClick}
+        />
+        
+        <Button 
+          label="Click Me!" 
+          onClick={$handleClick}
+          variant="primary"
+        />
+      </section>
+      
+      <section class="features">
+        <h3>Enhanced MTM Features</h3>
+        <ul>
+          <li>✅ Link-based routing with &lt;a href="/path"&gt;</li>
+          <li>✅ Component imports from React/Vue/Svelte</li>
+          <li>✅ External JavaScript compilation</li>
+          <li>✅ Route definitions in MTM files</li>
+          <li>✅ Professional SPA architecture</li>
+        </ul>
+      </section>
+    </main>
+    
+    <footer>
+      <p>
+        <a href="/privacy">Privacy Policy</a> | 
+        <a href="/terms">Terms of Service</a>
+      </p>
+    </footer>
+  </div>
+</template>

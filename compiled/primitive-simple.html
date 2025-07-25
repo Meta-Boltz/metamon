@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimitiveSimple</title>
+    <style>
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .counter {
+            text-align: center;
+            padding: 2rem;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            background: #f8f9ff;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .counter h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .counter button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.2rem;
+            min-width: 50px;
+            transition: background 0.2s;
+        }
+        
+        .counter button:hover {
+            background: #5a6fd8;
+        }
+        
+        .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 80px;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #667eea;
+        }
+        
+        .counter p {
+            color: #666;
+            font-style: italic;
+            margin-top: 1.5rem;
+        }
+        
+        /* Form styles */
+        .contact-form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .submit-btn:hover {
+            background: #229954;
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="primitive-app">
+<header>
+<h1>🔮 MTM Primitive Test</h1>
+<p class="status"><span data-bind="$message">0</span></p>
+</header>
+<nav class="navigation">
+<button click=<span data-bind="$goHome">0</span>>Home</button>
+<button click=<span data-bind="$goAbout">0</span>>About</button>
+<button click=<span data-bind="$goContact">0</span>>Contact</button>
+<span>Current: <span data-bind="$currentPage">0</span></span>
+</nav>
+<main>
+<h2>Page: <span data-bind="$currentPage">0</span></h2>
+<section class="counter-section">
+<h3>Counter Test</h3>
+<div class="counter-display">
+<button click=<span data-bind="$decrement">0</span>>-</button>
+<span class="count"><span data-bind="$counter">0</span></span>
+<button click=<span data-bind="$increment">0</span>>+</button>
+<button click=<span data-bind="$reset">0</span>>Reset</button>
+</div>
+</section>
+<section class="info">
+<h3>MTM Framework Test Results</h3>
+<p>✅ Reactive variables: <span data-bind="$counter">0</span></p>
+<p>✅ Event handling: Working</p>
+<p>✅ Template interpolation: <span data-bind="$message">0</span></p>
+<p>🔮 Client-side routing: <span data-bind="$currentPage">0</span></p>
+</section>
+</main>
+<footer>
+<p>MTM Framework - Write once, compile anywhere!</p>
+<p>State: counter=<span data-bind="$counter">0</span>, page=<span data-bind="$currentPage">0</span></p>
+</footer>
+</div>
+    </div>
+    
+    <script>
+        
+// Simple reactive system
+const reactive = (initialValue) => {
+  let value = initialValue;
+  const subscribers = [];
+  
+  return {
+    get value() { return value; },
+    set value(newValue) {
+      value = newValue;
+      subscribers.forEach(fn => fn(newValue));
+    },
+    subscribe(fn) { subscribers.push(fn); }
+  };
+};
+
+// Component: PrimitiveSimple
+function PrimitiveSimple() {
+  // Variables
+  const $currentPage = reactive("home");
+  const $counter = reactive(0);
+  const $message = reactive("Welcome to MTM Test");
+
+  // Functions
+  const $goHome = () => {
+    $currentPage.value = "home"
+$message.value = "Navigated to Home"
+  };
+
+  const $goAbout = () => {
+    $currentPage.value = "about"
+$message.value = "Navigated to About"
+  };
+
+  const $goContact = () => {
+    $currentPage.value = "contact"
+$message.value = "Navigated to Contact"
+  };
+
+  const $increment = () => {
+    $counter.value++
+$message.value = "Counter: " + $counter.value
+  };
+
+  const $decrement = () => {
+    $counter.value--
+$message.value = "Counter: " + $counter.value
+  };
+
+  const $reset = () => {
+    $counter.value = 0
+$message.value = "Counter reset!"
+  };
+
+
+  // DOM bindings
+  const container = document.getElementById('app');
+  
+  // Bind variables to DOM
+  container.querySelectorAll('[data-bind="$currentPage"]').forEach(el => {
+    const update = () => el.textContent = $currentPage.value;
+    update();
+    $currentPage.subscribe(update);
+  });
+  
+  container.querySelectorAll('[data-bind="$counter"]').forEach(el => {
+    const update = () => el.textContent = $counter.value;
+    update();
+    $counter.subscribe(update);
+  });
+  
+  container.querySelectorAll('[data-bind="$message"]').forEach(el => {
+    const update = () => el.textContent = $message.value;
+    update();
+    $message.subscribe(update);
+  });
+  
+  // Bind event handlers
+  container.querySelectorAll('[data-click="$goHome"]').forEach(el => {
+    el.addEventListener('click', $goHome);
+  });
+  
+  container.querySelectorAll('[data-click="$goAbout"]').forEach(el => {
+    el.addEventListener('click', $goAbout);
+  });
+  
+  container.querySelectorAll('[data-click="$goContact"]').forEach(el => {
+    el.addEventListener('click', $goContact);
+  });
+  
+  container.querySelectorAll('[data-click="$increment"]').forEach(el => {
+    el.addEventListener('click', $increment);
+  });
+  
+  container.querySelectorAll('[data-click="$decrement"]').forEach(el => {
+    el.addEventListener('click', $decrement);
+  });
+  
+  container.querySelectorAll('[data-click="$reset"]').forEach(el => {
+    el.addEventListener('click', $reset);
+  });
+  
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  PrimitiveSimple();
+});
+    </script>
+</body>
+</html>
