@@ -1,0 +1,60 @@
+---
+route: "/multi-framework"
+title: "Multi-Framework Demo - Enhanced MTM"
+description: "All frameworks working together in one page"
+compileJsMode: "external.js"
+---
+import Counter from "@components/Counter.tsx"
+import TodoList from "@components/TodoList.vue"
+import DataChart from "@components/DataChart.tsx"
+import WeatherWidget from "@components/WeatherWidget.svelte"
+
+<template>
+  <div class="demo-page">
+    <header>
+      <h1>🌈 Multi-Framework Demo</h1>
+      <p>React, Vue, Solid, and Svelte components working together!</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/svelte-demo" data-link="true">← Svelte Demo</a>
+      <a href="/" data-link="true">Home</a>
+    </nav>
+
+    <main>
+      <section class="framework-showcase">
+        <div class="framework-section">
+          <h3>⚛️ React Counter</h3>
+          <Counter initialValue={5} step={1} />
+        </div>
+
+        <div class="framework-section">
+          <h3>💚 Vue Todo List</h3>
+          <TodoList />
+        </div>
+
+        <div class="framework-section">
+          <h3>🟦 Solid Data Chart</h3>
+          <DataChart title="Mixed Framework Data" />
+        </div>
+
+        <div class="framework-section">
+          <h3>🧡 Svelte Weather</h3>
+          <WeatherWidget location="San Francisco" unit="F" />
+        </div>
+      </section>
+
+      <section class="integration-info">
+        <h2>🔮 Framework Integration</h2>
+        <p>This page demonstrates the power of the Enhanced MTM Framework:</p>
+        <ul>
+          <li>✅ Multiple frameworks on a single page</li>
+          <li>✅ Shared routing and navigation</li>
+          <li>✅ Optimized bundle loading</li>
+          <li>✅ Framework-specific optimizations</li>
+          <li>✅ Hot module replacement for all frameworks</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>

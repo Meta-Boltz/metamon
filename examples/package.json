@@ -1,7 +1,7 @@
 {
-  "name": "@metamon/examples",
+  "name": "@mtm/examples",
   "version": "0.1.0",
-  "description": "Comprehensive example application demonstrating Metamon framework capabilities",
+  "description": "Enhanced routing multi-framework examples for MTM framework",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,14 +11,10 @@
     "test": "vitest --run",
     "test:e2e": "playwright test",
     "test:browser-compat": "playwright test --config=tests/browser-compatibility.config.js",
-    "test:browser-compat:headed": "playwright test --config=tests/browser-compatibility.config.js --headed",
-    "test:browser-compat:debug": "playwright test --config=tests/browser-compatibility.config.js --debug",
-    "test:browser-compat:full": "node scripts/run-browser-compatibility-tests.js",
     "test:production": "playwright test --config=tests/production-build.config.js",
-    "test:production:headed": "playwright test --config=tests/production-build.config.js --headed",
-    "test:production:debug": "playwright test --config=tests/production-build.config.js --debug",
-    "test:production:full": "node scripts/run-production-build-tests.js",
-    "benchmark": "node scripts/benchmark.js"
+    "benchmark": "node scripts/benchmark.js",
+    "clean": "rimraf dist node_modules/.vite",
+    "serve": "vite preview --port 3000"
   },
   "dependencies": {
     "glob": "^11.0.3",

@@ -1,0 +1,652 @@
+---
+route: "/react-example"
+title: "React Integration - Enhanced MTM"
+description: "Demonstration of React component integration with MTM framework"
+compileJsMode: "external.js"
+keywords: "react, components, integration, props, hooks"
+framework: "react"
+---
+
+import Counter from "@components/Counter.tsx"
+import UserProfile from "@components/UserProfile.tsx"
+import Modal from "@components/Modal.tsx"
+
+// MTM state that interacts with React components
+$userCount! = signal('userCount', 0)
+$selectedUser! = signal('selectedUser', null)
+$showUserModal! = signal('showUserModal', false)
+$counterValue! = signal('counterValue', 10)
+$notifications! = signal('notifications', [])
+
+// Functions that bridge MTM and React
+$handleCounterIncrement = () => {
+  $counterValue++
+  $addNotification(`Counter incremented to ${$counterValue}`)
+}
+
+$handleUserUpdate = (user) => {
+  $selectedUser = user
+  $addNotification(`User profile updated: ${user.name}`)
+}
+
+$openUserModal = () => {
+  $showUserModal = true
+}
+
+$closeUserModal = () => {
+  $showUserModal = false
+}
+
+$addNotification = (message) => {
+  const notification = {
+    id: Date.now(),
+    message,
+    timestamp: new Date().toLocaleTimeString()
+  }
+  $notifications = [...$notifications, notification]
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    $notifications = $notifications.filter(n => n.id !== notification.id)
+  }, 5000)
+}
+
+$clearNotifications = () => {
+  $notifications = []
+}
+
+<template>
+  <div class="react-example-page">
+    <header class="page-header">
+      <div class="breadcrumb">
+        <a href="/" class="breadcrumb-link">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <a href="/about" class="breadcrumb-link">About</a>
+        <span class="breadcrumb-separator">→</span>
+        <span class="breadcrumb-current">React Example</span>
+      </div>
+      
+      <h1>{title}</h1>
+      <p class="page-description">{description}</p>
+      
+      <div class="framework-badge">
+        <span class="badge react-badge">⚛️ React Integration</span>
+      </div>
+    </header>
+    
+    <nav class="example-navigation">
+      <div class="nav-links">
+        <a href="/vue-example" class="nav-link vue">Vue Example</a>
+        <a href="/solid-example" class="nav-link solid">Solid Example</a>
+        <a href="/svelte-example" class="nav-link svelte">Svelte Example</a>
+      </div>
+    </nav>
+    
+    <main class="main-content">
+      <section class="intro-section">
+        <h2>React Component Integration</h2>
+        <p>This page demonstrates how React components can be seamlessly integrated into MTM pages with full props support, event handling, and state management.</p>
+        
+        <div class="integration-features">
+          <div class="feature-item">
+            <h4>✅ Props Passing</h4>
+            <p>MTM signals can be passed as props to React components</p>
+          </div>
+          <div class="feature-item">
+            <h4>✅ Event Handling</h4>
+            <p>React component events can trigger MTM functions</p>
+          </div>
+          <div class="feature-item">
+            <h4>✅ State Synchronization</h4>
+            <p>React component state can update MTM signals</p>
+          </div>
+          <div class="feature-item">
+            <h4>✅ Lifecycle Management</h4>
+            <p>React hooks and lifecycle methods work normally</p>
+          </div>
+        </div>
+      </section>
+      
+      <section class="demo-section">
+        <h2>Interactive React Components</h2>
+        
+        <div class="demo-grid">
+          <div class="demo-card">
+            <h3>React Counter Component</h3>
+            <p>A React component with hooks that communicates with MTM state:</p>
+            
+            <Counter 
+              initialValue={$counterValue}
+              onIncrement={$handleCounterIncrement}
+              className="demo-counter"
+            />
+            
+            <div class="demo-info">
+              <p><strong>Current Value:</strong> {$counterValue}</p>
+              <p><strong>Component Type:</strong> React with TypeScript</p>
+              <p><strong>Features:</strong> useState, useEffect, props handling</p>
+            </div>
+          </div>
+          
+          <div class="demo-card">
+            <h3>React User Profile Component</h3>
+            <p>A complex React component with forms and state management:</p>
+            
+            <UserProfile 
+              userId={1}
+              onUserUpdate={$handleUserUpdate}
+              className="demo-profile"
+            />
+            
+            <div class="demo-actions">
+              <button onclick={$openUserModal} class="action-button">
+                View in Modal
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section class="notifications-section">
+        <h2>Event Notifications</h2>
+        <p>React component events trigger MTM functions that update the notification system:</p>
+        
+        <div class="notifications-container">
+          <div class="notifications-header">
+            <h4>Live Notifications ({$notifications.length})</h4>
+            {#if $notifications.length > 0}
+              <button onclick={$clearNotifications} class="clear-button">
+                Clear All
+              </button>
+            {/if}
+          </div>
+          
+          <div class="notifications-list">
+            {#if $notifications.length === 0}
+              <div class="no-notifications">
+                <p>No notifications yet. Interact with the React components above to see notifications appear here.</p>
+              </div>
+            {:else}
+              {#each $notifications as notification}
+                <div class="notification-item" key={notification.id}>
+                  <div class="notification-message">{notification.message}</div>
+                  <div class="notification-time">{notification.timestamp}</div>
+                </div>
+              {/each}
+            {/if}
+          </div>
+        </div>
+      </section>
+      
+      <section class="code-example-section">
+        <h2>Code Example</h2>
+        <p>Here's how the React integration works:</p>
+        
+        <div class="code-block">
+          <h4>MTM Page (react-example.mtm)</h4>
+          <pre><code>---
+route: "/react-example"
+compileJsMode: "external.js"
+---
+
+import Counter from "@components/Counter.tsx"
+
+$counterValue! = signal('counterValue', 10)
+
+$handleIncrement = () => {
+  $counterValue++
+}
+
+&lt;template&gt;
+  &lt;Counter 
+    initialValue={$counterValue}
+    onIncrement={$handleIncrement}
+  /&gt;
+&lt;/template&gt;</code></pre>
+        </div>
+        
+        <div class="code-block">
+          <h4>React Component (Counter.tsx)</h4>
+          <pre><code>interface CounterProps {
+  initialValue?: number;
+  onIncrement?: () => void;
+}
+
+const Counter: React.FC&lt;CounterProps&gt; = ({ 
+  initialValue = 0, 
+  onIncrement 
+}) => {
+  const [count, setCount] = useState(initialValue);
+  
+  const handleIncrement = () => {
+    setCount(prev => prev + 1);
+    if (onIncrement) onIncrement();
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;span&gt;{count}&lt;/span&gt;
+      &lt;button onClick={handleIncrement}&gt;+&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+        </div>
+      </section>
+    </main>
+    
+    {#if $showUserModal}
+      <Modal 
+        title="User Profile Details"
+        isOpen={$showUserModal}
+        onClose={$closeUserModal}
+      >
+        <div class="modal-user-content">
+          {#if $selectedUser}
+            <h4>User Information</h4>
+            <div class="user-details">
+              <p><strong>Name:</strong> {$selectedUser.name}</p>
+              <p><strong>Email:</strong> {$selectedUser.email}</p>
+              <p><strong>Bio:</strong> {$selectedUser.bio}</p>
+            </div>
+          {:else}
+            <p>No user selected. Update the user profile above to see details here.</p>
+          {/if}
+          
+          <div class="modal-info">
+            <h5>Technical Details:</h5>
+            <ul>
+              <li>Modal: React component with TypeScript</li>
+              <li>User data: Passed from MTM signals</li>
+              <li>State management: React hooks + MTM signals</li>
+              <li>Event handling: React → MTM function calls</li>
+            </ul>
+          </div>
+        </div>
+      </Modal>
+    {/if}
+    
+    <footer class="page-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>React Integration Features</h4>
+          <ul>
+            <li>✅ TypeScript support</li>
+            <li>✅ React hooks compatibility</li>
+            <li>✅ Props and event handling</li>
+            <li>✅ Component lifecycle management</li>
+            <li>✅ State synchronization with MTM</li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Next Steps</h4>
+          <p>Explore other framework integrations:</p>
+          <div class="footer-links">
+            <a href="/vue-example" class="footer-link">Vue Example →</a>
+            <a href="/solid-example" class="footer-link">Solid Example →</a>
+            <a href="/svelte-example" class="footer-link">Svelte Example →</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>
+
+<style>
+  .react-example-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .breadcrumb-link {
+    color: #667eea;
+    text-decoration: none;
+  }
+
+  .breadcrumb-link:hover {
+    text-decoration: underline;
+  }
+
+  .breadcrumb-separator {
+    margin: 0 0.5rem;
+  }
+
+  .breadcrumb-current {
+    font-weight: 600;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 1rem;
+    color: #2c3e50;
+  }
+
+  .page-description {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+  .framework-badge {
+    margin-bottom: 1rem;
+  }
+
+  .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .react-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .example-navigation {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-link {
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .nav-link.vue {
+    background: #e8f5e8;
+    color: #4caf50;
+  }
+
+  .nav-link.solid {
+    background: #e3f2fd;
+    color: #2196f3;
+  }
+
+  .nav-link.svelte {
+    background: #fff3e0;
+    color: #ff9800;
+  }
+
+  .nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .intro-section {
+    margin-bottom: 3rem;
+  }
+
+  .integration-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .feature-item {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #61dafb;
+  }
+
+  .feature-item h4 {
+    margin: 0 0 0.5rem;
+    color: #2c3e50;
+  }
+
+  .demo-section {
+    margin-bottom: 3rem;
+  }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .demo-card {
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e5e9;
+  }
+
+  .demo-card h3 {
+    margin: 0 0 1rem;
+    color: #2c3e50;
+  }
+
+  .demo-info {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .demo-info p {
+    margin: 0.5rem 0;
+  }
+
+  .demo-actions {
+    margin-top: 1rem;
+  }
+
+  .action-button {
+    padding: 0.75rem 1.5rem;
+    background: #61dafb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .action-button:hover {
+    background: #21a9c7;
+  }
+
+  .notifications-section {
+    margin-bottom: 3rem;
+  }
+
+  .notifications-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .notifications-header {
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e1e5e9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .notifications-header h4 {
+    margin: 0;
+    color: #2c3e50;
+  }
+
+  .clear-button {
+    padding: 0.5rem 1rem;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .notifications-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .no-notifications {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+  }
+
+  .notification-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .notification-item:last-child {
+    border-bottom: none;
+  }
+
+  .notification-message {
+    flex: 1;
+  }
+
+  .notification-time {
+    font-size: 0.8rem;
+    color: #666;
+    margin-left: 1rem;
+  }
+
+  .code-example-section {
+    margin-bottom: 3rem;
+  }
+
+  .code-block {
+    margin: 1.5rem 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .code-block h4 {
+    margin: 0;
+    padding: 1rem 1.5rem;
+    background: #2c3e50;
+    color: white;
+    font-size: 1rem;
+  }
+
+  .code-block pre {
+    margin: 0;
+    padding: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .code-block code {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .page-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e1e5e9;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .footer-section h4 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+  }
+
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-section li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .footer-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+
+  .modal-user-content h4 {
+    margin-top: 0;
+  }
+
+  .user-details {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+  }
+
+  .user-details p {
+    margin: 0.5rem 0;
+  }
+
+  .modal-info {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 6px;
+  }
+
+  .modal-info h5 {
+    margin: 0 0 0.5rem;
+  }
+
+  .modal-info ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .modal-info li {
+    margin-bottom: 0.25rem;
+  }
+</style>

@@ -3,6 +3,8 @@
  * Supports dynamic routes with parameter extraction and conflict detection
  */
 
+const { CompilationError } = require('./error-handling.js');
+
 class RouteRegistry {
   constructor() {
     this.routes = new Map(); // Map<string, RouteConfig>
@@ -31,9 +33,10 @@ class RouteRegistry {
     // Check for exact route conflicts
     if (this.routes.has(normalizedRoute)) {
       const existingConfig = this.routes.get(normalizedRoute);
-      throw new Error(
-        `Route conflict: "${normalizedRoute}" is already registered by file "${existingConfig.file}". ` +
-        `Cannot register from file "${config.file}".`
+      throw CompilationError.routeConflict(
+        normalizedRoute,
+        existingConfig.file,
+        config.file
       );
     }
 
@@ -257,9 +260,11 @@ class RouteRegistry {
   validateDynamicRoute(newRoute) {
     for (const existingRoute of this.dynamicRoutes) {
       if (this.routesConflict(newRoute, existingRoute)) {
-        throw new Error(
-          `Dynamic route conflict: "${newRoute.path}" conflicts with existing route "${existingRoute.path}". ` +
-          `Routes with the same structure but different parameter names are not allowed.`
+        throw CompilationError.dynamicRouteConflict(
+          newRoute.path,
+          existingRoute.path,
+          newRoute.file,
+          existingRoute.file
         );
       }
     }

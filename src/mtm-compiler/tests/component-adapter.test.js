@@ -754,8 +754,9 @@ describe('ComponentAdapter', () => {
       expect(definition.hasEmits).toBe(true);
       expect(definition.exportType).toBe('default');
 
-      // Restore original function
-      require('fs').readFileSync = originalReadFileSync;
+      // Restore original functions
+      fs.readFileSync = originalReadFileSync;
+      fs.existsSync = originalExistsSync;
     });
 
     test('should generate enhanced Vue wrapper code', () => {
@@ -894,20 +895,472 @@ describe('ComponentAdapter', () => {
 
     test('should handle Solid file extensions', () => {
       expect(adapter.canHandle('Component.solid.tsx')).toBe(true);
+      expect(adapter.canHandle('Component.solid.jsx')).toBe(true);
       expect(adapter.canHandle('solid-component.tsx')).toBe(true);
+      expect(adapter.canHandle('Component.tsx')).toBe(true); // Generic TSX without react/vue
       expect(adapter.canHandle('Component.vue')).toBe(false);
       expect(adapter.canHandle('Component.svelte')).toBe(false);
+      expect(adapter.canHandle('react-component.tsx')).toBe(false);
+      expect(adapter.canHandle('vue-component.tsx')).toBe(false);
     });
 
-    test('should generate Solid wrapper code', () => {
-      const componentDefinition = {
+    test('should extract TypeScript interface props', () => {
+      const source = `
+        interface TestComponentProps {
+          title: string;
+          count?: number;
+          isActive: boolean;
+          onClick: (id: string) => void;
+        }
+      `;
+
+      const props = adapter.extractProps(source);
+      expect(props).toHaveLength(4);
+      expect(props[0]).toEqual({
+        name: 'title',
+        type: 'string',
+        required: true,
+        default: null
+      });
+      expect(props[1]).toEqual({
+        name: 'count',
+        type: 'number',
+        required: false,
+        default: null
+      });
+      expect(props[2]).toEqual({
+        name: 'isActive',
+        type: 'boolean',
+        required: true,
+        default: null
+      });
+      expect(props[3]).toEqual({
+        name: 'onClick',
+        type: '(id: string) => void',
+        required: true,
+        default: null
+      });
+    });
+
+    test('should extract TypeScript type props', () => {
+      const source = `
+        type ComponentProps = {
+          name: string;
+          age?: number;
+          callback: () => void;
+        };
+      `;
+
+      const props = adapter.extractProps(source);
+      expect(props).toHaveLength(3);
+      expect(props[0]).toEqual({
+        name: 'name',
+        type: 'string',
+        required: true,
+        default: null
+      });
+      expect(props[1]).toEqual({
+        name: 'age',
+        type: 'number',
+        required: false,
+        default: null
+      });
+      expect(props[2]).toEqual({
+        name: 'callback',
+        type: '() => void',
+        required: true,
+        default: null
+      });
+    });
+
+    test('should extract function component destructured props', () => {
+      const source = `
+        function TestComponent({ title, count = 0, isActive }: Props) {
+          return <div>{title}</div>;
+        }
+      `;
+
+      const props = adapter.extractProps(source);
+      expect(props).toHaveLength(3);
+      expect(props[0]).toEqual({
+        name: 'title',
+        type: 'any',
+        required: true,
+        default: null
+      });
+      expect(props[1]).toEqual({
+        name: 'count',
+        type: 'any',
+        required: false,
+        default: '0'
+      });
+      expect(props[2]).toEqual({
+        name: 'isActive',
+        type: 'any',
+        required: true,
+        default: null
+      });
+    });
+
+    test('should extract arrow function component props', () => {
+      const source = `
+        const TestComponent = ({ name, active = false }: Props) => {
+          return <div>{name}</div>;
+        };
+      `;
+
+      const props = adapter.extractProps(source);
+      expect(props).toHaveLength(2);
+      expect(props[0]).toEqual({
+        name: 'name',
+        type: 'any',
+        required: true,
+        default: null
+      });
+      expect(props[1]).toEqual({
+        name: 'active',
+        type: 'any',
+        required: false,
+        default: 'false'
+      });
+    });
+
+    test('should detect Solid signals usage', () => {
+      const sourceWithSignals = `
+        import { createSignal } from 'solid-js';
+        function Component() {
+          const [count, setCount] = createSignal(0);
+          return <div>{count()}</div>;
+        }
+      `;
+
+      const sourceWithoutSignals = `
+        function Component(props) {
+          return <div>{props.title}</div>;
+        }
+      `;
+
+      expect(adapter.detectSignals(sourceWithSignals)).toBe(true);
+      expect(adapter.detectSignals(sourceWithoutSignals)).toBe(false);
+    });
+
+    test('should detect Solid stores usage', () => {
+      const sourceWithStores = `
+        import { createStore, produce } from 'solid-js/store';
+        function Component() {
+          const [store, setStore] = createStore({ count: 0 });
+          const updateStore = produce((s) => s.count++);
+          return <div>{store.count}</div>;
+        }
+      `;
+
+      const sourceWithoutStores = `
+        function Component(props) {
+          return <div>{props.title}</div>;
+        }
+      `;
+
+      expect(adapter.detectStores(sourceWithStores)).toBe(true);
+      expect(adapter.detectStores(sourceWithoutStores)).toBe(false);
+    });
+
+    test('should detect Solid effects usage', () => {
+      const sourceWithEffects = `
+        import { createEffect, createMemo, onMount, onCleanup } from 'solid-js';
+        function Component() {
+          const [count, setCount] = createSignal(0);
+          const doubled = createMemo(() => count() * 2);
+          
+          createEffect(() => {
+            console.log('Count changed:', count());
+          });
+          
+          onMount(() => {
+            console.log('Component mounted');
+          });
+          
+          onCleanup(() => {
+            console.log('Component cleanup');
+          });
+          
+          return <div>{doubled()}</div>;
+        }
+      `;
+
+      const sourceWithoutEffects = `
+        function Component(props) {
+          return <div>{props.title}</div>;
+        }
+      `;
+
+      expect(adapter.detectEffects(sourceWithEffects)).toBe(true);
+      expect(adapter.detectEffects(sourceWithoutEffects)).toBe(false);
+    });
+
+    test('should detect Solid resources usage', () => {
+      const sourceWithResources = `
+        import { createResource, Suspense, ErrorBoundary, lazy } from 'solid-js';
+        
+        const LazyComponent = lazy(() => import('./LazyComponent'));
+        
+        function Component() {
+          const [data] = createResource(fetchData);
+          
+          return (
+            <ErrorBoundary fallback={<div>Error</div>}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <LazyComponent data={data()} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        }
+      `;
+
+      const sourceWithoutResources = `
+        function Component(props) {
+          return <div>{props.title}</div>;
+        }
+      `;
+
+      expect(adapter.detectResources(sourceWithResources)).toBe(true);
+      expect(adapter.detectResources(sourceWithoutResources)).toBe(false);
+    });
+
+    test('should detect export type', () => {
+      const defaultExport = 'export default function Component() {}';
+      const namedExport = 'export const Component = () => {}';
+      const bothExports = `
+        export const utils = {};
+        export default function Component() {}
+      `;
+
+      expect(adapter.detectExportType(defaultExport)).toBe('default');
+      expect(adapter.detectExportType(namedExport)).toBe('named');
+      expect(adapter.detectExportType(bothExports)).toBe('both');
+    });
+
+    test('should transform component import with Solid metadata', () => {
+      const componentImport = {
         name: 'TestComponent',
+        path: '@components/Test.solid.tsx',
         framework: 'solid'
       };
 
+      const solidSource = `
+        import { createSignal, createEffect, createStore } from 'solid-js';
+        
+        interface Props {
+          title: string;
+          count?: number;
+        }
+        
+        export default function TestComponent({ title, count = 0 }: Props) {
+          const [localCount, setLocalCount] = createSignal(count);
+          const [store, setStore] = createStore({ data: [] });
+          
+          createEffect(() => {
+            console.log('Count changed:', localCount());
+          });
+          
+          return <div>{title}: {localCount()}</div>;
+        }
+      `;
+
+      // Mock fs functions to return Solid source
+      const fs = require('fs');
+      const originalReadFileSync = fs.readFileSync;
+      const originalExistsSync = fs.existsSync;
+      fs.readFileSync = jest.fn().mockReturnValue(solidSource);
+      fs.existsSync = jest.fn().mockReturnValue(true);
+
+      const definition = adapter.transform(componentImport);
+
+      expect(definition.name).toBe('TestComponent');
+      expect(definition.framework).toBe('solid');
+      expect(definition.isSolidComponent).toBe(true);
+      expect(definition.usesSignals).toBe(true);
+      expect(definition.usesStores).toBe(true);
+      expect(definition.usesEffects).toBe(true);
+      expect(definition.usesResources).toBe(false);
+      expect(definition.exportType).toBe('default');
+
+      // Restore original functions
+      fs.readFileSync = originalReadFileSync;
+      fs.existsSync = originalExistsSync;
+    });
+
+    test('should generate enhanced Solid wrapper code', () => {
+      const componentDefinition = {
+        name: 'TestComponent',
+        framework: 'solid',
+        usesSignals: true,
+        usesStores: true,
+        usesEffects: true,
+        usesResources: false,
+        props: [
+          { name: 'title', type: 'string', required: true },
+          { name: 'count', type: 'number', required: false, default: '0' }
+        ]
+      };
+
       const wrapper = adapter.generateWrapper(componentDefinition);
+
+      // Check props interface
+      expect(wrapper).toContain('interface TestComponentProps');
+      expect(wrapper).toContain('title: string;');
+      expect(wrapper).toContain('count?: number; // default: 0');
+
+      // Check wrapper component
+      expect(wrapper).toContain('function TestComponentWrapper');
+      expect(wrapper).toContain('typeof Solid === \'undefined\'');
+      expect(wrapper).toContain('Component uses Solid signals');
+      expect(wrapper).toContain('Component uses Solid stores');
+      expect(wrapper).toContain('Component uses Solid effects');
+      expect(wrapper).toContain('Solid.createMemo(() => props)');
+      expect(wrapper).toContain('TestComponent(reactiveProps())');
+
+      // Check error handling
+      expect(wrapper).toContain('try {');
+      expect(wrapper).toContain('catch (error)');
+      expect(wrapper).toContain('Error loading TestComponent');
+
+      // Check mounting utilities
+      expect(wrapper).toContain('TestComponentUtils');
+      expect(wrapper).toContain('mount: function');
+      expect(wrapper).toContain('createComponent: function');
+      expect(wrapper).toContain('createSignal: function');
+      expect(wrapper).toContain('createStore: function');
+      expect(wrapper).toContain('createMemo: function');
+      expect(wrapper).toContain('createEffect: function');
       expect(wrapper).toContain('Solid.render');
-      expect(wrapper).toContain('TestComponent');
+      expect(wrapper).toContain('window.TestComponentUtils');
+    });
+
+    test('should generate props interface correctly', () => {
+      const props = [
+        { name: 'title', type: 'string', required: true },
+        { name: 'count', type: 'number', required: false, default: '0' },
+        { name: 'onClick', type: '() => void', required: true }
+      ];
+
+      const propsInterface = adapter.generatePropsInterface('TestComponent', props);
+
+      expect(propsInterface).toContain('interface TestComponentProps {');
+      expect(propsInterface).toContain('title: string;');
+      expect(propsInterface).toContain('count?: number; // default: 0');
+      expect(propsInterface).toContain('onClick: () => void;');
+      expect(propsInterface).toContain('}');
+    });
+
+    test('should generate empty props interface for no props', () => {
+      const propsInterface = adapter.generatePropsInterface('TestComponent', []);
+      expect(propsInterface).toBe('interface TestComponentProps {}');
+    });
+
+    test('should generate wrapper component with signal integration', () => {
+      const componentDefinition = {
+        name: 'TestComponent',
+        usesSignals: true,
+        usesStores: true,
+        usesEffects: true,
+        usesResources: true
+      };
+
+      const wrapper = adapter.generateWrapperComponent(componentDefinition);
+
+      expect(wrapper).toContain('function TestComponentWrapper');
+      expect(wrapper).toContain('typeof Solid === \'undefined\'');
+      expect(wrapper).toContain('Component uses Solid signals');
+      expect(wrapper).toContain('Component uses Solid stores');
+      expect(wrapper).toContain('Component uses Solid effects');
+      expect(wrapper).toContain('Component uses Solid resources');
+      expect(wrapper).toContain('Solid.createMemo(() => props)');
+      expect(wrapper).toContain('TestComponent(reactiveProps())');
+      expect(wrapper).toContain('Error rendering TestComponent');
+    });
+
+    test('should generate mounting utilities with Solid render integration', () => {
+      const utils = adapter.generateMountingUtils('TestComponent');
+
+      expect(utils).toContain('TestComponentUtils');
+      expect(utils).toContain('mount: function(container: HTMLElement');
+      expect(utils).toContain('Solid.createSignal(props)');
+      expect(utils).toContain('Solid.render(component, container)');
+      expect(utils).toContain('unmount:');
+      expect(utils).toContain('update:');
+      expect(utils).toContain('getProps:');
+      expect(utils).toContain('setProps:');
+      expect(utils).toContain('createComponent:');
+      expect(utils).toContain('createSignal:');
+      expect(utils).toContain('createStore:');
+      expect(utils).toContain('createMemo:');
+      expect(utils).toContain('createEffect:');
+      expect(utils).toContain('window.TestComponentUtils');
+    });
+
+    test('should parse TypeScript props correctly', () => {
+      const propsContent = `
+        title: string;
+        count?: number;
+        isActive: boolean;
+        onClick: (id: string) => void;
+        config?: { theme: string; size: number };
+      `;
+
+      const props = [];
+      adapter.parseTypeScriptProps(propsContent, props);
+
+      expect(props).toHaveLength(5);
+      expect(props[0]).toEqual({
+        name: 'title',
+        type: 'string',
+        required: true,
+        default: null
+      });
+      expect(props[1]).toEqual({
+        name: 'count',
+        type: 'number',
+        required: false,
+        default: null
+      });
+      expect(props[4]).toEqual({
+        name: 'config',
+        type: '{ theme: string; size: number }',
+        required: false,
+        default: null
+      });
+    });
+
+    test('should parse destructured props correctly', () => {
+      const propsContent = 'title, count = 0, isActive, callback = () => {}';
+      const props = [];
+      adapter.parseDestructuredProps(propsContent, props);
+
+      expect(props).toHaveLength(4);
+      expect(props[0]).toEqual({
+        name: 'title',
+        type: 'any',
+        required: true,
+        default: null
+      });
+      expect(props[1]).toEqual({
+        name: 'count',
+        type: 'any',
+        required: false,
+        default: '0'
+      });
+      expect(props[2]).toEqual({
+        name: 'isActive',
+        type: 'any',
+        required: true,
+        default: null
+      });
+      expect(props[3]).toEqual({
+        name: 'callback',
+        type: 'any',
+        required: false,
+        default: '() => {}'
+      });
     });
   });
 

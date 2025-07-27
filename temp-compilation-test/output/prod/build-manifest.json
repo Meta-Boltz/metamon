@@ -1,0 +1,85 @@
+{
+  "buildTime": "2025-07-26T01:42:40.074Z",
+  "buildMode": "production",
+  "mtmVersion": "1.0.0",
+  "pages": [
+    {
+      "route": "/custom-test",
+      "title": "Custom Mode Test",
+      "description": "Testing custom JavaScript file compilation",
+      "compilationMode": "custom-app-bundle.js",
+      "htmlFile": "custom-test.html",
+      "jsFile": "custom-app-bundle.js"
+    },
+    {
+      "route": "/default-test",
+      "title": "Default Mode Test",
+      "description": "Testing default compilation mode (no compileJsMode specified)",
+      "compilationMode": "external.js",
+      "htmlFile": "default-test.html",
+      "jsFile": "js/component.js"
+    },
+    {
+      "route": "/external-test",
+      "title": "External Mode Test",
+      "description": "Testing external JavaScript compilation",
+      "compilationMode": "external.js",
+      "htmlFile": "external-test.html",
+      "jsFile": "js/component.js"
+    },
+    {
+      "route": "/inline-test",
+      "title": "Inline Mode Test",
+      "description": "Testing inline JavaScript compilation",
+      "compilationMode": "inline",
+      "htmlFile": "inline-test.html"
+    }
+  ],
+  "routes": {
+    "/custom-test": {
+      "route": "/custom-test",
+      "title": "Custom Mode Test",
+      "description": "Testing custom JavaScript file compilation",
+      "compilationMode": "custom-app-bundle.js",
+      "htmlFile": "custom-test.html",
+      "jsFile": "custom-app-bundle.js"
+    },
+    "/default-test": {
+      "route": "/default-test",
+      "title": "Default Mode Test",
+      "description": "Testing default compilation mode (no compileJsMode specified)",
+      "compilationMode": "external.js",
+      "htmlFile": "default-test.html",
+      "jsFile": "js/component.js"
+    },
+    "/external-test": {
+      "route": "/external-test",
+      "title": "External Mode Test",
+      "description": "Testing external JavaScript compilation",
+      "compilationMode": "external.js",
+      "htmlFile": "external-test.html",
+      "jsFile": "js/component.js"
+    },
+    "/inline-test": {
+      "route": "/inline-test",
+      "title": "Inline Mode Test",
+      "description": "Testing inline JavaScript compilation",
+      "compilationMode": "inline",
+      "htmlFile": "inline-test.html"
+    }
+  },
+  "assets": {
+    "js": [
+      "custom-app-bundle.js",
+      "js/component.js",
+      "js/component.js"
+    ],
+    "css": [],
+    "html": [
+      "custom-test.html",
+      "default-test.html",
+      "external-test.html",
+      "inline-test.html"
+    ]
+  }
+}

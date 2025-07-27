@@ -1,0 +1,89 @@
+// Home page - Pure MTM-style syntax demonstration
+export default function HomePage() {
+  return `
+    <div class="home-page">
+      <header class="page-header">
+        <h1>Enhanced MTM Framework</h1>
+        <p class="description">Welcome to the enhanced MTM framework with routing and multi-framework support</p>
+        <div class="page-meta">
+          <span class="current-time">Current time: ${new Date().toLocaleTimeString()}</span>
+          <span class="visit-counter">Route: /</span>
+        </div>
+      </header>
+      
+      <nav class="main-navigation">
+        <h2>Navigation Examples</h2>
+        <div class="nav-links">
+          <a href="/about" class="nav-link">About Page</a>
+          <a href="/mtm-example" class="nav-link">MTM Example</a>
+          <a href="/react-example" class="nav-link">React Example</a>
+          <a href="/vue-example" class="nav-link">Vue Example</a>
+          <a href="/solid-example" class="nav-link">Solid Example</a>
+          <a href="/svelte-example" class="nav-link">Svelte Example</a>
+        </div>
+      </nav>
+      
+      <main class="main-content">
+        <section class="welcome-section">
+          <h2>Welcome to Enhanced MTM!</h2>
+          <div class="interactive-demo">
+            <button onclick="alert('MTM Framework Demo!')" class="demo-button">
+              Demo Interaction
+            </button>
+            <button onclick="window.location.reload()" class="demo-button">
+              Refresh Page
+            </button>
+          </div>
+        </section>
+        
+        <section class="features-section">
+          <h3>Enhanced MTM Framework Features</h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <h4>🔗 Client-Side Routing</h4>
+              <p>Navigate between pages using standard HTML anchor tags with automatic interception</p>
+            </div>
+            <div class="feature-card">
+              <h4>⚡ Multi-Framework Support</h4>
+              <p>Import and use React, Vue, Solid, and Svelte components seamlessly</p>
+            </div>
+            <div class="feature-card">
+              <h4>📝 Frontmatter Configuration</h4>
+              <p>Configure routes, compilation modes, and metadata using YAML frontmatter</p>
+            </div>
+            <div class="feature-card">
+              <h4>🎯 Enhanced Development</h4>
+              <p>Hot module replacement, TypeScript support, and optimized builds</p>
+            </div>
+          </div>
+        </section>
+        
+        <section class="routing-demo">
+          <h3>Routing Demonstration</h3>
+          <p>This page demonstrates the enhanced MTM framework with:</p>
+          <ul class="demo-list">
+            <li>✅ Client-side routing with standard anchor tags</li>
+            <li>✅ Multi-framework component integration</li>
+            <li>✅ Optimized build system with Vite</li>
+            <li>✅ TypeScript support for components</li>
+            <li>✅ Hot module replacement during development</li>
+            <li>✅ Production-ready optimizations</li>
+          </ul>
+        </section>
+      </main>
+      
+      <footer class="page-footer">
+        <p>
+          <a href="/about" class="footer-link">About</a> | 
+          <a href="/react-example" class="footer-link">React</a> |
+          <a href="/vue-example" class="footer-link">Vue</a> |
+          <a href="/solid-example" class="footer-link">Solid</a> |
+          <a href="/svelte-example" class="footer-link">Svelte</a>
+        </p>
+        <p class="footer-note">
+          Built with Enhanced MTM Framework - Multi-framework routing example
+        </p>
+      </footer>
+    </div>
+  `;
+}

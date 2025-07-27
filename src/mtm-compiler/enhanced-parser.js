@@ -1,11 +1,26 @@
 // Enhanced MTM Parser - Extends MTM parser with frontmatter and import support
 const { MTMParser } = require('./parser.js');
+const { CompilationError } = require('./error-handling.js');
+const { TypeScriptPathResolver } = require('./typescript-path-resolver.js');
+const { TypeScriptIntegration } = require('./typescript-integration.js');
+const fs = require('fs');
+const path = require('path');
 
 class EnhancedMTMParser extends MTMParser {
-  constructor() {
+  constructor(options = {}) {
     super();
     this.frontmatter = {};
     this.imports = [];
+
+    // TypeScript integration
+    this.typeScriptResolver = options.typeScriptResolver || TypeScriptPathResolver.fromTypeScriptConfig();
+    this.typeScriptIntegration = options.typeScriptIntegration || new TypeScriptIntegration({
+      pathResolver: this.typeScriptResolver,
+      enableTypeChecking: options.enableTypeChecking !== false,
+      generateDeclarations: options.generateDeclarations || false
+    });
+
+    this.enableTypeScript = options.enableTypeScript !== false;
   }
 
   parse(source, filename = 'unknown.mtm') {
@@ -23,6 +38,26 @@ class EnhancedMTMParser extends MTMParser {
     // Add frontmatter and imports to AST
     ast.frontmatter = this.frontmatter;
     ast.imports = this.imports;
+
+    // Enhanced TypeScript processing
+    if (this.enableTypeScript && this.imports.length > 0) {
+      try {
+        ast.enhancedImports = this.typeScriptIntegration.analyzeComponentImports(this.imports, filename);
+        ast.typeValidationErrors = this.typeScriptIntegration.validateImports(ast.enhancedImports, filename);
+
+        // Generate TypeScript declarations if requested
+        if (this.typeScriptIntegration.generateDeclarations) {
+          ast.typeDeclaration = this.typeScriptIntegration.generateDeclarationFile(ast, ast.enhancedImports);
+        }
+      } catch (error) {
+        console.warn('TypeScript integration error:', error.message);
+        ast.enhancedImports = this.imports.map(imp => ({ ...imp, error: error }));
+        ast.typeValidationErrors = [error];
+      }
+    } else {
+      ast.enhancedImports = this.imports;
+      ast.typeValidationErrors = [];
+    }
 
     return ast;
   }
@@ -186,6 +221,15 @@ class EnhancedMTMParser extends MTMParser {
   }
 
   detectComponentType(componentPath) {
+    if (this.enableTypeScript) {
+      // Use TypeScript resolver for more accurate detection
+      const framework = this.typeScriptResolver.detectFrameworkFromPath(componentPath);
+      if (framework !== 'unknown') {
+        return framework;
+      }
+    }
+
+    // Fallback to basic detection
     if (componentPath.endsWith('.vue')) {
       return 'vue';
     }
@@ -257,8 +301,18 @@ class EnhancedMTMParser extends MTMParser {
     return ast;
   }
 
-  // Utility method to resolve component paths
+  // Enhanced utility method to resolve component paths with TypeScript support
   resolveComponentPath(importPath, basePath = '') {
+    if (this.enableTypeScript) {
+      try {
+        const resolution = this.typeScriptResolver.resolve(importPath, basePath);
+        return resolution.found ? resolution.resolvedPath : importPath;
+      } catch (error) {
+        console.warn(`Path resolution failed for ${importPath}:`, error.message);
+      }
+    }
+
+    // Fallback to basic resolution
     if (importPath.startsWith('@components/')) {
       // Replace @components/ with actual components directory
       return importPath.replace('@components/', 'src/components/');
@@ -272,17 +326,17 @@ class EnhancedMTMParser extends MTMParser {
   }
 
   // Validation method for frontmatter
-  validateFrontmatter(frontmatter) {
+  validateFrontmatter(frontmatter, filename = 'unknown.mtm') {
     const errors = [];
 
     // Validate route format
     if (frontmatter.route && !frontmatter.route.startsWith('/')) {
-      errors.push({
-        type: 'frontmatter-validation',
-        message: 'Route must start with "/"',
-        field: 'route',
-        value: frontmatter.route
-      });
+      errors.push(CompilationError.frontmatterValidation(
+        'route',
+        frontmatter.route,
+        filename,
+        ['Must start with "/" (e.g., "/home", "/user/[id]")']
+      ));
     }
 
     // Validate compileJsMode
@@ -291,16 +345,432 @@ class EnhancedMTMParser extends MTMParser {
       const isValidCustomMode = frontmatter.compileJsMode.endsWith('.js');
 
       if (!validModes.includes(frontmatter.compileJsMode) && !isValidCustomMode) {
-        errors.push({
-          type: 'frontmatter-validation',
-          message: 'compileJsMode must be "inline", "external.js", or end with ".js"',
-          field: 'compileJsMode',
-          value: frontmatter.compileJsMode
-        });
+        errors.push(CompilationError.frontmatterValidation(
+          'compileJsMode',
+          frontmatter.compileJsMode,
+          filename,
+          ['inline', 'external.js', 'custom.js']
+        ));
       }
     }
 
     return errors;
+  }
+
+  // Get compilation mode from frontmatter with defaults
+  getCompilationMode(frontmatter, options = {}, filename = 'unknown.mtm') {
+    const compileJsMode = frontmatter.compileJsMode;
+
+    // If explicitly set, validate and return
+    if (compileJsMode) {
+      const errors = this.validateFrontmatter({ compileJsMode }, filename);
+      if (errors.length > 0) {
+        throw errors[0];
+      }
+      return compileJsMode;
+    }
+
+    // Default behavior based on options
+    if (options.development) {
+      return 'inline';
+    }
+
+    if (options.production) {
+      return 'external.js';
+    }
+
+    // Default to inline for simplicity
+    return 'inline';
+  }
+
+  /**
+   * Resolve and validate component import paths
+   * @param {string} importPath - The import path to resolve
+   * @param {string} basePath - Base path for resolution
+   * @param {string} filename - Current file name for error reporting
+   * @param {number} line - Line number for error reporting
+   * @returns {string} Resolved path
+   * @throws {CompilationError} If path cannot be resolved
+   */
+  resolveAndValidateComponentPath(importPath, basePath = process.cwd(), filename = 'unknown.mtm', line = 0) {
+    const resolvedPath = this.resolveComponentPath(importPath, basePath);
+    const searchPaths = [];
+
+    // Try different possible paths
+    const possiblePaths = [
+      resolvedPath,
+      resolvedPath + '.tsx',
+      resolvedPath + '.jsx',
+      resolvedPath + '.vue',
+      resolvedPath + '.svelte',
+      resolvedPath + '/index.tsx',
+      resolvedPath + '/index.jsx',
+      resolvedPath + '/index.vue',
+      resolvedPath + '/index.svelte'
+    ];
+
+    for (const possiblePath of possiblePaths) {
+      searchPaths.push(possiblePath);
+      try {
+        if (fs.existsSync(possiblePath)) {
+          return possiblePath;
+        }
+      } catch (error) {
+        // Continue searching
+      }
+    }
+
+    // If we get here, the import couldn't be resolved
+    throw CompilationError.importResolution(
+      importPath,
+      filename,
+      line,
+      searchPaths
+    );
+  }
+
+  /**
+   * Generate IntelliSense information for IDE support
+   * @param {Object} ast - The parsed AST
+   * @param {string} filename - The source filename
+   * @returns {Object} IntelliSense information
+   */
+  generateIntelliSenseInfo(ast, filename = 'unknown.mtm') {
+    const intelliSense = {
+      filename,
+      components: [],
+      variables: [],
+      functions: [],
+      imports: [],
+      typeDefinitions: [],
+      completions: [],
+      diagnostics: []
+    };
+
+    try {
+      // Process enhanced imports for component information
+      if (ast.enhancedImports) {
+        for (const imp of ast.enhancedImports) {
+          if (!imp.error && imp.componentMetadata) {
+            intelliSense.components.push({
+              name: imp.name,
+              framework: imp.framework,
+              path: imp.resolved?.resolvedPath || imp.path,
+              props: imp.componentMetadata.props || [],
+              hasTypeScript: imp.hasTypeScript,
+              documentation: this.generateComponentDocumentation(imp)
+            });
+
+            // Add completions for component props
+            if (imp.componentMetadata.props) {
+              for (const prop of imp.componentMetadata.props) {
+                intelliSense.completions.push({
+                  label: prop.name,
+                  kind: 'Property',
+                  detail: `${prop.name}: ${prop.type}`,
+                  documentation: prop.default ? `Default: ${prop.default}` : '',
+                  insertText: `${prop.name}={$1}`,
+                  component: imp.name
+                });
+              }
+            }
+          }
+
+          // Add import diagnostics
+          if (imp.error) {
+            intelliSense.diagnostics.push({
+              severity: 'error',
+              message: imp.error.message,
+              line: imp.line || 0,
+              column: 0,
+              source: 'mtm-typescript'
+            });
+          }
+        }
+      }
+
+      // Process variables
+      if (ast.variables) {
+        for (const variable of ast.variables) {
+          intelliSense.variables.push({
+            name: variable.name,
+            type: variable.type,
+            value: variable.value,
+            line: variable.line,
+            reactive: variable.type === 'reactive'
+          });
+
+          // Add variable completions
+          intelliSense.completions.push({
+            label: `$${variable.name}`,
+            kind: 'Variable',
+            detail: `${variable.type} variable`,
+            documentation: `Value: ${variable.value}`,
+            insertText: `$${variable.name}`
+          });
+        }
+      }
+
+      // Process functions
+      if (ast.functions) {
+        for (const func of ast.functions) {
+          intelliSense.functions.push({
+            name: func.name,
+            params: func.params,
+            body: func.body,
+            line: func.line
+          });
+
+          // Add function completions
+          intelliSense.completions.push({
+            label: `$${func.name}`,
+            kind: 'Function',
+            detail: `${func.name}${func.params}`,
+            documentation: 'MTM function',
+            insertText: `$${func.name}($1)`
+          });
+        }
+      }
+
+      // Add type validation diagnostics
+      if (ast.typeValidationErrors) {
+        for (const error of ast.typeValidationErrors) {
+          intelliSense.diagnostics.push({
+            severity: 'error',
+            message: error.message,
+            line: error.line || 0,
+            column: error.column || 0,
+            source: 'mtm-typescript'
+          });
+        }
+      }
+
+      // Add framework-specific completions
+      intelliSense.completions.push(
+        ...this.generateFrameworkCompletions(ast.framework)
+      );
+
+      // Add path alias completions
+      intelliSense.completions.push(
+        ...this.generatePathAliasCompletions()
+      );
+
+    } catch (error) {
+      console.warn('Error generating IntelliSense info:', error.message);
+      intelliSense.diagnostics.push({
+        severity: 'warning',
+        message: `IntelliSense generation error: ${error.message}`,
+        line: 0,
+        column: 0,
+        source: 'mtm-typescript'
+      });
+    }
+
+    return intelliSense;
+  }
+
+  /**
+   * Generate component documentation
+   * @param {Object} importInfo - Import information
+   * @returns {string} Component documentation
+   */
+  generateComponentDocumentation(importInfo) {
+    const lines = [];
+
+    lines.push(`**${importInfo.name}** (${importInfo.framework})`);
+    lines.push('');
+
+    if (importInfo.componentMetadata.props && importInfo.componentMetadata.props.length > 0) {
+      lines.push('**Props:**');
+      for (const prop of importInfo.componentMetadata.props) {
+        const optional = prop.optional ? '?' : '';
+        const defaultValue = prop.default ? ` = ${prop.default}` : '';
+        lines.push(`- \`${prop.name}${optional}: ${prop.type}${defaultValue}\``);
+      }
+      lines.push('');
+    }
+
+    if (importInfo.resolved?.resolvedPath) {
+      lines.push(`**Source:** \`${importInfo.resolved.resolvedPath}\``);
+    }
+
+    return lines.join('\n');
+  }
+
+  /**
+   * Generate framework-specific completions
+   * @param {string} framework - Target framework
+   * @returns {Array} Array of completions
+   */
+  generateFrameworkCompletions(framework) {
+    const completions = [];
+
+    // Common MTM completions
+    completions.push(
+      {
+        label: 'signal',
+        kind: 'Function',
+        detail: 'signal(key, initialValue)',
+        documentation: 'Create a reactive signal',
+        insertText: 'signal(\'$1\', $2)'
+      },
+      {
+        label: 'template',
+        kind: 'Snippet',
+        detail: '<template>...</template>',
+        documentation: 'MTM template block',
+        insertText: '<template>\n  $1\n</template>'
+      }
+    );
+
+    // Framework-specific completions
+    switch (framework) {
+      case 'react':
+        completions.push(
+          {
+            label: 'useState',
+            kind: 'Function',
+            detail: 'useState(initialValue)',
+            documentation: 'React state hook',
+            insertText: 'useState($1)'
+          },
+          {
+            label: 'useEffect',
+            kind: 'Function',
+            detail: 'useEffect(effect, deps)',
+            documentation: 'React effect hook',
+            insertText: 'useEffect(() => {\n  $1\n}, [$2])'
+          }
+        );
+        break;
+
+      case 'vue':
+        completions.push(
+          {
+            label: 'ref',
+            kind: 'Function',
+            detail: 'ref(value)',
+            documentation: 'Vue reactive reference',
+            insertText: 'ref($1)'
+          },
+          {
+            label: 'computed',
+            kind: 'Function',
+            detail: 'computed(getter)',
+            documentation: 'Vue computed property',
+            insertText: 'computed(() => $1)'
+          }
+        );
+        break;
+
+      case 'solid':
+        completions.push(
+          {
+            label: 'createSignal',
+            kind: 'Function',
+            detail: 'createSignal(initialValue)',
+            documentation: 'Solid reactive signal',
+            insertText: 'createSignal($1)'
+          },
+          {
+            label: 'createEffect',
+            kind: 'Function',
+            detail: 'createEffect(fn)',
+            documentation: 'Solid reactive effect',
+            insertText: 'createEffect(() => $1)'
+          }
+        );
+        break;
+
+      case 'svelte':
+        completions.push(
+          {
+            label: 'writable',
+            kind: 'Function',
+            detail: 'writable(value)',
+            documentation: 'Svelte writable store',
+            insertText: 'writable($1)'
+          },
+          {
+            label: 'derived',
+            kind: 'Function',
+            detail: 'derived(stores, fn)',
+            documentation: 'Svelte derived store',
+            insertText: 'derived($1, $2 => $3)'
+          }
+        );
+        break;
+    }
+
+    return completions;
+  }
+
+  /**
+   * Generate path alias completions
+   * @returns {Array} Array of path completions
+   */
+  generatePathAliasCompletions() {
+    const completions = [];
+
+    if (this.enableTypeScript && this.typeScriptResolver) {
+      for (const [alias] of Object.entries(this.typeScriptResolver.resolvedPaths)) {
+        const cleanAlias = alias.replace('/*', '/');
+        completions.push({
+          label: cleanAlias,
+          kind: 'Folder',
+          detail: `Path alias: ${alias}`,
+          documentation: 'TypeScript path mapping',
+          insertText: cleanAlias
+        });
+      }
+    }
+
+    return completions;
+  }
+
+  /**
+   * Get type information for a specific position in the file
+   * @param {string} source - Source code
+   * @param {number} line - Line number (0-based)
+   * @param {number} column - Column number (0-based)
+   * @returns {Object} Type information at position
+   */
+  getTypeAtPosition(source, line, column) {
+    // This is a simplified implementation
+    // A full implementation would use the TypeScript language service
+
+    const lines = source.split('\n');
+    if (line >= lines.length) {
+      return null;
+    }
+
+    const currentLine = lines[line];
+    const wordMatch = currentLine.substring(0, column).match(/(\w+)$/);
+
+    if (!wordMatch) {
+      return null;
+    }
+
+    const word = wordMatch[1];
+
+    // Check if it's a variable
+    if (word.startsWith('$')) {
+      return {
+        kind: 'variable',
+        name: word,
+        type: 'unknown',
+        documentation: 'MTM reactive variable'
+      };
+    }
+
+    // Check if it's a component
+    // This would need to be enhanced with actual AST analysis
+    return {
+      kind: 'unknown',
+      name: word,
+      type: 'unknown',
+      documentation: 'Unknown identifier'
+    };
   }
 }
 

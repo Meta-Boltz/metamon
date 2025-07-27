@@ -1,0 +1,260 @@
+---
+title: "MTM Todo List Component"
+description: "Native MTM reactive todo list component"
+compileJsMode: "inline"
+---
+
+// MTM Todo List Component - Pure MTM reactive syntax
+$todos! = signal('todos', [])
+$newTodo! = signal('newTodo', '')
+$nextId! = signal('nextId', 1)
+
+// Computed values using MTM syntax
+$completedCount! = computed(() => $todos.filter(todo => todo.completed).length)
+$totalCount! = computed(() => $todos.length)
+
+// Component methods using MTM syntax
+$addTodo = () => {
+  if ($newTodo.trim()) {
+    $todos = [...$todos, {
+      id: $nextId,
+      text: $newTodo.trim(),
+      completed: false
+    }]
+    $nextId++
+    $newTodo = ''
+  }
+}
+
+$toggleTodo = (id) => {
+  $todos = $todos.map(todo => 
+    todo.id === id ? { ...todo, completed: !todo.completed } : todo
+  )
+}
+
+$deleteTodo = (id) => {
+  $todos = $todos.filter(todo => todo.id !== id)
+}
+
+$clearCompleted = () => {
+  $todos = $todos.filter(todo => !todo.completed)
+}
+
+// Initialize component with props
+$init = (props = {}) => {
+  if (props.items) {
+    $todos = props.items.map((item, index) => ({
+      id: index + 1,
+      text: item.text || item,
+      completed: item.completed || false
+    }))
+    $nextId = $todos.length + 1
+  }
+}
+
+// Handle enter key in input
+$handleKeyPress = (event) => {
+  if (event.key === 'Enter') {
+    $addTodo()
+  }
+}
+
+<template>
+  <div class="mtm-todo-component">
+    <h4>Native MTM Todo List</h4>
+    
+    <div class="todo-input-section">
+      <input 
+        type="text" 
+        bind:value={$newTodo}
+        onkeypress={$handleKeyPress}
+        placeholder="Add a new todo..." 
+        class="todo-input"
+      />
+      <button onclick={$addTodo} class="add-btn">Add</button>
+    </div>
+    
+    <div class="todo-stats">
+      <span class="todo-counter">{$completedCount}/{$totalCount} completed</span>
+      <button onclick={$clearCompleted} class="clear-btn">Clear Completed</button>
+    </div>
+    
+    <ul class="mtm-todo-list">
+      {#each $todos as todo}
+        <li class="mtm-todo-item {todo.completed ? 'completed' : ''}">
+          <span class="todo-text">{todo.text}</span>
+          <div class="todo-actions">
+            <button onclick={() => $toggleTodo(todo.id)} class="toggle-btn">
+              {todo.completed ? '↶' : '✓'}
+            </button>
+            <button onclick={() => $deleteTodo(todo.id)} class="delete-btn">×</button>
+          </div>
+        </li>
+      {/each}
+      
+      {#if $todos.length === 0}
+        <li class="empty-state">
+          <p>No todos yet. Add one above!</p>
+        </li>
+      {/if}
+    </ul>
+    
+    <p class="component-info">
+      This is a native MTM reactive todo list with state management and event handling
+    </p>
+  </div>
+</template>
+
+<style>
+  .mtm-todo-component {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e5e9;
+  }
+
+  .mtm-todo-component h4 {
+    margin: 0 0 1rem;
+    color: #2c3e50;
+  }
+
+  .todo-input-section {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .todo-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  .add-btn {
+    background: #9b59b6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .add-btn:hover {
+    background: #8e44ad;
+  }
+
+  .todo-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+
+  .todo-counter {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .clear-btn {
+    background: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .clear-btn:hover {
+    background: #e67e22;
+  }
+
+  .mtm-todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .mtm-todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+  }
+
+  .mtm-todo-item:hover {
+    background: #e9ecef;
+  }
+
+  .mtm-todo-item.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+    background: #d4edda;
+  }
+
+  .todo-text {
+    flex: 1;
+  }
+
+  .todo-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .toggle-btn, .delete-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+
+  .toggle-btn {
+    background: #27ae60;
+    color: white;
+  }
+
+  .toggle-btn:hover {
+    background: #229954;
+  }
+
+  .delete-btn {
+    background: #e74c3c;
+    color: white;
+  }
+
+  .delete-btn:hover {
+    background: #c0392b;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-style: italic;
+  }
+
+  .component-info {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+</style>

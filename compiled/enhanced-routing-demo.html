@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Routing & Components Demo</title>
+    <meta name="description" content="Demonstration of enhanced MTM with routing and multi-framework components">
+    <meta name="route" content="/enhanced-demo">
+    <meta name="keywords" content="mtm, routing, react, vue, solid, svelte">
+    <meta name="author" content="MTM Framework">
+    <meta property="og:title" content="MTM Enhanced Demo">
+    <meta property="og:description" content="See MTM's enhanced routing and component features in action">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .navigation a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .link-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .link-examples a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .link-examples a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* Component styles */
+        .react-component, .vue-component, .solid-component, .svelte-component, .unknown-component {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            font-family: monospace;
+            color: #666;
+        }
+        
+        .react-component {
+            border-color: #61dafb;
+            background: #f0f8ff;
+        }
+        
+        .vue-component {
+            border-color: #4fc08d;
+            background: #f0fff4;
+        }
+        
+        .solid-component {
+            border-color: #2c4f7c;
+            background: #f8f9fa;
+        }
+        
+        .svelte-component {
+            border-color: #ff3e00;
+            background: #fff5f5;
+        }
+        
+        .unknown-component {
+            border-color: #dc3545;
+            background: #fff5f5;
+            color: #dc3545;
+        }
+        
+        .counter-component, .vue-button {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="enhanced-demo">
+    <header>
+      <h1><span data-bind="$message">Loading...</span></h1>
+      <p>This page demonstrates the enhanced MTM framework with routing and multi-framework component support.</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/" data-link="true">Home</a>
+      <a href="/about" data-link="true" class="nav-link">About</a>
+      <a href="/contact" data-link="true" class="btn-primary">Contact</a>
+      <a href="/components" data-link="true">Components</a>
+    </nav>
+
+    <main class="content">
+      <section class="features">
+        <h2>Enhanced Features</h2>
+        <ul>
+          <li>✅ Client-side routing with standard anchor tags</li>
+          <li>✅ Multi-framework component support (React, Vue, Solid, Svelte)</li>
+          <li>✅ Frontmatter-based configuration</li>
+          <li>✅ Flexible JavaScript compilation modes</li>
+          <li>✅ SEO-friendly meta tag generation</li>
+          <li>✅ Component prop passing and event handling</li>
+        </ul>
+      </section>
+
+      <section class="components-demo">
+        <h2>Multi-Framework Components</h2>
+        
+        <div class="component-grid">
+          <div class="component-card">
+            <h3>React Counter</h3>
+            <div data-component="ReactCounter" data-framework="react" data-type="component" data-prop-initialValue="$count" data-prop-initialValue-type="variable" data-prop-onIncrement="$increment" data-prop-onIncrement-type="variable" data-prop-label="React Counter" data-prop-label-type="string" data-prop-theme="primary" data-prop-theme-type="string"></div>
+          </div>
+
+          <div class="component-card">
+            <h3>Vue Button</h3>
+            <div data-component="VueButton" data-framework="vue" data-type="component" data-prop-label="Vue Button" data-prop-label-type="string" data-prop-onClick="$increment" data-prop-onClick-type="variable" data-prop-variant="secondary" data-prop-variant-type="string" data-prop-size="large" data-prop-size-type="string"></div>
+          </div>
+
+          <div class="component-card">
+            <h3>Solid Signal</h3>
+            <div data-component="SolidSignal" data-framework="solid" data-type="component" data-prop-value="$count" data-prop-value-type="variable" data-prop-onUpdate="$increment" data-prop-onUpdate-type="variable" data-prop-displayFormat="Count: {value}" data-prop-displayFormat-type="string" data-prop-reactive="true" data-prop-reactive-type="boolean"></div>
+          </div>
+
+          <div class="component-card">
+            <h3>Svelte Store</h3>
+            <div data-component="SvelteStore" data-framework="svelte" data-type="component" data-prop-data="$count" data-prop-data-type="variable" data-prop-onReset="$reset" data-prop-onReset-type="variable" data-prop-showControls="true" data-prop-showControls-type="boolean" data-prop-animated="true" data-prop-animated-type="boolean"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="routing-demo">
+        <h2>Client-Side Routing</h2>
+        <p>Click these links to see client-side navigation in action:</p>
+        
+        <div class="link-examples">
+          <a href="/user/123" data-link="true">User Profile (Dynamic Route)</a>
+          <a href="/products?category=electronics" data-link="true">Products with Query</a>
+          <a href="/dashboard" data-link="true" class="dashboard-link">Dashboard</a>
+          <a href="/settings" data-link="true" class="settings-link">Settings</a>
+        </div>
+      </section>
+
+      <section class="compilation-modes">
+        <h2>Compilation Modes</h2>
+        <p>This page uses <strong>inline</strong> compilation mode. JavaScript is embedded directly in the HTML for faster initial load.</p>
+        <p>You can also use <code>external.js</code> mode for larger applications with code splitting.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Current count: <span data-bind="$count"><span data-bind="$count">Loading...</span></span></p>
+      <p>Built with Enhanced MTM Framework</p>
+    </footer>
+  </div></div>
+    
+    <script>
+        // Enhanced MTM Client-Side Router
+        class MTMRouter {
+            constructor() {
+                this.routes = new Map();
+                this.currentRoute = null;
+                this.init();
+            }
+
+            init() {
+                // Intercept anchor tag clicks for internal navigation
+                document.addEventListener('click', (e) => {
+                    const link = e.target.closest('a[data-link="true"]');
+                    if (link && link.href) {
+                        e.preventDefault();
+                        const url = new URL(link.href);
+                        this.navigate(url.pathname);
+                    }
+                });
+
+                // Handle browser back/forward buttons
+                window.addEventListener('popstate', (e) => {
+                    this.handlePopState(e);
+                });
+
+                // Set initial route
+                this.currentRoute = window.location.pathname;
+            }
+
+            navigate(path) {
+                if (path !== this.currentRoute) {
+                    this.currentRoute = path;
+                    history.pushState({ path }, '', path);
+                    this.loadRoute(path);
+                }
+            }
+
+            back() {
+                history.back();
+            }
+
+            forward() {
+                history.forward();
+            }
+
+            replace(path) {
+                this.currentRoute = path;
+                history.replaceState({ path }, '', path);
+                this.loadRoute(path);
+            }
+
+            handlePopState(e) {
+                const path = e.state?.path || window.location.pathname;
+                this.currentRoute = path;
+                this.loadRoute(path);
+            }
+
+            loadRoute(path) {
+                // Emit route change event for components to handle
+                const event = new CustomEvent('routechange', {
+                    detail: { path, previousPath: this.currentRoute }
+                });
+                document.dispatchEvent(event);
+            }
+
+            getCurrentRoute() {
+                return this.currentRoute;
+            }
+        }
+
+        // Initialize router
+        window.mtmRouter = new MTMRouter();
+    </script>
+    <script>
+        // Enhanced MTM Component System
+        class MTMComponentSystem {
+            constructor() {
+                this.components = new Map();
+                this.adapters = new Map();
+                this.init();
+            }
+
+            init() {
+                // Initialize component adapters
+                this.initializeAdapters();
+                
+                // Mount all components on page load
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.mountAllComponents();
+                });
+
+                // Re-mount components on route changes
+                document.addEventListener('routechange', () => {
+                    this.mountAllComponents();
+                });
+            }
+
+            initializeAdapters() {
+                // React adapter
+                this.adapters.set('react', {
+                    mount: (element, componentName, props) => {
+                        // React mounting logic would go here
+                        console.log('Mounting React component:', componentName, props);
+                        element.innerHTML = `<div class="react-component">[React: ${componentName}]</div>`;
+                    }
+                });
+
+                // Vue adapter
+                this.adapters.set('vue', {
+                    mount: (element, componentName, props) => {
+                        // Vue mounting logic would go here
+                        console.log('Mounting Vue component:', componentName, props);
+                        element.innerHTML = `<div class="vue-component">[Vue: ${componentName}]</div>`;
+                    }
+                });
+
+                // Solid adapter
+                this.adapters.set('solid', {
+                    mount: (element, componentName, props) => {
+                        // Solid mounting logic would go here
+                        console.log('Mounting Solid component:', componentName, props);
+                        element.innerHTML = `<div class="solid-component">[Solid: ${componentName}]</div>`;
+                    }
+                });
+
+                // Svelte adapter
+                this.adapters.set('svelte', {
+                    mount: (element, componentName, props) => {
+                        // Svelte mounting logic would go here
+                        console.log('Mounting Svelte component:', componentName, props);
+                        element.innerHTML = `<div class="svelte-component">[Svelte: ${componentName}]</div>`;
+                    }
+                });
+            }
+
+            mountAllComponents() {
+                const componentElements = document.querySelectorAll('[data-component]');
+                
+                componentElements.forEach(element => {
+                    const componentName = element.getAttribute('data-component');
+                    const framework = element.getAttribute('data-framework');
+                    const props = this.extractProps(element);
+
+                    const adapter = this.adapters.get(framework);
+                    if (adapter) {
+                        adapter.mount(element, componentName, props);
+                    } else {
+                        console.warn(`No adapter found for framework: ${framework}`);
+                        element.innerHTML = `<div class="unknown-component">[Unknown: ${componentName}]</div>`;
+                    }
+                });
+            }
+
+            extractProps(element) {
+                const props = {};
+                const attributes = element.attributes;
+
+                for (let i = 0; i < attributes.length; i++) {
+                    const attr = attributes[i];
+                    if (attr.name.startsWith('data-prop-') && !attr.name.endsWith('-type')) {
+                        const propName = attr.name.replace('data-prop-', '');
+                        const propType = element.getAttribute(`data-prop-${propName}-type`);
+                        
+                        let propValue = attr.value;
+                        
+                        // Convert based on type
+                        switch (propType) {
+                            case 'boolean':
+                                propValue = propValue === 'true';
+                                break;
+                            case 'variable':
+                                // Handle variable references
+                                propValue = this.resolveVariable(propValue);
+                                break;
+                            case 'literal':
+                                // Try to parse as JSON for objects/arrays
+                                try {
+                                    propValue = JSON.parse(propValue);
+                                } catch (e) {
+                                    // Keep as string if not valid JSON
+                                }
+                                break;
+                        }
+                        
+                        props[propName] = propValue;
+                    }
+                }
+
+                return props;
+            }
+
+            resolveVariable(variableName) {
+                // This would resolve variables from the MTM context
+                // For now, return a placeholder
+                return `[Variable: ${variableName}]`;
+            }
+
+            registerComponent(name, framework, component) {
+                this.components.set(name, { framework, component });
+            }
+
+            getComponent(name) {
+                return this.components.get(name);
+            }
+        }
+
+        // Initialize component system
+        window.mtmComponentSystem = new MTMComponentSystem();
+    </script>
+    <script>// Enhanced MTM Router System
+const MTMRouter = {
+  _signals: new Map(),
+  _subscribers: new Map(),
+  _routes: new Map(),
+  _currentRoute: null,
+  
+  // Signal system
+  create(key, initialValue) {
+    if (!this._signals.has(key)) {
+      this._signals.set(key, initialValue);
+      this._subscribers.set(key, new Set());
+    }
+    
+    return {
+      get value() { return MTMRouter._signals.get(key); },
+      set value(newValue) {
+        MTMRouter._signals.set(key, newValue);
+        MTMRouter._notifySubscribers(key, newValue);
+      },
+      subscribe(callback) { MTMRouter._subscribers.get(key).add(callback); }
+    };
+  },
+  
+  _notifySubscribers(key, value) {
+    if (this._subscribers.has(key)) {
+      this._subscribers.get(key).forEach(callback => callback(value));
+    }
+  },
+  
+  // Router system
+  navigate(path) {
+    if (this._currentRoute !== path) {
+      this._currentRoute = path;
+      window.history.pushState({ path }, '', path);
+      this.updatePage(path);
+    }
+  },
+  
+  updatePage(path) {
+    // Update document title based on route
+    const route = this._routes.get(path);
+    if (route && route.title) {
+      document.title = route.title;
+    }
+    
+    // Emit route change event
+    this.emit('route-changed', { path, route });
+  },
+  
+  setupLinkInterception() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[data-link="true"], a:not([external]):not([href^="http"]):not([href^="mailto"]):not([href^="tel"])');
+      if (link && link.href && !link.hasAttribute('external')) {
+        const url = new URL(link.href);
+        if (url.origin === window.location.origin) {
+          e.preventDefault();
+          this.navigate(url.pathname);
+        }
+      }
+    });
+  },
+  
+  setupPopState() {
+    window.addEventListener('popstate', (e) => {
+      const path = e.state?.path || window.location.pathname;
+      this._currentRoute = path;
+      this.updatePage(path);
+    });
+  },
+  
+  init() {
+    this.setupLinkInterception();
+    this.setupPopState();
+    this._currentRoute = window.location.pathname;
+  },
+  
+  emit(event, data) {
+    console.log('MTM Router Event:', event, data);
+    window.dispatchEvent(new CustomEvent('mtm-' + event, { detail: data }));
+  }
+};
+
+// Component system
+const MTMComponents = {
+  _registry: new Map(),
+  
+  register(name, type, factory) {
+    this._registry.set(name, { type, factory });
+  },
+  
+  mount(element, name, props = {}) {
+    const component = this._registry.get(name);
+    if (component) {
+      const instance = component.factory(props);
+      if (typeof instance.mount === 'function') {
+        instance.mount(element);
+      } else {
+        element.innerHTML = instance;
+      }
+    }
+  },
+  
+  mountAll() {
+    document.querySelectorAll('[data-component]').forEach(el => {
+      const componentName = el.getAttribute('data-component');
+      const componentType = el.getAttribute('data-type');
+      
+      // Extract props from data attributes
+      const props = {};
+      Array.from(el.attributes).forEach(attr => {
+        if (attr.name.startsWith('data-prop-')) {
+          const propName = attr.name.replace('data-prop-', '');
+          props[propName] = attr.value;
+        }
+      });
+      
+      this.mount(el, componentName, props);
+    });
+  }
+};
+
+// Global signal function
+window.signal = MTMRouter;
+
+// Page metadata
+const pageMetadata = {
+  "route": "/enhanced-demo",
+  "title": "Enhanced Routing & Components Demo",
+  "description": "Demonstration of enhanced MTM with routing and multi-framework components",
+  "keywords": "mtm, routing, react, vue, solid, svelte",
+  "author": "MTM Framework",
+  "compileJsMode": "inline",
+  "ogTitle": "MTM Enhanced Demo",
+  "ogDescription": "See MTM's enhanced routing and component features in action"
+};
+
+// Register route
+MTMRouter._routes.set('/enhanced-demo', pageMetadata);
+
+// Page Component: ComponentPage
+function ComponentPage() {
+  // Variables
+  const count = MTMRouter.create('count', 0);
+  const message = MTMRouter.create('message', 'Welcome to Enhanced MTM!');
+
+  // Functions
+  const increment = (()) => {
+    $increment = () => {
+  count.value = count.value + 1
+}
+  };
+
+  const reset = (()) => {
+    $reset = () => {
+  count.value = 0
+}
+  };
+
+  // Component imports
+  // react component: ReactCounter
+  MTMComponents.register('ReactCounter', 'react', (props) => {
+    // Component factory for ReactCounter
+    return `<div class="react-component">${component.name} Component (react)</div>`;
+  });
+  // vue component: VueButton
+  MTMComponents.register('VueButton', 'vue', (props) => {
+    // Component factory for VueButton
+    return `<div class="vue-component">${component.name} Component (vue)</div>`;
+  });
+  // solid component: SolidSignal
+  MTMComponents.register('SolidSignal', 'solid', (props) => {
+    // Component factory for SolidSignal
+    return `<div class="solid-component">${component.name} Component (solid)</div>`;
+  });
+  // svelte component: SvelteStore
+  MTMComponents.register('SvelteStore', 'svelte', (props) => {
+    // Component factory for SvelteStore
+    return `<div class="svelte-component">${component.name} Component (svelte)</div>`;
+  });
+
+  // DOM Management
+  const container = document.getElementById('app');
+
+  const updateAll = () => {
+    // Update data-bind elements
+    container.querySelectorAll('[data-bind="count"]').forEach(el => {
+      el.textContent = count.value;
+    });
+    container.querySelectorAll('[data-bind="message"]').forEach(el => {
+      el.textContent = message.value;
+    });
+    
+    // Update conditional rendering
+    container.querySelectorAll('[data-if]').forEach(el => {
+      const condition = el.getAttribute('data-if');
+      let shouldShow = false;
+      
+      try {
+        let evalStr = condition;
+        evalStr = evalStr.replace(/\count/g, 'count.value');
+        evalStr = evalStr.replace(/\message/g, 'message.value');
+        shouldShow = eval(evalStr);
+      } catch (e) {
+        console.warn('Condition failed:', condition, e);
+      }
+      
+      el.style.display = shouldShow ? 'block' : 'none';
+    });
+  };
+
+  // Initial setup
+  updateAll();
+  MTMComponents.mountAll();
+
+  // Subscribe to changes
+  count.subscribe(() => updateAll());
+  message.subscribe(() => updateAll());
+
+  // Bind events
+  container.querySelectorAll('[data-event-click="increment"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      increment();
+    });
+  });
+
+  container.querySelectorAll('[data-event-click="reset"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      reset();
+    });
+  });
+
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  MTMRouter.init();
+  ComponentPage();
+  console.log('🔮 Enhanced MTM Page loaded:', pageMetadata);
+});</script>
+</body>
+</html>

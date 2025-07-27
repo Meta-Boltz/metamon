@@ -1,0 +1,48 @@
+---
+route: "/solid-demo"
+title: "Solid Demo - Enhanced MTM"
+description: "SolidJS components with signals in MTM framework"
+compileJsMode: "external.js"
+---
+import DataChart from "@components/DataChart.tsx"
+
+<template>
+  <div class="demo-page">
+    <header>
+      <h1>🟦 Solid Demo</h1>
+      <p>SolidJS reactive components in MTM</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/vue-demo" data-link="true">← Vue Demo</a>
+      <a href="/" data-link="true">Home</a>
+      <a href="/svelte-demo" data-link="true">Svelte Demo →</a>
+    </nav>
+
+    <main>
+      <section class="component-showcase">
+        <h2>Solid Data Chart Component</h2>
+        <p>This chart uses SolidJS signals for fine-grained reactivity:</p>
+        
+        <div class="component-demo">
+          <DataChart title="Sales Data" />
+        </div>
+        
+        <div class="component-demo">
+          <DataChart title="Performance Metrics" data={[5, 15, 25, 35, 20, 30]} />
+        </div>
+      </section>
+
+      <section class="code-example">
+        <h3>Component Features:</h3>
+        <ul>
+          <li>✅ SolidJS signals (createSignal)</li>
+          <li>✅ Reactive effects (createEffect)</li>
+          <li>✅ TypeScript interfaces</li>
+          <li>✅ Dynamic styling</li>
+          <li>✅ Fine-grained reactivity</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>

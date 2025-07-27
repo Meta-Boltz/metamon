@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compilation Modes Demo</title>
+    <meta name="description" content="Demonstrating different JavaScript compilation modes">
+    <meta name="route" content="/compilation-modes-demo">
+    <meta name="keywords" content="mtm, compilation, javascript, modes">
+    <meta name="author" content="MTM Framework">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .navigation a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .link-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .link-examples a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .link-examples a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .counter-component, .vue-button, .react-component {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="compilation-demo">
+    <h1>Compilation Modes Demo</h1>
+    <p>Demonstrating different JavaScript compilation modes</p>
+    
+    <div class="mode-info">
+      <h2>Compilation Mode Information</h2>
+      <p><span data-bind="$message">Loading...</span></p>
+      <p>This means the JavaScript is compiled to a separate .js file for better caching and performance.</p>
+    </div>
+    
+    <div class="counter-section">
+      <h2>Interactive Counter</h2>
+      <div class="counter-display">
+        <button data-event-click="$decrement">-</button>
+        <span class="counter-value"><span data-bind="$count">Loading...</span></span>
+        <button data-event-click="$increment">+</button>
+        <button data-event-click="$reset" class="reset-btn">Reset</button>
+      </div>
+      
+      <div data-if="$count > 10" style="display: none;">
+        <p class="warning">Count is getting high!</p>
+      </div>
+    </div>
+    
+    <div class="components-section">
+      <h2>Framework Components</h2>
+      <div data-component="Counter" data-type="react" data-event-count="$count" data-event-onIncrement="$increment"></div>
+      <div data-component="VueButton" data-type="vue" data-event-onClick="$increment" text="Vue Increment"></div>
+    </div>
+    
+    <div class="navigation">
+      <h2>Navigation</h2>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/examples">Examples</a>
+    </div>
+    
+    <div class="features">
+      <h2>Compilation Mode Features</h2>
+      <ul>
+        <li>✅ External JavaScript file generation</li>
+        <li>✅ Better browser caching</li>
+        <li>✅ Reduced HTML file size</li>
+        <li>✅ Framework component integration</li>
+        <li>✅ Client-side routing support</li>
+        <li>✅ Signal-based reactivity</li>
+      </ul>
+    </div>
+  </div></div>
+    <script src="js/component.js"></script>
+</body>
+</html>

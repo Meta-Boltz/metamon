@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline Mode Test</title>
+    <meta name="description" content="Testing inline JavaScript compilation">
+    <meta name="route" content="/inline-test">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .navigation a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .link-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .link-examples a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .link-examples a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .counter-component, .vue-button, .react-component {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="inline-test">
+    <h1>Inline Mode Test</h1>
+    <p>Testing inline JavaScript compilation</p>
+    <p><span data-bind="$message">Loading...</span></p>
+    
+    <div class="counter-display">
+      <button data-event-click="$increment">+</button>
+      <span class="counter-value"><span data-bind="$count">Loading...</span></span>
+      <button data-event-click="$reset">Reset</button>
+    </div>
+    
+    <div data-component="Counter" data-type="react" data-event-count="$count" data-event-onIncrement="$increment"></div>
+    
+    <nav class="navigation">
+      <a href="/external-test">External Test</a>
+      <a href="/custom-test">Custom Test</a>
+    </nav>
+  </div></div>
+    <script>// Enhanced MTM Router System
+const MTMRouter = {
+  _signals: new Map(),
+  _subscribers: new Map(),
+  _routes: new Map(),
+  _currentRoute: null,
+  
+  // Signal system
+  create(key, initialValue) {
+    if (!this._signals.has(key)) {
+      this._signals.set(key, initialValue);
+      this._subscribers.set(key, new Set());
+    }
+    
+    return {
+      get value() { return MTMRouter._signals.get(key); },
+      set value(newValue) {
+        MTMRouter._signals.set(key, newValue);
+        MTMRouter._notifySubscribers(key, newValue);
+      },
+      subscribe(callback) { MTMRouter._subscribers.get(key).add(callback); }
+    };
+  },
+  
+  _notifySubscribers(key, value) {
+    if (this._subscribers.has(key)) {
+      this._subscribers.get(key).forEach(callback => callback(value));
+    }
+  },
+  
+  // Router system
+  navigate(path) {
+    if (this._currentRoute !== path) {
+      this._currentRoute = path;
+      window.history.pushState({ path }, '', path);
+      this.updatePage(path);
+    }
+  },
+  
+  updatePage(path) {
+    // Update document title based on route
+    const route = this._routes.get(path);
+    if (route && route.title) {
+      document.title = route.title;
+    }
+    
+    // Emit route change event
+    this.emit('route-changed', { path, route });
+  },
+  
+  setupLinkInterception() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[data-link="true"], a:not([external]):not([href^="http"]):not([href^="mailto"]):not([href^="tel"])');
+      if (link && link.href && !link.hasAttribute('external')) {
+        const url = new URL(link.href);
+        if (url.origin === window.location.origin) {
+          e.preventDefault();
+          this.navigate(url.pathname);
+        }
+      }
+    });
+  },
+  
+  setupPopState() {
+    window.addEventListener('popstate', (e) => {
+      const path = e.state?.path || window.location.pathname;
+      this._currentRoute = path;
+      this.updatePage(path);
+    });
+  },
+  
+  init() {
+    this.setupLinkInterception();
+    this.setupPopState();
+    this._currentRoute = window.location.pathname;
+  },
+  
+  emit(event, data) {
+    console.log('MTM Router Event:', event, data);
+    window.dispatchEvent(new CustomEvent('mtm-' + event, { detail: data }));
+  }
+};
+
+// Component system
+const MTMComponents = {
+  _registry: new Map(),
+  
+  register(name, type, factory) {
+    this._registry.set(name, { type, factory });
+  },
+  
+  mount(element, name, props = {}) {
+    const component = this._registry.get(name);
+    if (component) {
+      const instance = component.factory(props);
+      if (typeof instance.mount === 'function') {
+        instance.mount(element);
+      } else {
+        element.innerHTML = instance;
+      }
+    }
+  },
+  
+  mountAll() {
+    document.querySelectorAll('[data-component]').forEach(el => {
+      const componentName = el.getAttribute('data-component');
+      const componentType = el.getAttribute('data-type');
+      
+      // Extract props from data attributes
+      const props = {};
+      Array.from(el.attributes).forEach(attr => {
+        if (attr.name.startsWith('data-prop-')) {
+          const propName = attr.name.replace('data-prop-', '');
+          props[propName] = attr.value;
+        }
+      });
+      
+      this.mount(el, componentName, props);
+    });
+  }
+};
+
+// Global signal function
+window.signal = MTMRouter;
+
+// Page metadata
+const pageMetadata = {
+  "route": "/inline-test",
+  "title": "Inline Mode Test",
+  "description": "Testing inline JavaScript compilation",
+  "compileJsMode": "inline"
+};
+
+// Register route
+MTMRouter._routes.set('/inline-test', pageMetadata);
+
+// Page Component: ComponentPage
+function ComponentPage() {
+  // Variables
+  const count = MTMRouter.create('count', 0);
+  const message = MTMRouter.create('message', "Inline compilation test");
+
+  // Functions
+  const increment = (()) => {
+    $increment = () => {
+  $count = $count + 1
+  console.log('Count incremented to:', $count)
+}
+  };
+
+  const reset = (()) => {
+    $reset = () => {
+  $count = 0
+  console.log('Count reset')
+}
+  };
+
+  // Component imports
+  // react component: Counter
+  MTMComponents.register('Counter', 'react', (props) => {
+    // Component factory for Counter
+    return `<div class="react-component">${component.name} Component (react)</div>`;
+  });
+
+  // DOM Management
+  const container = document.getElementById('app');
+
+  const updateAll = () => {
+    // Update data-bind elements
+    container.querySelectorAll('[data-bind="count"]').forEach(el => {
+      el.textContent = count.value;
+    });
+    container.querySelectorAll('[data-bind="message"]').forEach(el => {
+      el.textContent = message.value;
+    });
+    
+    // Update conditional rendering
+    container.querySelectorAll('[data-if]').forEach(el => {
+      const condition = el.getAttribute('data-if');
+      let shouldShow = false;
+      
+      try {
+        let evalStr = condition;
+        evalStr = evalStr.replace(/\count/g, 'count.value');
+        evalStr = evalStr.replace(/\message/g, 'message.value');
+        shouldShow = eval(evalStr);
+      } catch (e) {
+        console.warn('Condition failed:', condition, e);
+      }
+      
+      el.style.display = shouldShow ? 'block' : 'none';
+    });
+  };
+
+  // Initial setup
+  updateAll();
+  MTMComponents.mountAll();
+
+  // Subscribe to changes
+  count.subscribe(() => updateAll());
+
+  // Bind events
+  container.querySelectorAll('[data-event-click="increment"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      increment();
+    });
+  });
+
+  container.querySelectorAll('[data-event-click="reset"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      reset();
+    });
+  });
+
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  MTMRouter.init();
+  ComponentPage();
+  console.log('🔮 Enhanced MTM Page loaded:', pageMetadata);
+});</script>
+</body>
+</html>
