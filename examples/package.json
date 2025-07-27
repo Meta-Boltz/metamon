@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "ssr": "node server.js",
+    "start": "npm run build && npm run ssr",
     "test": "vitest --run",
     "test:e2e": "playwright test",
     "test:browser-compat": "playwright test --config=tests/browser-compatibility.config.js",
@@ -17,6 +19,7 @@
     "serve": "vite preview --port 3000"
   },
   "dependencies": {
+    "express": "^4.21.2",
     "glob": "^11.0.3",
     "js-yaml": "^4.1.0",
     "react": "^18.2.0",

@@ -14,8 +14,23 @@
     </div>
   </div>
   
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/public/sw.js')
+          .then((registration) => {
+            console.log('[Main] SW registered:', registration);
+          })
+          .catch((error) => {
+            console.log('[Main] SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+
   <script type="module">
-    // Simple router for demonstration
+    // Enhanced router with service worker integration
     const routes = {
       '/': () => import('/src/pages/index.js'),
       '/about': () => import('/src/pages/about.js'),

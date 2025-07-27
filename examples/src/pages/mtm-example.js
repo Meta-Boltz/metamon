@@ -2,19 +2,21 @@
 // Note: This simulates MTM syntax until full MTM compiler is available
 
 export default function MTMExamplePage() {
-  // Simulate MTM reactive state
-  setTimeout(() => {
-    // MTM-style reactive state simulation
-    let globalCounter = 0;
-    let pageTheme = 'light';
-    let componentStats = { counters: 3, todos: 1, themes: 1 };
+  // Only run client-side code in browser
+  if (typeof window !== 'undefined') {
+    // Simulate MTM reactive state
+    setTimeout(() => {
+      // MTM-style reactive state simulation
+      let globalCounter = 0;
+      let pageTheme = 'light';
+      let componentStats = { counters: 3, todos: 1, themes: 1 };
 
-    // Create MTM-style components using plain JavaScript
-    function createMTMCounter(container, initialValue = 5) {
-      let count = initialValue;
+      // Create MTM-style components using plain JavaScript
+      function createMTMCounter(container, initialValue = 5) {
+        let count = initialValue;
 
-      function render() {
-        container.innerHTML = `
+        function render() {
+          container.innerHTML = `
           <div class="mtm-counter-component">
             <h4>Native MTM Counter</h4>
             <div class="counter-display">
@@ -30,26 +32,26 @@ export default function MTMExamplePage() {
             </p>
           </div>
         `;
+        }
+
+        window.incrementCount = () => { count++; render(); };
+        window.decrementCount = () => { count = Math.max(0, count - 1); render(); };
+        window.resetCount = () => { count = initialValue; render(); };
+
+        render();
       }
 
-      window.incrementCount = () => { count++; render(); };
-      window.decrementCount = () => { count = Math.max(0, count - 1); render(); };
-      window.resetCount = () => { count = initialValue; render(); };
+      function createMTMTodoList(container) {
+        let todos = [
+          { id: 1, text: 'Learn MTM Framework', completed: true },
+          { id: 2, text: 'Build reactive components', completed: false },
+          { id: 3, text: 'Test multi-framework integration', completed: false }
+        ];
+        let nextId = 4;
 
-      render();
-    }
-
-    function createMTMTodoList(container) {
-      let todos = [
-        { id: 1, text: 'Learn MTM Framework', completed: true },
-        { id: 2, text: 'Build reactive components', completed: false },
-        { id: 3, text: 'Test multi-framework integration', completed: false }
-      ];
-      let nextId = 4;
-
-      function render() {
-        const completedCount = todos.filter(t => t.completed).length;
-        const todoItems = todos.map(todo => `
+        function render() {
+          const completedCount = todos.filter(t => t.completed).length;
+          const todoItems = todos.map(todo => `
           <li class="mtm-todo-item ${todo.completed ? 'completed' : ''}">
             <span class="todo-text">${todo.text}</span>
             <div class="todo-actions">
@@ -61,7 +63,7 @@ export default function MTMExamplePage() {
           </li>
         `).join('');
 
-        container.innerHTML = `
+          container.innerHTML = `
           <div class="mtm-todo-component">
             <h4>Native MTM Todo List</h4>
             <div class="todo-input-section">
@@ -82,51 +84,51 @@ export default function MTMExamplePage() {
           </div>
         `;
 
-        const input = document.getElementById('new-todo-input');
-        if (input) {
-          input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') window.addTodo();
-          });
+          const input = document.getElementById('new-todo-input');
+          if (input) {
+            input.addEventListener('keypress', (e) => {
+              if (e.key === 'Enter') window.addTodo();
+            });
+          }
         }
+
+        window.addTodo = () => {
+          const input = document.getElementById('new-todo-input');
+          if (input && input.value.trim()) {
+            todos.push({ id: nextId++, text: input.value.trim(), completed: false });
+            render();
+          }
+        };
+
+        window.toggleTodo = (id) => {
+          const todo = todos.find(t => t.id === id);
+          if (todo) { todo.completed = !todo.completed; render(); }
+        };
+
+        window.deleteTodo = (id) => {
+          todos = todos.filter(t => t.id !== id);
+          render();
+        };
+
+        window.clearCompleted = () => {
+          todos = todos.filter(t => !t.completed);
+          render();
+        };
+
+        render();
       }
 
-      window.addTodo = () => {
-        const input = document.getElementById('new-todo-input');
-        if (input && input.value.trim()) {
-          todos.push({ id: nextId++, text: input.value.trim(), completed: false });
-          render();
-        }
-      };
+      function createMTMThemeToggle(container) {
+        let currentTheme = 'light';
+        const themes = {
+          light: { name: 'Light', icon: '☀️', colors: { background: '#ffffff', text: '#333333', accent: '#9b59b6' } },
+          dark: { name: 'Dark', icon: '🌙', colors: { background: '#2c3e50', text: '#ecf0f1', accent: '#3498db' } },
+          auto: { name: 'Auto', icon: '🔄', colors: { background: '#f8f9fa', text: '#333333', accent: '#9b59b6' } }
+        };
 
-      window.toggleTodo = (id) => {
-        const todo = todos.find(t => t.id === id);
-        if (todo) { todo.completed = !todo.completed; render(); }
-      };
-
-      window.deleteTodo = (id) => {
-        todos = todos.filter(t => t.id !== id);
-        render();
-      };
-
-      window.clearCompleted = () => {
-        todos = todos.filter(t => !t.completed);
-        render();
-      };
-
-      render();
-    }
-
-    function createMTMThemeToggle(container) {
-      let currentTheme = 'light';
-      const themes = {
-        light: { name: 'Light', icon: '☀️', colors: { background: '#ffffff', text: '#333333', accent: '#9b59b6' } },
-        dark: { name: 'Dark', icon: '🌙', colors: { background: '#2c3e50', text: '#ecf0f1', accent: '#3498db' } },
-        auto: { name: 'Auto', icon: '🔄', colors: { background: '#f8f9fa', text: '#333333', accent: '#9b59b6' } }
-      };
-
-      function render() {
-        const theme = themes[currentTheme];
-        container.innerHTML = `
+        function render() {
+          const theme = themes[currentTheme];
+          container.innerHTML = `
           <div class="mtm-theme-component" style="background: ${theme.colors.background}; color: ${theme.colors.text}; border-color: ${theme.colors.accent};">
             <h4>Native MTM Theme Toggle</h4>
             <div class="theme-display">
@@ -154,62 +156,63 @@ export default function MTMExamplePage() {
             </p>
           </div>
         `;
-      }
+        }
 
-      window.toggleTheme = () => {
-        const themeKeys = Object.keys(themes);
-        const currentIndex = themeKeys.indexOf(currentTheme);
-        currentTheme = themeKeys[(currentIndex + 1) % themeKeys.length];
-        render();
-        pageTheme = currentTheme;
-        updateGlobalDisplay();
-      };
-
-      window.setTheme = (theme) => {
-        if (themes[theme]) {
-          currentTheme = theme;
+        window.toggleTheme = () => {
+          const themeKeys = Object.keys(themes);
+          const currentIndex = themeKeys.indexOf(currentTheme);
+          currentTheme = themeKeys[(currentIndex + 1) % themeKeys.length];
           render();
           pageTheme = currentTheme;
           updateGlobalDisplay();
-        }
+        };
+
+        window.setTheme = (theme) => {
+          if (themes[theme]) {
+            currentTheme = theme;
+            render();
+            pageTheme = currentTheme;
+            updateGlobalDisplay();
+          }
+        };
+
+        render();
+      }
+
+      function updateGlobalDisplay() {
+        const globalCountElement = document.getElementById('global-count');
+        const pageThemeElement = document.getElementById('page-theme');
+        const componentCountElement = document.getElementById('component-count');
+
+        if (globalCountElement) globalCountElement.textContent = globalCounter;
+        if (pageThemeElement) pageThemeElement.textContent = pageTheme;
+        if (componentCountElement) componentCountElement.textContent = componentStats.counters + componentStats.todos + componentStats.themes;
+      }
+
+      // Initialize components
+      const counterContainer = document.getElementById('mtm-counter-container');
+      const todoContainer = document.getElementById('mtm-todo-container');
+      const themeContainer = document.getElementById('mtm-theme-container');
+
+      if (counterContainer) createMTMCounter(counterContainer, 5);
+      if (todoContainer) createMTMTodoList(todoContainer);
+      if (themeContainer) createMTMThemeToggle(themeContainer);
+
+      // Global state functions
+      window.incrementGlobalCounter = function () {
+        globalCounter++;
+        updateGlobalDisplay();
       };
 
-      render();
-    }
+      window.resetGlobalCounter = function () {
+        globalCounter = 0;
+        updateGlobalDisplay();
+      };
 
-    function updateGlobalDisplay() {
-      const globalCountElement = document.getElementById('global-count');
-      const pageThemeElement = document.getElementById('page-theme');
-      const componentCountElement = document.getElementById('component-count');
-
-      if (globalCountElement) globalCountElement.textContent = globalCounter;
-      if (pageThemeElement) pageThemeElement.textContent = pageTheme;
-      if (componentCountElement) componentCountElement.textContent = componentStats.counters + componentStats.todos + componentStats.themes;
-    }
-
-    // Initialize components
-    const counterContainer = document.getElementById('mtm-counter-container');
-    const todoContainer = document.getElementById('mtm-todo-container');
-    const themeContainer = document.getElementById('mtm-theme-container');
-
-    if (counterContainer) createMTMCounter(counterContainer, 5);
-    if (todoContainer) createMTMTodoList(todoContainer);
-    if (themeContainer) createMTMThemeToggle(themeContainer);
-
-    // Global state functions
-    window.incrementGlobalCounter = function () {
-      globalCounter++;
+      // Initial display update
       updateGlobalDisplay();
-    };
-
-    window.resetGlobalCounter = function () {
-      globalCounter = 0;
-      updateGlobalDisplay();
-    };
-
-    // Initial display update
-    updateGlobalDisplay();
-  }, 50);
+    }, 50);
+  }
 
   return `
     <div class="mtm-example-page">
@@ -251,19 +254,19 @@ export default function MTMExamplePage() {
           
           <div class="component-grid">
             <div class="component-container">
-              <div id="mtm-counter-container">
+              <div id="mtm-counter-container" data-mtm-component="/src/components/MTMCounter.mtm">
                 <!-- MTM Counter will be rendered here -->
               </div>
             </div>
             
             <div class="component-container">
-              <div id="mtm-todo-container">
+              <div id="mtm-todo-container" data-mtm-component="/src/components/MTMTodoList.mtm">
                 <!-- MTM Todo List will be rendered here -->
               </div>
             </div>
             
             <div class="component-container">
-              <div id="mtm-theme-container">
+              <div id="mtm-theme-container" data-mtm-component="/src/components/MTMThemeToggle.mtm">
                 <!-- MTM Theme Toggle will be rendered here -->
               </div>
             </div>
