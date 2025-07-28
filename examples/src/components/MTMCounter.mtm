@@ -1,17 +1,14 @@
 ---
-title: "MTM Counter Component"
-description: "Native MTM reactive counter component"
-compileJsMode: "inline"
+function: MTMCounter
 ---
 
-// MTM Counter Component - Pure MTM reactive syntax
+// MTM Counter Component - Ultra-modern MTM syntax
 $count! = signal('count', 0)
 $initialValue! = signal('initialValue', 0)
 
-// Component methods using MTM syntax
+// Component methods using ultra-modern MTM syntax
 $increment = () => {
   $count++
-  console.log('MTM Counter incremented to:', $count)
 }
 
 $decrement = () => {
@@ -29,89 +26,18 @@ $init = (props = {}) => {
 }
 
 <template>
-  <div class="mtm-counter-component">
-    <h4>Native MTM Counter</h4>
-    <div class="counter-display">
-      <button onclick={$decrement} class="counter-btn">-</button>
-      <span class="counter-value">{$count}</span>
-      <button onclick={$increment} class="counter-btn">+</button>
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Native MTM Counter</h4>
+    <div class="flex items-center justify-center space-x-4 mb-4">
+      <button click={$decrement} class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-bold transition-colors">-</button>
+      <span class="text-2xl font-bold text-gray-900 dark:text-white min-w-[60px] text-center">{$count}</span>
+      <button click={$increment} class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-bold transition-colors">+</button>
     </div>
-    <div class="counter-controls">
-      <button onclick={$reset} class="counter-reset">Reset</button>
+    <div class="text-center">
+      <button click={$reset} class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors">Reset</button>
     </div>
-    <p class="counter-info">
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-4 italic">
       This is a native MTM reactive component with built-in state management
     </p>
   </div>
 </template>
-
-<style>
-  .mtm-counter-component {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e1e5e9;
-    text-align: center;
-  }
-
-  .mtm-counter-component h4 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .counter-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-
-  .counter-btn {
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: #9b59b6;
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .counter-btn:hover {
-    background: #8e44ad;
-    transform: scale(1.1);
-  }
-
-  .counter-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2c3e50;
-    min-width: 60px;
-  }
-
-  .counter-reset {
-    background: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background 0.2s;
-  }
-
-  .counter-reset:hover {
-    background: #5a6268;
-  }
-
-  .counter-info {
-    margin: 1rem 0 0;
-    color: #666;
-    font-size: 0.9rem;
-    font-style: italic;
-  }
-</style>

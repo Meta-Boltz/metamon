@@ -1,57 +1,29 @@
 ---
+function: VueExamplePage
+title: "Vue Component Integration"
+description: "This page demonstrates Vue component integration with MTM framework"
+compileJsMode: "inline"
 route: "/vue-example"
-title: "Vue Integration - Enhanced MTM"
-description: "Demonstration of Vue component integration with reactivity and Composition API"
-compileJsMode: "external.js"
-keywords: "vue, components, reactivity, composition-api, integration"
-framework: "vue"
+imports:
+  - "@components/Button.vue"
+  - "@components/TodoList.vue"
 ---
 
-import Button from "@components/Button.vue"
-import TodoList from "@components/TodoList.vue"
+// Vue example page - Ultra-modern MTM syntax
+$pageTitle! = signal('pageTitle', 'Vue Component Integration')
+$vueStats! = signal('vueStats', { components: 2, interactions: 0 })
+$todos! = signal('todos', [
+  { id: 1, text: 'Learn Vue + MTM integration', completed: false },
+  { id: 2, text: 'Build reactive components', completed: true }
+])
 
-// MTM state that works with Vue reactivity
-$todoCount! = signal('todoCount', 0)
-$completedTodos! = signal('completedTodos', 0)
-$buttonClickCount! = signal('buttonClickCount', 0)
-$selectedVariant! = signal('selectedVariant', 'primary')
-$activityLog! = signal('activityLog', [])
-
-// Functions that bridge MTM and Vue
-$handleButtonClick = () => {
-  $buttonClickCount++
-  $logActivity(`Button clicked ${$buttonClickCount} times`)
+$incrementInteractions = () => {
+  $vueStats = { ...$vueStats, interactions: $vueStats.interactions + 1 }
 }
 
-$handleTodosChange = (todos) => {
-  $todoCount = todos.length
-  $completedTodos = todos.filter(todo => todo.completed).length
-  $logActivity(`Todo list updated: ${$todoCount} total, ${$completedTodos} completed`)
-}
-
-$changeButtonVariant = (variant) => {
-  $selectedVariant = variant
-  $logActivity(`Button variant changed to: ${variant}`)
-}
-
-$logActivity = (message) => {
-  const activity = {
-    id: Date.now(),
-    message,
-    timestamp: new Date().toLocaleTimeString(),
-    type: 'info'
-  }
-  $activityLog = [...$activityLog, activity]
-  
-  // Keep only last 10 activities
-  if ($activityLog.length > 10) {
-    $activityLog = $activityLog.slice(-10)
-  }
-}
-
-$clearActivityLog = () => {
-  $activityLog = []
-  $logActivity('Activity log cleared')
+$addTodo = (text) => {
+  $todos = [...$todos, { id: Date.now(), text, completed: false }]
+  $incrementInteractions()
 }
 
 <template>
@@ -60,270 +32,74 @@ $clearActivityLog = () => {
       <div class="breadcrumb">
         <a href="/" class="breadcrumb-link">Home</a>
         <span class="breadcrumb-separator">→</span>
-        <a href="/about" class="breadcrumb-link">About</a>
-        <span class="breadcrumb-separator">→</span>
         <span class="breadcrumb-current">Vue Example</span>
       </div>
       
-      <h1>{title}</h1>
-      <p class="page-description">{description}</p>
+      <h1>{$pageTitle}</h1>
+      <p class="page-description">This page demonstrates Vue component integration with MTM framework</p>
       
-      <div class="framework-badge">
-        <span class="badge vue-badge">💚 Vue Integration</span>
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /vue-example
+        </div>
+        <div class="metadata-item">
+          <strong>Framework:</strong> Vue + MTM
+        </div>
+        <div class="metadata-item">
+          <strong>Components:</strong> {$vueStats.components}
+        </div>
+        <div class="metadata-item">
+          <strong>Interactions:</strong> {$vueStats.interactions}
+        </div>
       </div>
     </header>
     
-    <nav class="example-navigation">
-      <div class="nav-links">
-        <a href="/react-example" class="nav-link react">React Example</a>
-        <a href="/solid-example" class="nav-link solid">Solid Example</a>
-        <a href="/svelte-example" class="nav-link svelte">Svelte Example</a>
-      </div>
+    <nav class="framework-nav">
+      <a href="/mtm-example" class="framework-link mtm">MTM Example</a>
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/solid-example" class="framework-link solid">Solid Example</a>
+      <a href="/svelte-example" class="framework-link svelte">Svelte Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
     </nav>
     
     <main class="main-content">
-      <section class="intro-section">
-        <h2>Vue Component Integration</h2>
-        <p>This page demonstrates Vue components integrated with MTM, showcasing Vue's reactivity system, Composition API, and seamless prop passing.</p>
+      <section class="component-demo">
+        <h2>Vue Components</h2>
+        <p>The following Vue components are integrated with MTM's reactive system:</p>
         
-        <div class="integration-features">
-          <div class="feature-item">
-            <h4>✅ Composition API</h4>
-            <p>Vue 3 Composition API works seamlessly with MTM signals</p>
+        <div class="component-grid">
+          <div class="component-container">
+            <h3>Vue Button</h3>
+            <Button onClick={$incrementInteractions} text="Click me!" />
           </div>
-          <div class="feature-item">
-            <h4>✅ Reactive Props</h4>
-            <p>MTM signals automatically trigger Vue component updates</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ Event Emission</h4>
-            <p>Vue component events can update MTM state</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ Scoped Styles</h4>
-            <p>Vue's scoped CSS works perfectly in MTM pages</p>
+          
+          <div class="component-container">
+            <h3>Vue Todo List</h3>
+            <TodoList todos={$todos} onAdd={$addTodo} />
           </div>
         </div>
       </section>
       
-      <section class="demo-section">
-        <h2>Interactive Vue Components</h2>
-        
-        <div class="demo-grid">
-          <div class="demo-card">
-            <h3>Vue Button Component</h3>
-            <p>A Vue component with reactive props and event handling:</p>
-            
-            <div class="button-demo">
-              <Button 
-                label="Click Me!"
-                variant={$selectedVariant}
-                onClick={$handleButtonClick}
-              />
-              
-              <div class="button-controls">
-                <h4>Button Variants:</h4>
-                <div class="variant-buttons">
-                  <button 
-                    onclick={() => $changeButtonVariant('primary')}
-                    class={`variant-btn ${$selectedVariant === 'primary' ? 'active' : ''}`}
-                  >
-                    Primary
-                  </button>
-                  <button 
-                    onclick={() => $changeButtonVariant('secondary')}
-                    class={`variant-btn ${$selectedVariant === 'secondary' ? 'active' : ''}`}
-                  >
-                    Secondary
-                  </button>
-                  <button 
-                    onclick={() => $changeButtonVariant('danger')}
-                    class={`variant-btn ${$selectedVariant === 'danger' ? 'active' : ''}`}
-                  >
-                    Danger
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div class="demo-info">
-              <p><strong>Click Count:</strong> {$buttonClickCount}</p>
-              <p><strong>Current Variant:</strong> {$selectedVariant}</p>
-              <p><strong>Component Type:</strong> Vue 3 with Composition API</p>
-            </div>
+      <section class="integration-info">
+        <h2>Vue + MTM Integration</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>💚 Vue Components</h4>
+            <p>Standard Vue components (.vue files) work seamlessly with MTM's reactive system.</p>
           </div>
-          
-          <div class="demo-card full-width">
-            <h3>Vue Todo List Component</h3>
-            <p>A complex Vue component with reactive state management:</p>
-            
-            <TodoList onTodosChange={$handleTodosChange} />
-            
-            <div class="todo-stats">
-              <div class="stat-item">
-                <span class="stat-label">Total Todos:</span>
-                <span class="stat-value">{$todoCount}</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Completed:</span>
-                <span class="stat-value">{$completedTodos}</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Remaining:</span>
-                <span class="stat-value">{$todoCount - $completedTodos}</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Progress:</span>
-                <span class="stat-value">
-                  {$todoCount > 0 ? Math.round(($completedTodos / $todoCount) * 100) : 0}%
-                </span>
-              </div>
-            </div>
+          <div class="info-card">
+            <h4>🔄 Reactivity Bridge</h4>
+            <p>Vue's reactivity system integrates with MTM signals for unified state management.</p>
           </div>
-        </div>
-      </section>
-      
-      <section class="activity-section">
-        <h2>Activity Log</h2>
-        <p>Vue component interactions are logged in real-time using MTM signals:</p>
-        
-        <div class="activity-container">
-          <div class="activity-header">
-            <h4>Live Activity Feed ({$activityLog.length})</h4>
-            {#if $activityLog.length > 0}
-              <button onclick={$clearActivityLog} class="clear-button">
-                Clear Log
-              </button>
-            {/if}
+          <div class="info-card">
+            <h4>🎯 Composition API</h4>
+            <p>Vue Composition API works perfectly with MTM's functional approach.</p>
           </div>
-          
-          <div class="activity-list">
-            {#if $activityLog.length === 0}
-              <div class="no-activity">
-                <p>No activity yet. Interact with the Vue components above to see activity logs appear here.</p>
-              </div>
-            {:else}
-              {#each $activityLog as activity}
-                <div class="activity-item" key={activity.id}>
-                  <div class="activity-icon">📝</div>
-                  <div class="activity-content">
-                    <div class="activity-message">{activity.message}</div>
-                    <div class="activity-time">{activity.timestamp}</div>
-                  </div>
-                </div>
-              {/each}
-            {/if}
+          <div class="info-card">
+            <h4>🚀 Performance</h4>
+            <p>Vue components benefit from MTM's optimized rendering pipeline.</p>
           </div>
-        </div>
-      </section>
-      
-      <section class="reactivity-demo">
-        <h2>Vue Reactivity Demonstration</h2>
-        <p>This section shows how Vue's reactivity system integrates with MTM signals:</p>
-        
-        <div class="reactivity-grid">
-          <div class="reactivity-card">
-            <h4>MTM Signal → Vue Prop</h4>
-            <p>MTM signals are passed as props to Vue components and automatically trigger updates when changed.</p>
-            <div class="code-snippet">
-              <code>$selectedVariant! = signal('selectedVariant', 'primary')</code>
-              <br>
-              <code>&lt;Button variant={$selectedVariant} /&gt;</code>
-            </div>
-          </div>
-          
-          <div class="reactivity-card">
-            <h4>Vue Event → MTM Function</h4>
-            <p>Vue component events can call MTM functions to update application state.</p>
-            <div class="code-snippet">
-              <code>$handleButtonClick = () => { $buttonClickCount++ }</code>
-              <br>
-              <code>&lt;Button onClick={$handleButtonClick} /&gt;</code>
-            </div>
-          </div>
-          
-          <div class="reactivity-card">
-            <h4>Vue Emit → MTM Signal</h4>
-            <p>Vue components can emit events with data that updates MTM signals.</p>
-            <div class="code-snippet">
-              <code>$handleTodosChange = (todos) => { $todoCount = todos.length }</code>
-              <br>
-              <code>&lt;TodoList onTodosChange={$handleTodosChange} /&gt;</code>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="code-example-section">
-        <h2>Code Example</h2>
-        <p>Here's how Vue integration works in practice:</p>
-        
-        <div class="code-block">
-          <h4>MTM Page (vue-example.mtm)</h4>
-          <pre><code>---
-route: "/vue-example"
-compileJsMode: "external.js"
----
-
-import Button from "@components/Button.vue"
-
-$buttonClickCount! = signal('buttonClickCount', 0)
-$selectedVariant! = signal('selectedVariant', 'primary')
-
-$handleButtonClick = () => {
-  $buttonClickCount++
-}
-
-&lt;template&gt;
-  &lt;Button 
-    label="Click Me!"
-    variant={$selectedVariant}
-    onClick={$handleButtonClick}
-  /&gt;
-  &lt;p&gt;Clicks: {$buttonClickCount}&lt;/p&gt;
-&lt;/template&gt;</code></pre>
-        </div>
-        
-        <div class="code-block">
-          <h4>Vue Component (Button.vue)</h4>
-          <pre><code>&lt;template&gt;
-  &lt;button 
-    :class="buttonClasses"
-    @click="handleClick"
-  &gt;
-    {{ label }}
-  &lt;/button&gt;
-&lt;/template&gt;
-
-&lt;script setup lang="ts"&gt;
-import { computed } from 'vue';
-
-interface Props {
-  label: string;
-  variant?: 'primary' | 'secondary' | 'danger';
-  onClick?: () => void;
-}
-
-const props = withDefaults(defineProps&lt;Props&gt;(), {
-  variant: 'primary'
-});
-
-const emit = defineEmits&lt;{
-  click: [];
-}&gt;();
-
-const buttonClasses = computed(() => [
-  'vue-button',
-  `vue-button--${props.variant}`
-]);
-
-const handleClick = () => {
-  emit('click');
-  if (props.onClick) {
-    props.onClick();
-  }
-};
-&lt;/script&gt;</code></pre>
         </div>
       </section>
     </main>
@@ -331,450 +107,23 @@ const handleClick = () => {
     <footer class="page-footer">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>Vue Integration Features</h4>
-          <ul>
-            <li>✅ Vue 3 Composition API</li>
-            <li>✅ Reactive props and computed properties</li>
-            <li>✅ Event emission and handling</li>
-            <li>✅ Scoped CSS styles</li>
-            <li>✅ TypeScript support</li>
-            <li>✅ Template syntax and directives</li>
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/mtm-example">MTM Example</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/solid-example">Solid Example</a></li>
+            <li><a href="/svelte-example">Svelte Example</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
-          <h4>Next Steps</h4>
-          <p>Explore other framework integrations:</p>
-          <div class="footer-links">
-            <a href="/react-example" class="footer-link">React Example →</a>
-            <a href="/solid-example" class="footer-link">Solid Example →</a>
-            <a href="/svelte-example" class="footer-link">Svelte Example →</a>
-          </div>
+          <h4>Vue Integration</h4>
+          <p>Vue 3 + MTM Framework</p>
+          <p>Reactive component integration with Composition API support</p>
         </div>
       </div>
     </footer>
   </div>
 </template>
-
-<style>
-  .vue-example-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .breadcrumb {
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-  }
-
-  .breadcrumb-link {
-    color: #667eea;
-    text-decoration: none;
-  }
-
-  .breadcrumb-link:hover {
-    text-decoration: underline;
-  }
-
-  .breadcrumb-separator {
-    margin: 0 0.5rem;
-  }
-
-  .breadcrumb-current {
-    font-weight: 600;
-  }
-
-  .page-header h1 {
-    font-size: 2.5rem;
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .page-description {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 1.5rem;
-  }
-
-  .framework-badge {
-    margin-bottom: 1rem;
-  }
-
-  .badge {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .vue-badge {
-    background: #e8f5e8;
-    color: #4caf50;
-  }
-
-  .example-navigation {
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-
-  .nav-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .nav-link {
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .nav-link.react {
-    background: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .nav-link.solid {
-    background: #e3f2fd;
-    color: #2196f3;
-  }
-
-  .nav-link.svelte {
-    background: #fff3e0;
-    color: #ff9800;
-  }
-
-  .nav-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .intro-section {
-    margin-bottom: 3rem;
-  }
-
-  .integration-features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
-  .feature-item {
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    border-left: 4px solid #4caf50;
-  }
-
-  .feature-item h4 {
-    margin: 0 0 0.5rem;
-    color: #2c3e50;
-  }
-
-  .demo-section {
-    margin-bottom: 3rem;
-  }
-
-  .demo-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-top: 1.5rem;
-  }
-
-  .demo-card {
-    padding: 2rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e1e5e9;
-  }
-
-  .demo-card.full-width {
-    grid-column: 1 / -1;
-  }
-
-  .demo-card h3 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .button-demo {
-    margin: 1.5rem 0;
-  }
-
-  .button-controls {
-    margin-top: 1.5rem;
-  }
-
-  .button-controls h4 {
-    margin: 0 0 1rem;
-    font-size: 1rem;
-  }
-
-  .variant-buttons {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .variant-btn {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .variant-btn.active {
-    background: #4caf50;
-    color: white;
-    border-color: #4caf50;
-  }
-
-  .demo-info {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    font-size: 0.9rem;
-  }
-
-  .demo-info p {
-    margin: 0.5rem 0;
-  }
-
-  .todo-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-  }
-
-  .stat-item {
-    text-align: center;
-  }
-
-  .stat-label {
-    display: block;
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.25rem;
-  }
-
-  .stat-value {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #4caf50;
-  }
-
-  .activity-section {
-    margin-bottom: 3rem;
-  }
-
-  .activity-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
-  .activity-header {
-    padding: 1rem 1.5rem;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e1e5e9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .activity-header h4 {
-    margin: 0;
-    color: #2c3e50;
-  }
-
-  .clear-button {
-    padding: 0.5rem 1rem;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-
-  .activity-list {
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .no-activity {
-    padding: 2rem;
-    text-align: center;
-    color: #666;
-  }
-
-  .activity-item {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .activity-item:last-child {
-    border-bottom: none;
-  }
-
-  .activity-icon {
-    font-size: 1.2rem;
-    margin-top: 0.2rem;
-  }
-
-  .activity-content {
-    flex: 1;
-  }
-
-  .activity-message {
-    margin-bottom: 0.25rem;
-  }
-
-  .activity-time {
-    font-size: 0.8rem;
-    color: #666;
-  }
-
-  .reactivity-demo {
-    margin-bottom: 3rem;
-  }
-
-  .reactivity-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .reactivity-card {
-    padding: 1.5rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #4caf50;
-  }
-
-  .reactivity-card h4 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .code-snippet {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .code-example-section {
-    margin-bottom: 3rem;
-  }
-
-  .code-block {
-    margin: 1.5rem 0;
-    background: #f8f9fa;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .code-block h4 {
-    margin: 0;
-    padding: 1rem 1.5rem;
-    background: #2c3e50;
-    color: white;
-    font-size: 1rem;
-  }
-
-  .code-block pre {
-    margin: 0;
-    padding: 1.5rem;
-    overflow-x: auto;
-  }
-
-  .code-block code {
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .page-footer {
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e1e5e9;
-  }
-
-  .footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-
-  .footer-section h4 {
-    margin-bottom: 1rem;
-    color: #2c3e50;
-  }
-
-  .footer-section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .footer-section li {
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .footer-link {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .footer-link:hover {
-    text-decoration: underline;
-  }
-
-  @media (min-width: 768px) {
-    .demo-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-    
-    .demo-card.full-width {
-      grid-column: 1 / -1;
-    }
-  }
-</style>

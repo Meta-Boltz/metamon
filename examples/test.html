@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MTM Framework Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .nav-link { margin: 10px; padding: 10px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+    .nav-link:hover { background: #0056b3; }
+    .demo-button { margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .demo-button:hover { background: #1e7e34; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="loading">
+      <h1>Loading MTM Framework...</h1>
+      <p>Initializing...</p>
+    </div>
+  </div>
+  
+  <script>
+    // Simplified test version of the MTM framework
+    const routes = {
+      '/': () => createMTMPage('HomePage', 'Enhanced MTM Framework', 'Welcome to the enhanced MTM framework'),
+      '/about': () => createMTMPage('AboutPage', 'About MTM Framework', 'Learn about the MTM framework'),
+      '/test': () => createMTMPage('TestPage', 'Test Page', 'This is a test page')
+    };
+    
+    function createMTMPage(functionName, title, description) {
+      console.log('Creating MTM page:', functionName, title);
+      return Promise.resolve({
+        default: function() {
+          console.log('Rendering page:', functionName);
+          return `
+            <div class="mtm-page">
+              <header>
+                <h1>${title}</h1>
+                <p>${description}</p>
+              </header>
+              
+              <nav>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/test" class="nav-link">Test</a>
+              </nav>
+              
+              <main>
+                <h2>Page: ${functionName}</h2>
+                <button onclick="alert('Hello from ${functionName}!')" class="demo-button">
+                  Test Button
+                </button>
+              </main>
+            </div>
+          `;
+        }
+      });
+    }
+    
+    async function navigate(path) {
+      console.log('Navigating to:', path);
+      const route = routes[path] || routes['/'];
+      try {
+        const module = await route();
+        const app = document.getElementById('app');
+        if (!app) {
+          console.error('App container not found');
+          return;
+        }
+        
+        const content = module.default();
+        app.innerHTML = content;
+        
+        if (window.location.pathname !== path) {
+          history.pushState({}, '', path);
+        }
+        
+        console.log('Navigation completed for:', path);
+      } catch (error) {
+        console.error('Navigation error:', error);
+      }
+    }
+    
+    // Handle clicks
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link && link.href && link.href.startsWith(window.location.origin)) {
+        e.preventDefault();
+        const path = new URL(link.href).pathname;
+        console.log('Link clicked, navigating to:', path);
+        navigate(path);
+      }
+    });
+    
+    // Handle back/forward
+    window.addEventListener('popstate', () => {
+      navigate(window.location.pathname);
+    });
+    
+    // Initial load
+    console.log('Starting initial navigation to:', window.location.pathname);
+    navigate(window.location.pathname);
+  </script>
+</body>
+</html>

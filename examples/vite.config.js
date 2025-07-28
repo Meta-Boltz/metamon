@@ -3,9 +3,13 @@ import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
 import solid from 'vite-plugin-solid';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import tailwindcss from '@tailwindcss/vite';
+// import { mtmPlugin } from './src/mtm-plugin.js'; // Temporarily disabled
 
 export default defineConfig({
   plugins: [
+    // mtmPlugin(), // Temporarily disabled
+    tailwindcss(),
     react({
       include: ['**/*.jsx', '**/*.tsx']
     }),
@@ -31,6 +35,7 @@ export default defineConfig({
     port: 3000,
     open: true
   },
+
   build: {
     outDir: 'dist',
     sourcemap: true

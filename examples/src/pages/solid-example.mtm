@@ -1,72 +1,23 @@
 ---
+function: SolidExamplePage
+title: "Solid Component Integration"
+description: "This page demonstrates Solid.js component integration with MTM framework"
+compileJsMode: "inline"
 route: "/solid-example"
-title: "Solid Integration - Enhanced MTM"
-description: "Demonstration of Solid.js component integration with signals and fine-grained reactivity"
-compileJsMode: "external.js"
-keywords: "solid, signals, reactivity, performance, integration"
-framework: "solid"
 ---
 
-import DataChart from "@components/DataChart.tsx"
+// Solid example page - Ultra-modern MTM syntax
+$pageTitle! = signal('pageTitle', 'Solid Component Integration')
+$solidStats! = signal('solidStats', { components: 1, interactions: 0 })
+$signalValue! = signal('signalValue', 42)
 
-// MTM state that works with Solid signals
-$chartData! = signal('chartData', [])
-$selectedDataPoint! = signal('selectedDataPoint', null)
-$performanceMetrics! = signal('performanceMetrics', {
-  renderCount: 0,
-  updateCount: 0,
-  lastUpdate: null
-})
-$signalDemoValue! = signal('signalDemoValue', 42)
-$derivedValue! = signal('derivedValue', 0)
-
-// Functions that demonstrate Solid integration
-$handleDataChange = (newData) => {
-  $chartData = newData
-  $performanceMetrics = {
-    ...$performanceMetrics,
-    updateCount: $performanceMetrics.updateCount + 1,
-    lastUpdate: new Date().toLocaleTimeString()
-  }
-  $logPerformance('Chart data updated')
+$incrementInteractions = () => {
+  $solidStats = { ...$solidStats, interactions: $solidStats.interactions + 1 }
 }
 
-$updateSignalDemo = () => {
-  $signalDemoValue = Math.floor(Math.random() * 100)
-  $derivedValue = $signalDemoValue * 2
-  $logPerformance('Signal values updated')
-}
-
-$resetChart = () => {
-  $chartData = []
-  $selectedDataPoint = null
-  $logPerformance('Chart reset')
-}
-
-$logPerformance = (action) => {
-  $performanceMetrics = {
-    ...$performanceMetrics,
-    renderCount: $performanceMetrics.renderCount + 1,
-    lastUpdate: new Date().toLocaleTimeString()
-  }
-  console.log(`[Solid Performance] ${action} at ${$performanceMetrics.lastUpdate}`)
-}
-
-// Computed values (similar to Solid's createMemo)
-$chartSummary! = signal('chartSummary', '')
-$updateChartSummary = () => {
-  if ($chartData.length === 0) {
-    $chartSummary = 'No data available'
-  } else {
-    const total = $chartData.reduce((sum, item) => sum + item.value, 0)
-    const avg = (total / $chartData.length).toFixed(1)
-    $chartSummary = `${$chartData.length} items, average: ${avg}%`
-  }
-}
-
-// Watch for chart data changes
-$watchChartData = () => {
-  $updateChartSummary()
+$updateSignal = () => {
+  $signalValue = Math.floor(Math.random() * 100)
+  $incrementInteractions()
 }
 
 <template>
@@ -75,258 +26,74 @@ $watchChartData = () => {
       <div class="breadcrumb">
         <a href="/" class="breadcrumb-link">Home</a>
         <span class="breadcrumb-separator">→</span>
-        <a href="/about" class="breadcrumb-link">About</a>
-        <span class="breadcrumb-separator">→</span>
         <span class="breadcrumb-current">Solid Example</span>
       </div>
       
-      <h1>{title}</h1>
-      <p class="page-description">{description}</p>
+      <h1>{$pageTitle}</h1>
+      <p class="page-description">This page demonstrates Solid.js component integration with MTM framework</p>
       
-      <div class="framework-badge">
-        <span class="badge solid-badge">🔷 Solid.js Integration</span>
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /solid-example
+        </div>
+        <div class="metadata-item">
+          <strong>Framework:</strong> Solid + MTM
+        </div>
+        <div class="metadata-item">
+          <strong>Signal Value:</strong> {$signalValue}
+        </div>
+        <div class="metadata-item">
+          <strong>Interactions:</strong> {$solidStats.interactions}
+        </div>
       </div>
     </header>
     
-    <nav class="example-navigation">
-      <div class="nav-links">
-        <a href="/react-example" class="nav-link react">React Example</a>
-        <a href="/vue-example" class="nav-link vue">Vue Example</a>
-        <a href="/svelte-example" class="nav-link svelte">Svelte Example</a>
-      </div>
+    <nav class="framework-nav">
+      <a href="/mtm-example" class="framework-link mtm">MTM Example</a>
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/vue-example" class="framework-link vue">Vue Example</a>
+      <a href="/svelte-example" class="framework-link svelte">Svelte Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
     </nav>
     
     <main class="main-content">
-      <section class="intro-section">
-        <h2>Solid.js Component Integration</h2>
-        <p>This page demonstrates Solid.js components integrated with MTM, showcasing Solid's fine-grained reactivity, signals, and performance optimizations.</p>
+      <section class="component-demo">
+        <h2>Solid.js Integration</h2>
+        <p>Solid.js components integrate seamlessly with MTM's signal-based reactivity:</p>
         
-        <div class="integration-features">
-          <div class="feature-item">
-            <h4>✅ Fine-Grained Reactivity</h4>
-            <p>Solid's reactive system provides precise updates without virtual DOM</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ Signal Integration</h4>
-            <p>MTM signals work seamlessly with Solid's createSignal</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ Performance Optimized</h4>
-            <p>Minimal re-renders and efficient DOM updates</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ JSX Support</h4>
-            <p>Full JSX syntax support with TypeScript</p>
-          </div>
-        </div>
-      </section>
-      
-      <section class="performance-section">
-        <h2>Performance Metrics</h2>
-        <p>Solid's fine-grained reactivity provides excellent performance. Here are live metrics:</p>
-        
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-value">{$performanceMetrics.renderCount}</div>
-            <div class="metric-label">Render Count</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">{$performanceMetrics.updateCount}</div>
-            <div class="metric-label">Updates</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">{$performanceMetrics.lastUpdate || 'Never'}</div>
-            <div class="metric-label">Last Update</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">{$chartData.length}</div>
-            <div class="metric-label">Data Points</div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="demo-section">
-        <h2>Interactive Solid Components</h2>
-        
-        <div class="demo-grid">
-          <div class="demo-card full-width">
-            <h3>Solid Data Chart Component</h3>
-            <p>A complex Solid component with animations, interactions, and real-time updates:</p>
-            
-            <DataChart 
-              title="Framework Usage Statistics"
-              data={$chartData}
-              onDataChange={$handleDataChange}
-              className="demo-chart"
-            />
-            
-            <div class="chart-controls">
-              <button onclick={$resetChart} class="control-button reset">
-                Reset Chart
-              </button>
-              <button onclick={$watchChartData} class="control-button update">
-                Update Summary
-              </button>
-            </div>
-            
-            <div class="chart-info">
-              <p><strong>Chart Summary:</strong> {$chartSummary}</p>
-              <p><strong>Component Type:</strong> Solid.js with TypeScript and animations</p>
-              <p><strong>Features:</strong> createSignal, createEffect, For component, event handling</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="signals-demo">
-        <h2>Signal Reactivity Demonstration</h2>
-        <p>This section shows how Solid's signals integrate with MTM's reactive system:</p>
-        
-        <div class="signals-grid">
-          <div class="signal-card">
-            <h4>MTM Signal</h4>
+        <div class="component-grid">
+          <div class="component-container">
+            <h3>Signal Demo</h3>
             <div class="signal-display">
-              <div class="signal-value">{$signalDemoValue}</div>
-              <button onclick={$updateSignalDemo} class="signal-button">
+              <p>Current Signal Value: <strong>{$signalValue}</strong></p>
+              <button click={$updateSignal} class="demo-button">
                 Update Signal
               </button>
             </div>
-            <p>This value is managed by MTM signals</p>
-          </div>
-          
-          <div class="signal-card">
-            <h4>Derived Value</h4>
-            <div class="signal-display">
-              <div class="signal-value derived">{$derivedValue}</div>
-              <div class="signal-formula">= {$signalDemoValue} × 2</div>
-            </div>
-            <p>Automatically computed from the MTM signal</p>
-          </div>
-          
-          <div class="signal-card">
-            <h4>Reactive Updates</h4>
-            <div class="signal-display">
-              <div class="update-indicator {$signalDemoValue > 50 ? 'high' : 'low'}">
-                {$signalDemoValue > 50 ? 'HIGH' : 'LOW'}
-              </div>
-            </div>
-            <p>UI updates automatically based on signal value</p>
           </div>
         </div>
       </section>
       
-      <section class="comparison-section">
-        <h2>Solid vs Other Frameworks</h2>
-        <p>Here's how Solid.js compares to other frameworks in the MTM ecosystem:</p>
-        
-        <div class="comparison-table">
-          <div class="comparison-header">
-            <div class="feature-col">Feature</div>
-            <div class="framework-col solid">Solid</div>
-            <div class="framework-col react">React</div>
-            <div class="framework-col vue">Vue</div>
-            <div class="framework-col svelte">Svelte</div>
+      <section class="integration-info">
+        <h2>Solid + MTM Integration</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>🔷 Solid Components</h4>
+            <p>Solid.js components (.tsx files) integrate naturally with MTM's signal system.</p>
           </div>
-          
-          <div class="comparison-row">
-            <div class="feature-col">Reactivity</div>
-            <div class="framework-col solid">Fine-grained</div>
-            <div class="framework-col react">Virtual DOM</div>
-            <div class="framework-col vue">Proxy-based</div>
-            <div class="framework-col svelte">Compile-time</div>
+          <div class="info-card">
+            <h4>⚡ Signal Compatibility</h4>
+            <p>Solid's signals work seamlessly with MTM signals for unified reactivity.</p>
           </div>
-          
-          <div class="comparison-row">
-            <div class="feature-col">Bundle Size</div>
-            <div class="framework-col solid">~7KB</div>
-            <div class="framework-col react">~42KB</div>
-            <div class="framework-col vue">~34KB</div>
-            <div class="framework-col svelte">~10KB</div>
+          <div class="info-card">
+            <h4>🚀 Performance</h4>
+            <p>Both Solid and MTM use fine-grained reactivity for optimal performance.</p>
           </div>
-          
-          <div class="comparison-row">
-            <div class="feature-col">Performance</div>
-            <div class="framework-col solid">Excellent</div>
-            <div class="framework-col react">Good</div>
-            <div class="framework-col vue">Very Good</div>
-            <div class="framework-col svelte">Excellent</div>
+          <div class="info-card">
+            <h4>🎯 No Virtual DOM</h4>
+            <p>Direct DOM updates provide excellent performance in both systems.</p>
           </div>
-          
-          <div class="comparison-row">
-            <div class="feature-col">Learning Curve</div>
-            <div class="framework-col solid">Moderate</div>
-            <div class="framework-col react">Moderate</div>
-            <div class="framework-col vue">Easy</div>
-            <div class="framework-col svelte">Easy</div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="code-example-section">
-        <h2>Code Example</h2>
-        <p>Here's how Solid integration works in practice:</p>
-        
-        <div class="code-block">
-          <h4>MTM Page (solid-example.mtm)</h4>
-          <pre><code>---
-route: "/solid-example"
-compileJsMode: "external.js"
----
-
-import DataChart from "@components/DataChart.tsx"
-
-$chartData! = signal('chartData', [])
-
-$handleDataChange = (newData) => {
-  $chartData = newData
-}
-
-&lt;template&gt;
-  &lt;DataChart 
-    data={$chartData}
-    onDataChange={$handleDataChange}
-  /&gt;
-&lt;/template&gt;</code></pre>
-        </div>
-        
-        <div class="code-block">
-          <h4>Solid Component (DataChart.tsx)</h4>
-          <pre><code>import { createSignal, createEffect, For } from 'solid-js';
-
-interface DataChartProps {
-  data?: DataPoint[];
-  onDataChange?: (data: DataPoint[]) => void;
-}
-
-const DataChart = (props: DataChartProps) => {
-  const [data, setData] = createSignal(props.data || []);
-  const [animationProgress, setAnimationProgress] = createSignal(0);
-
-  createEffect(() => {
-    // Animation logic
-    let start = 0;
-    const animate = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / 1000, 1);
-      setAnimationProgress(progress);
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-    requestAnimationFrame(animate);
-  });
-
-  return (
-    &lt;div class="data-chart"&gt;
-      &lt;For each={data()}&gt;
-        {(item) => (
-          &lt;div class="chart-item"&gt;{item.label}&lt;/div&gt;
-        )}
-      &lt;/For&gt;
-    &lt;/div&gt;
-  );
-};</code></pre>
         </div>
       </section>
     </main>
@@ -334,499 +101,23 @@ const DataChart = (props: DataChartProps) => {
     <footer class="page-footer">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>Solid.js Integration Features</h4>
-          <ul>
-            <li>✅ Fine-grained reactivity system</li>
-            <li>✅ createSignal and createEffect</li>
-            <li>✅ JSX with TypeScript support</li>
-            <li>✅ Minimal bundle size (~7KB)</li>
-            <li>✅ No virtual DOM overhead</li>
-            <li>✅ Excellent performance</li>
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/mtm-example">MTM Example</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/vue-example">Vue Example</a></li>
+            <li><a href="/svelte-example">Svelte Example</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
-          <h4>Performance Benefits</h4>
-          <p>Solid.js provides:</p>
-          <ul>
-            <li>🚀 Faster initial render</li>
-            <li>⚡ Efficient updates</li>
-            <li>📦 Smaller bundle size</li>
-            <li>🎯 Precise reactivity</li>
-            <li>🔧 Better tree shaking</li>
-          </ul>
-        </div>
-        
-        <div class="footer-section">
-          <h4>Next Steps</h4>
-          <p>Explore other framework integrations:</p>
-          <div class="footer-links">
-            <a href="/react-example" class="footer-link">React Example →</a>
-            <a href="/vue-example" class="footer-link">Vue Example →</a>
-            <a href="/svelte-example" class="footer-link">Svelte Example →</a>
-          </div>
+          <h4>Solid Integration</h4>
+          <p>Solid.js + MTM Framework</p>
+          <p>Signal-based reactivity with fine-grained updates</p>
         </div>
       </div>
     </footer>
   </div>
 </template>
-
-<style>
-  .solid-example-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .breadcrumb {
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-  }
-
-  .breadcrumb-link {
-    color: #667eea;
-    text-decoration: none;
-  }
-
-  .breadcrumb-link:hover {
-    text-decoration: underline;
-  }
-
-  .breadcrumb-separator {
-    margin: 0 0.5rem;
-  }
-
-  .breadcrumb-current {
-    font-weight: 600;
-  }
-
-  .page-header h1 {
-    font-size: 2.5rem;
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .page-description {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 1.5rem;
-  }
-
-  .framework-badge {
-    margin-bottom: 1rem;
-  }
-
-  .badge {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .solid-badge {
-    background: #e3f2fd;
-    color: #2196f3;
-  }
-
-  .example-navigation {
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-
-  .nav-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .nav-link {
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .nav-link.react {
-    background: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .nav-link.vue {
-    background: #e8f5e8;
-    color: #4caf50;
-  }
-
-  .nav-link.svelte {
-    background: #fff3e0;
-    color: #ff9800;
-  }
-
-  .nav-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .intro-section {
-    margin-bottom: 3rem;
-  }
-
-  .integration-features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
-  .feature-item {
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    border-left: 4px solid #2196f3;
-  }
-
-  .feature-item h4 {
-    margin: 0 0 0.5rem;
-    color: #2c3e50;
-  }
-
-  .performance-section {
-    margin-bottom: 3rem;
-  }
-
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
-  .metric-card {
-    padding: 1.5rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    border-top: 4px solid #2196f3;
-  }
-
-  .metric-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2196f3;
-    margin-bottom: 0.5rem;
-  }
-
-  .metric-label {
-    font-size: 0.9rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .demo-section {
-    margin-bottom: 3rem;
-  }
-
-  .demo-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-top: 1.5rem;
-  }
-
-  .demo-card {
-    padding: 2rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e1e5e9;
-  }
-
-  .demo-card.full-width {
-    grid-column: 1 / -1;
-  }
-
-  .demo-card h3 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .chart-controls {
-    display: flex;
-    gap: 1rem;
-    margin: 1.5rem 0;
-    justify-content: center;
-  }
-
-  .control-button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .control-button.reset {
-    background: #e74c3c;
-    color: white;
-  }
-
-  .control-button.update {
-    background: #2196f3;
-    color: white;
-  }
-
-  .control-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .chart-info {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    font-size: 0.9rem;
-  }
-
-  .chart-info p {
-    margin: 0.5rem 0;
-  }
-
-  .signals-demo {
-    margin-bottom: 3rem;
-  }
-
-  .signals-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .signal-card {
-    padding: 1.5rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    border-top: 4px solid #2196f3;
-  }
-
-  .signal-card h4 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .signal-display {
-    margin: 1rem 0;
-  }
-
-  .signal-value {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #2196f3;
-    margin-bottom: 0.5rem;
-  }
-
-  .signal-value.derived {
-    color: #4caf50;
-  }
-
-  .signal-formula {
-    font-size: 1rem;
-    color: #666;
-    font-family: 'Monaco', 'Consolas', monospace;
-  }
-
-  .signal-button {
-    padding: 0.75rem 1.5rem;
-    background: #2196f3;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.2s;
-  }
-
-  .signal-button:hover {
-    background: #1976d2;
-  }
-
-  .update-indicator {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 1.2rem;
-    transition: all 0.3s;
-  }
-
-  .update-indicator.high {
-    background: #ffcdd2;
-    color: #d32f2f;
-  }
-
-  .update-indicator.low {
-    background: #c8e6c9;
-    color: #388e3c;
-  }
-
-  .comparison-section {
-    margin-bottom: 3rem;
-  }
-
-  .comparison-table {
-    margin-top: 1.5rem;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .comparison-header,
-  .comparison-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-    gap: 1px;
-    background: #e1e5e9;
-  }
-
-  .comparison-header {
-    background: #2c3e50;
-  }
-
-  .feature-col,
-  .framework-col {
-    padding: 1rem;
-    background: white;
-    text-align: center;
-  }
-
-  .comparison-header .feature-col,
-  .comparison-header .framework-col {
-    background: #2c3e50;
-    color: white;
-    font-weight: 600;
-  }
-
-  .framework-col.solid {
-    background: #e3f2fd;
-    color: #2196f3;
-    font-weight: 600;
-  }
-
-  .framework-col.react {
-    background: #f3e5f5;
-    color: #9c27b0;
-  }
-
-  .framework-col.vue {
-    background: #e8f5e8;
-    color: #4caf50;
-  }
-
-  .framework-col.svelte {
-    background: #fff3e0;
-    color: #ff9800;
-  }
-
-  .code-example-section {
-    margin-bottom: 3rem;
-  }
-
-  .code-block {
-    margin: 1.5rem 0;
-    background: #f8f9fa;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .code-block h4 {
-    margin: 0;
-    padding: 1rem 1.5rem;
-    background: #2c3e50;
-    color: white;
-    font-size: 1rem;
-  }
-
-  .code-block pre {
-    margin: 0;
-    padding: 1.5rem;
-    overflow-x: auto;
-  }
-
-  .code-block code {
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .page-footer {
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e1e5e9;
-  }
-
-  .footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-
-  .footer-section h4 {
-    margin-bottom: 1rem;
-    color: #2c3e50;
-  }
-
-  .footer-section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .footer-section li {
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .footer-link {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .footer-link:hover {
-    text-decoration: underline;
-  }
-
-  @media (max-width: 768px) {
-    .comparison-header,
-    .comparison-row {
-      grid-template-columns: 1fr;
-    }
-    
-    .comparison-header .feature-col {
-      display: none;
-    }
-    
-    .feature-col {
-      background: #f8f9fa;
-      font-weight: 600;
-    }
-  }
-</style>

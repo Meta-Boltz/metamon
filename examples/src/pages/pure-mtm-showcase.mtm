@@ -1,0 +1,434 @@
+---
+function: PureMTMShowcase
+title: "Pure MTM Showcase"
+description: "Complete MTM framework demonstration with Tailwind CSS integration"
+compileJsMode: "inline"
+route: "/pure-mtm-showcase"
+imports:
+  - "@components/MTMCounter.mtm"
+  - "@components/MTMTodoList.mtm"
+  - "@components/MTMThemeToggle.mtm"
+---
+
+// Pure MTM Showcase - Ultra-modern MTM syntax demonstration
+$pageTitle! = signal('pageTitle', 'Pure MTM Showcase')
+$currentSection! = signal('currentSection', 'overview')
+$isDarkMode! = signal('isDarkMode', false)
+$counterValue! = signal('counterValue', 0)
+
+// Demo statistics using ultra-modern MTM syntax
+$demoStats! = signal('demoStats', {
+  components: 8,
+  features: 12,
+  examples: 6,
+  lines: 450
+})
+
+// Features showcase data using ultra-modern MTM syntax
+$features! = signal('features', [
+  {
+    id: 1,
+    title: 'Reactive Signals',
+    description: 'Built-in reactive state management with automatic updates',
+    icon: '⚡',
+    code: '$count! = signal("count", 0)',
+    active: true
+  },
+  {
+    id: 2,
+    title: 'Computed Values',
+    description: 'Derived state that updates automatically when dependencies change',
+    icon: '🔄',
+    code: '$doubled! = computed(() => $count * 2)',
+    active: true
+  },
+  {
+    id: 3,
+    title: 'Component Imports',
+    description: 'Import and use MTM components with full type safety',
+    icon: '📦',
+    code: 'imports: ["@components/Counter.mtm"]',
+    active: true
+  },
+  {
+    id: 4,
+    title: 'Event Handling',
+    description: 'Declarative event handling with automatic binding',
+    icon: '🎯',
+    code: 'click={$handleClick}',
+    active: true
+  },
+  {
+    id: 5,
+    title: 'Conditional Rendering',
+    description: 'Show/hide content based on reactive state',
+    icon: '🔀',
+    code: '{#if $showContent}...{/if}',
+    active: true
+  },
+  {
+    id: 6,
+    title: 'List Rendering',
+    description: 'Efficiently render dynamic lists with automatic updates',
+    icon: '📋',
+    code: '{#each $items as item}...{/each}',
+    active: true
+  }
+])
+
+// Computed values using ultra-modern MTM syntax
+$totalFeatures! = computed(() => $features.filter(f => f.active).length)
+$completionPercentage! = computed(() => Math.round(($totalFeatures / $features.length) * 100))
+
+// Ultra-modern MTM function definitions
+$switchSection = (section) => {
+  $currentSection = section
+}
+
+$toggleTheme = () => {
+  $isDarkMode = !$isDarkMode
+  document.documentElement.classList.toggle('dark', $isDarkMode)
+}
+
+$incrementCounter = () => {
+  $counterValue = $counterValue + 1
+}
+
+$resetCounter = () => {
+  $counterValue = 0
+}
+
+$toggleFeature = (featureId) => {
+  $features = $features.map(f => 
+    f.id === featureId ? { ...f, active: !f.active } : f
+  )
+}
+
+<template>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-xl">M</span>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{$pageTitle}</h1>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Pure MTM Framework Demonstration</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <button 
+              click={$toggleTheme}
+              class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              {#if $isDarkMode}
+                <span>🌞</span>
+              {:else}
+                <span>🌙</span>
+              {/if}
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex space-x-8">
+          <button 
+            click={() => $switchSection('overview')}
+            class="py-4 px-2 border-b-2 font-medium text-sm transition-colors {$currentSection === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500'}"
+          >
+            Overview
+          </button>
+          
+          <button 
+            click={() => $switchSection('components')}
+            class="py-4 px-2 border-b-2 font-medium text-sm transition-colors {$currentSection === 'components' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500'}"
+          >
+            Components
+          </button>
+          
+          <button 
+            click={() => $switchSection('features')}
+            class="py-4 px-2 border-b-2 font-medium text-sm transition-colors {$currentSection === 'features' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500'}"
+          >
+            Features ({$totalFeatures})
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Overview Section -->
+      {#if $currentSection === 'overview'}
+        <div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Components</p>
+                  <p class="text-2xl font-bold text-gray-900 dark:text-white">{$demoStats.components}</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                  <span class="text-blue-600 dark:text-blue-400 text-xl">📦</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Features</p>
+                  <p class="text-2xl font-bold text-gray-900 dark:text-white">{$demoStats.features}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                  <span class="text-green-600 dark:text-green-400 text-xl">⚡</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Examples</p>
+                  <p class="text-2xl font-bold text-gray-900 dark:text-white">{$demoStats.examples}</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                  <span class="text-purple-600 dark:text-purple-400 text-xl">🎯</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Completion</p>
+                  <p class="text-2xl font-bold text-gray-900 dark:text-white">{$completionPercentage}%</p>
+                </div>
+                <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center">
+                  <span class="text-orange-600 dark:text-orange-400 text-xl">📊</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-200 dark:border-gray-700">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Welcome to Pure MTM</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
+              This showcase demonstrates the complete capabilities of the MTM framework using only pure MTM syntax - 
+              no external JavaScript frameworks required. Experience reactive state management, component composition, 
+              and modern UI patterns all built with MTM's native features and Tailwind CSS integration.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Key Features</h3>
+                <ul class="space-y-2">
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Reactive signals and computed values</span>
+                  </li>
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Component imports and composition</span>
+                  </li>
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Event handling and form validation</span>
+                  </li>
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Conditional and list rendering</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Tailwind Integration</h3>
+                <ul class="space-y-2">
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Responsive design utilities</span>
+                  </li>
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Dark mode support</span>
+                  </li>
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Animation and transition classes</span>
+                  </li>
+                  <li class="flex items-center space-x-3">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span class="text-gray-700 dark:text-gray-300">Modern component styling</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Components Section -->
+      {#if $currentSection === 'components'}
+        <div>
+          <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">MTM Components</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Reusable MTM components demonstrating composition and state management with Tailwind styling.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Counter Component -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">MTM Counter</h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                A reactive counter component with increment, decrement, and reset functionality.
+              </p>
+              <MTMCounter />
+            </div>
+
+            <!-- Todo List Component -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">MTM Todo List</h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                A complete todo list with add, toggle, and delete functionality.
+              </p>
+              <MTMTodoList />
+            </div>
+
+            <!-- Theme Toggle Component -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">MTM Theme Toggle</h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                A theme switcher component with smooth transitions and persistence.
+              </p>
+              <MTMThemeToggle />
+            </div>
+
+            <!-- Inline Counter Demo -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Inline Counter Demo</h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                A simple counter built directly in this page to show inline MTM functionality.
+              </p>
+              
+              <div class="flex items-center justify-center space-x-4">
+                <button 
+                  click={$incrementCounter}
+                  class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                >
+                  Increment
+                </button>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white">{$counterValue}</span>
+                <button 
+                  click={$resetCounter}
+                  class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Features Section -->
+      {#if $currentSection === 'features'}
+        <div>
+          <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">MTM Framework Features</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Explore the powerful features that make MTM a complete solution for modern web development.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {#each $features as feature}
+              <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="p-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                      <span class="text-2xl">{feature.icon}</span>
+                      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{feature.title}</h3>
+                    </div>
+                    <button 
+                      click={() => $toggleFeature(feature.id)}
+                      class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {feature.active ? 'bg-green-500 border-green-500' : 'border-gray-300'}"
+                    >
+                      {#if feature.active}
+                        <span class="text-white text-xs">✓</span>
+                      {/if}
+                    </button>
+                  </div>
+                  
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">{feature.description}</p>
+                  
+                  <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
+                    <code class="text-sm text-gray-800 dark:text-gray-200 font-mono">{feature.code}</code>
+                  </div>
+                </div>
+                
+                {#if feature.active}
+                  <div class="px-6 py-3 bg-green-50 dark:bg-green-900/20 border-t border-green-200 dark:border-green-800">
+                    <span class="text-sm text-green-700 dark:text-green-400 font-medium">✓ Active Feature</span>
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Feature Statistics</h3>
+            <div class="flex items-center space-x-6 mb-4">
+              <div class="flex items-center space-x-2">
+                <span class="text-green-500 text-xl">✓</span>
+                <span class="text-gray-700 dark:text-gray-300">Active: {$totalFeatures}</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-gray-400 text-xl">○</span>
+                <span class="text-gray-700 dark:text-gray-300">Total: {$features.length}</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-blue-500 text-xl">%</span>
+                <span class="text-gray-700 dark:text-gray-300">Completion: {$completionPercentage}%</span>
+              </div>
+            </div>
+            
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div 
+                class="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
+                style="width: {$completionPercentage}%"
+              ></div>
+            </div>
+          </div>
+        </div>
+      {/if}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center">
+          <p class="text-gray-600 dark:text-gray-400">
+            Built with ❤️ using pure MTM framework and Tailwind CSS
+          </p>
+          <div class="mt-4 flex justify-center space-x-6">
+            <a href="/" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Home</a>
+            <a href="/about" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">About</a>
+            <a href="/documentation" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Documentation</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>

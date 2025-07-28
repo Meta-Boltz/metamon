@@ -1,0 +1,66 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - heading "Enhanced MTM Framework" [level=1]
+  - paragraph: Welcome to the enhanced MTM framework with routing and multi-framework support
+  - text: "Current time: 11:41:16 PM Route: / | MTM Compiled"
+- navigation:
+  - heading "Navigation Examples" [level=2]
+  - link "About Page":
+    - /url: /about
+  - link "🌟 Pure MTM Showcase":
+    - /url: /pure-mtm-showcase
+  - link "MTM Example":
+    - /url: /mtm-example
+  - link "React Example":
+    - /url: /react-example
+  - link "Vue Example":
+    - /url: /vue-example
+  - link "Solid Example":
+    - /url: /solid-example
+  - link "Svelte Example":
+    - /url: /svelte-example
+- main:
+  - heading "Welcome to Enhanced MTM!" [level=2]
+  - button "Demo Interaction"
+  - button "Refresh Page"
+  - heading "Enhanced MTM Framework Features" [level=3]
+  - heading "🔗 Client-Side Routing" [level=4]
+  - paragraph: Navigate between pages using standard HTML anchor tags with automatic interception
+  - heading "⚡ Multi-Framework Support" [level=4]
+  - paragraph: Import and use React, Vue, Solid, and Svelte components seamlessly
+  - heading "📝 MTM Compilation" [level=4]
+  - paragraph: MTM files compile to pure JavaScript with reactive state management
+  - heading "🎯 Enhanced Development" [level=4]
+  - paragraph: Hot module replacement, TypeScript support, and optimized builds
+  - heading "MTM Compilation Demonstration" [level=3]
+  - paragraph: "This page demonstrates MTM framework compilation:"
+  - list:
+    - listitem: ✅ MTM files compile to pure JavaScript
+    - listitem: ✅ Ultra-modern MTM syntax with signals and reactivity
+    - listitem: ✅ Multi-framework component integration
+    - listitem: ✅ Optimized build system with Vite
+    - listitem: ✅ TypeScript support for components
+    - listitem: ✅ Production-ready optimizations
+- contentinfo:
+  - paragraph:
+    - link "About":
+      - /url: /about
+    - text: "|"
+    - link "Pure MTM":
+      - /url: /pure-mtm-showcase
+    - text: "|"
+    - link "React":
+      - /url: /react-example
+    - text: "|"
+    - link "Vue":
+      - /url: /vue-example
+    - text: "|"
+    - link "Solid":
+      - /url: /solid-example
+    - text: "|"
+    - link "Svelte":
+      - /url: /svelte-example
+  - paragraph: Built with Enhanced MTM Framework - MTM compiles to JavaScript
+```

@@ -1,83 +1,50 @@
 ---
+function: SvelteExamplePage
+title: "Svelte Component Integration"
+description: "This page demonstrates Svelte component integration with MTM framework"
+compileJsMode: "inline"
 route: "/svelte-example"
-title: "Svelte Integration - Enhanced MTM"
-description: "Demonstration of Svelte component integration with stores and reactive statements"
-compileJsMode: "external.js"
-keywords: "svelte, stores, reactivity, components, integration"
-framework: "svelte"
+imports:
+  - "@components/Card.svelte"
+  - "@components/WeatherWidget.svelte"
 ---
 
-import WeatherWidget from "@components/WeatherWidget.svelte"
-import Card from "@components/Card.svelte"
-
-// MTM state that works with Svelte stores
-$weatherData! = signal('weatherData', null)
-$selectedCity! = signal('selectedCity', 'San Francisco')
-$storeDemo! = signal('storeDemo', {
-  count: 0,
-  message: 'Hello from MTM!',
-  items: ['Apple', 'Banana', 'Cherry']
+// Svelte example page - Ultra-modern MTM syntax
+$pageTitle! = signal('pageTitle', 'Svelte Component Integration')
+$svelteStats! = signal('svelteStats', { components: 2, interactions: 0 })
+$cardData! = signal('cardData', {
+  title: 'Svelte Card',
+  content: 'This is a Svelte component integrated with MTM!',
+  type: 'primary'
 })
-$reactiveDemo! = signal('reactiveDemo', {
-  input: '',
-  doubled: '',
-  reversed: ''
+$weatherData! = signal('weatherData', {
+  city: 'New York',
+  temperature: 22,
+  condition: 'Sunny'
 })
 
-// Functions that bridge MTM and Svelte
-$handleWeatherChange = (newWeather) => {
-  $weatherData = newWeather
-  $logActivity(`Weather updated for ${newWeather.city}: ${newWeather.temperature}°F`)
+$incrementInteractions = () => {
+  $svelteStats = { ...$svelteStats, interactions: $svelteStats.interactions + 1 }
 }
 
-$updateStoreDemo = () => {
-  $storeDemo = {
-    ...$storeDemo,
-    count: $storeDemo.count + 1,
-    message: `Updated ${$storeDemo.count + 1} times!`
+$updateCard = () => {
+  $cardData = {
+    ...$cardData,
+    title: `Updated Card ${Date.now()}`,
+    type: $cardData.type === 'primary' ? 'secondary' : 'primary'
   }
-  $logActivity('Store demo updated')
+  $incrementInteractions()
 }
 
-$addItemToStore = () => {
-  const fruits = ['Orange', 'Grape', 'Mango', 'Pineapple', 'Strawberry']
-  const randomFruit = fruits[Math.floor(Math.random() * fruits.length)]
-  
-  $storeDemo = {
-    ...$storeDemo,
-    items: [...$storeDemo.items, randomFruit]
+$updateWeather = () => {
+  const cities = ['New York', 'London', 'Tokyo', 'Paris']
+  const conditions = ['Sunny', 'Cloudy', 'Rainy', 'Snowy']
+  $weatherData = {
+    city: cities[Math.floor(Math.random() * cities.length)],
+    temperature: Math.floor(Math.random() * 30) + 5,
+    condition: conditions[Math.floor(Math.random() * conditions.length)]
   }
-  $logActivity(`Added ${randomFruit} to store`)
-}
-
-$updateReactiveDemo = (input) => {
-  $reactiveDemo = {
-    input: input,
-    doubled: input + input,
-    reversed: input.split('').reverse().join('')
-  }
-}
-
-$activityLog! = signal('activityLog', [])
-
-$logActivity = (message) => {
-  const activity = {
-    id: Date.now(),
-    message,
-    timestamp: new Date().toLocaleTimeString(),
-    type: 'info'
-  }
-  $activityLog = [...$activityLog, activity]
-  
-  // Keep only last 8 activities
-  if ($activityLog.length > 8) {
-    $activityLog = $activityLog.slice(-8)
-  }
-}
-
-$clearActivityLog = () => {
-  $activityLog = []
-  $logActivity('Activity log cleared')
+  $incrementInteractions()
 }
 
 <template>
@@ -86,328 +53,80 @@ $clearActivityLog = () => {
       <div class="breadcrumb">
         <a href="/" class="breadcrumb-link">Home</a>
         <span class="breadcrumb-separator">→</span>
-        <a href="/about" class="breadcrumb-link">About</a>
-        <span class="breadcrumb-separator">→</span>
         <span class="breadcrumb-current">Svelte Example</span>
       </div>
       
-      <h1>{title}</h1>
-      <p class="page-description">{description}</p>
+      <h1>{$pageTitle}</h1>
+      <p class="page-description">This page demonstrates Svelte component integration with MTM framework</p>
       
-      <div class="framework-badge">
-        <span class="badge svelte-badge">🧡 Svelte Integration</span>
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /svelte-example
+        </div>
+        <div class="metadata-item">
+          <strong>Framework:</strong> Svelte + MTM
+        </div>
+        <div class="metadata-item">
+          <strong>Components:</strong> {$svelteStats.components}
+        </div>
+        <div class="metadata-item">
+          <strong>Interactions:</strong> {$svelteStats.interactions}
+        </div>
       </div>
     </header>
     
-    <nav class="example-navigation">
-      <div class="nav-links">
-        <a href="/react-example" class="nav-link react">React Example</a>
-        <a href="/vue-example" class="nav-link vue">Vue Example</a>
-        <a href="/solid-example" class="nav-link solid">Solid Example</a>
-      </div>
+    <nav class="framework-nav">
+      <a href="/mtm-example" class="framework-link mtm">MTM Example</a>
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/vue-example" class="framework-link vue">Vue Example</a>
+      <a href="/solid-example" class="framework-link solid">Solid Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
     </nav>
     
     <main class="main-content">
-      <section class="intro-section">
-        <h2>Svelte Component Integration</h2>
-        <p>This page demonstrates Svelte components integrated with MTM, showcasing Svelte's stores, reactive statements, and compile-time optimizations.</p>
+      <section class="component-demo">
+        <h2>Svelte Components</h2>
+        <p>The following Svelte components are integrated with MTM's reactive system:</p>
         
-        <div class="integration-features">
-          <div class="feature-item">
-            <h4>✅ Svelte Stores</h4>
-            <p>Writable, readable, and derived stores work seamlessly with MTM</p>
+        <div class="component-grid">
+          <div class="component-container">
+            <h3>Svelte Card</h3>
+            <Card data={$cardData} />
+            <button click={$updateCard} class="demo-button">
+              Update Card
+            </button>
           </div>
-          <div class="feature-item">
-            <h4>✅ Reactive Statements</h4>
-            <p>$: reactive declarations update automatically</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ Compile-time Optimization</h4>
-            <p>Svelte's compiler optimizes components at build time</p>
-          </div>
-          <div class="feature-item">
-            <h4>✅ Scoped Styles</h4>
-            <p>Component styles are automatically scoped</p>
+          
+          <div class="component-container">
+            <h3>Weather Widget</h3>
+            <WeatherWidget weather={$weatherData} />
+            <button click={$updateWeather} class="demo-button">
+              Update Weather
+            </button>
           </div>
         </div>
       </section>
       
-      <section class="demo-section">
-        <h2>Interactive Svelte Components</h2>
-        
-        <div class="demo-grid">
-          <div class="demo-card">
-            <h3>Svelte Weather Widget</h3>
-            <p>A complex Svelte component with stores and reactive updates:</p>
-            
-            <WeatherWidget 
-              city={$selectedCity}
-              onWeatherChange={$handleWeatherChange}
-              className="demo-weather"
-            />
-            
-            <div class="weather-info">
-              {#if $weatherData}
-                <p><strong>Current Weather:</strong> {$weatherData.temperature}°F, {$weatherData.condition}</p>
-                <p><strong>Location:</strong> {$weatherData.city}</p>
-                <p><strong>Last Updated:</strong> {$weatherData.lastUpdated}</p>
-              {:else}
-                <p>No weather data available yet.</p>
-              {/if}
-            </div>
+      <section class="integration-info">
+        <h2>Svelte + MTM Integration</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>🧡 Svelte Components</h4>
+            <p>Svelte components (.svelte files) integrate seamlessly with MTM's reactive system.</p>
           </div>
-          
-          <div class="demo-card">
-            <h3>Svelte Card Component</h3>
-            <p>A reusable Svelte component with slots and props:</p>
-            
-            <Card title="Store Demonstration" variant="primary">
-              <div class="store-demo">
-                <p><strong>Count:</strong> {$storeDemo.count}</p>
-                <p><strong>Message:</strong> {$storeDemo.message}</p>
-                
-                <div class="store-controls">
-                  <button onclick={$updateStoreDemo} class="store-button">
-                    Update Store
-                  </button>
-                  <button onclick={$addItemToStore} class="store-button">
-                    Add Item
-                  </button>
-                </div>
-                
-                <div class="items-list">
-                  <h4>Items ({$storeDemo.items.length}):</h4>
-                  <div class="items-grid">
-                    {#each $storeDemo.items as item, index}
-                      <span class="item-tag" key={index}>{item}</span>
-                    {/each}
-                  </div>
-                </div>
-              </div>
-            </Card>
+          <div class="info-card">
+            <h4>🔄 Reactive Stores</h4>
+            <p>Svelte stores work with MTM signals for unified state management.</p>
           </div>
-        </div>
-      </section>
-      
-      <section class="reactive-demo">
-        <h2>Reactive Statements Demo</h2>
-        <p>This section demonstrates Svelte-style reactive programming integrated with MTM:</p>
-        
-        <div class="reactive-container">
-          <div class="reactive-input">
-            <label for="reactive-text">Enter some text:</label>
-            <input 
-              id="reactive-text"
-              type="text" 
-              value={$reactiveDemo.input}
-              oninput={(e) => $updateReactiveDemo(e.target.value)}
-              placeholder="Type something..."
-              class="reactive-field"
-            />
+          <div class="info-card">
+            <h4>⚡ Compile-time Optimization</h4>
+            <p>Both Svelte and MTM optimize at compile-time for better performance.</p>
           </div>
-          
-          <div class="reactive-outputs">
-            <div class="reactive-output">
-              <h4>Original:</h4>
-              <div class="output-value">{$reactiveDemo.input || 'Nothing yet...'}</div>
-            </div>
-            
-            <div class="reactive-output">
-              <h4>Doubled:</h4>
-              <div class="output-value">{$reactiveDemo.doubled || 'Nothing yet...'}</div>
-            </div>
-            
-            <div class="reactive-output">
-              <h4>Reversed:</h4>
-              <div class="output-value">{$reactiveDemo.reversed || 'Nothing yet...'}</div>
-            </div>
+          <div class="info-card">
+            <h4>🚀 Small Bundle Size</h4>
+            <p>Svelte's compiler approach aligns with MTM's optimization philosophy.</p>
           </div>
-        </div>
-      </section>
-      
-      <section class="activity-section">
-        <h2>Activity Log</h2>
-        <p>Svelte component interactions are logged in real-time:</p>
-        
-        <div class="activity-container">
-          <div class="activity-header">
-            <h4>Live Activity Feed ({$activityLog.length})</h4>
-            {#if $activityLog.length > 0}
-              <button onclick={$clearActivityLog} class="clear-button">
-                Clear Log
-              </button>
-            {/if}
-          </div>
-          
-          <div class="activity-list">
-            {#if $activityLog.length === 0}
-              <div class="no-activity">
-                <p>No activity yet. Interact with the Svelte components above to see activity logs appear here.</p>
-              </div>
-            {:else}
-              {#each $activityLog as activity}
-                <div class="activity-item" key={activity.id}>
-                  <div class="activity-icon">🎯</div>
-                  <div class="activity-content">
-                    <div class="activity-message">{activity.message}</div>
-                    <div class="activity-time">{activity.timestamp}</div>
-                  </div>
-                </div>
-              {/each}
-            {/if}
-          </div>
-        </div>
-      </section>
-      
-      <section class="features-comparison">
-        <h2>Svelte Features in MTM</h2>
-        <p>Here's how Svelte's key features work within the MTM framework:</p>
-        
-        <div class="features-grid">
-          <div class="feature-card">
-            <h4>🏪 Stores</h4>
-            <p>Svelte stores (writable, readable, derived) integrate seamlessly with MTM signals for state management.</p>
-            <div class="feature-example">
-              <code>import { writable } from 'svelte/store';</code>
-              <br>
-              <code>const count = writable(0);</code>
-            </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>⚡ Reactive Statements</h4>
-            <p>$: reactive declarations automatically update when dependencies change, working alongside MTM reactivity.</p>
-            <div class="feature-example">
-              <code>$: doubled = count * 2;</code>
-              <br>
-              <code>$: console.log('Count changed:', count);</code>
-            </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>🎨 Scoped Styles</h4>
-            <p>Component styles are automatically scoped, preventing CSS conflicts in MTM applications.</p>
-            <div class="feature-example">
-              <code>&lt;style&gt;</code>
-              <br>
-              <code>  .button { color: red; }</code>
-              <br>
-              <code>&lt;/style&gt;</code>
-            </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>🔄 Lifecycle</h4>
-            <p>onMount, onDestroy, and other lifecycle functions work normally within MTM pages.</p>
-            <div class="feature-example">
-              <code>import { onMount } from 'svelte';</code>
-              <br>
-              <code>onMount(() => { /* setup */ });</code>
-            </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>📦 Compile-time Optimization</h4>
-            <p>Svelte's compiler optimizes components at build time, resulting in smaller, faster code.</p>
-            <div class="feature-example">
-              <code>// Compiled to vanilla JS</code>
-              <br>
-              <code>// No runtime framework overhead</code>
-            </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>🎯 Event Handling</h4>
-            <p>Svelte's event handling syntax works perfectly with MTM functions and signals.</p>
-            <div class="feature-example">
-              <code>&lt;button on:click={handleClick}&gt;</code>
-              <br>
-              <code>  Click me</code>
-              <br>
-              <code>&lt;/button&gt;</code>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="code-example-section">
-        <h2>Code Example</h2>
-        <p>Here's how Svelte integration works in practice:</p>
-        
-        <div class="code-block">
-          <h4>MTM Page (svelte-example.mtm)</h4>
-          <pre><code>---
-route: "/svelte-example"
-compileJsMode: "external.js"
----
-
-import WeatherWidget from "@components/WeatherWidget.svelte"
-
-$weatherData! = signal('weatherData', null)
-$selectedCity! = signal('selectedCity', 'San Francisco')
-
-$handleWeatherChange = (newWeather) => {
-  $weatherData = newWeather
-}
-
-&lt;template&gt;
-  &lt;WeatherWidget 
-    city={$selectedCity}
-    onWeatherChange={$handleWeatherChange}
-  /&gt;
-  
-  {#if $weatherData}
-    &lt;p&gt;Temperature: {$weatherData.temperature}°F&lt;/p&gt;
-  {/if}
-&lt;/template&gt;</code></pre>
-        </div>
-        
-        <div class="code-block">
-          <h4>Svelte Component (WeatherWidget.svelte)</h4>
-          <pre><code>&lt;script&gt;
-  import { writable, derived } from 'svelte/store';
-  import { onMount } from 'svelte';
-
-  export let city = 'San Francisco';
-  export let onWeatherChange = null;
-
-  const weather = writable(null);
-  const loading = writable(true);
-
-  // Derived store
-  const temperature = derived(weather, $weather => 
-    $weather ? Math.round($weather.temperature) : null
-  );
-
-  const fetchWeather = async (cityName) => {
-    loading.set(true);
-    // Simulate API call
-    const mockWeather = {
-      city: cityName,
-      temperature: Math.floor(Math.random() * 40) + 50,
-      condition: 'sunny'
-    };
-    weather.set(mockWeather);
-    loading.set(false);
-    
-    if (onWeatherChange) {
-      onWeatherChange(mockWeather);
-    }
-  };
-
-  onMount(() => {
-    fetchWeather(city);
-  });
-&lt;/script&gt;
-
-&lt;div class="weather-widget"&gt;
-  {#if $loading}
-    &lt;p&gt;Loading weather...&lt;/p&gt;
-  {:else if $weather}
-    &lt;h3&gt;{$weather.city}&lt;/h3&gt;
-    &lt;p&gt;{$temperature}°F - {$weather.condition}&lt;/p&gt;
-  {/if}
-&lt;/div&gt;</code></pre>
         </div>
       </section>
     </main>
@@ -415,494 +134,23 @@ $handleWeatherChange = (newWeather) => {
     <footer class="page-footer">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>Svelte Integration Features</h4>
-          <ul>
-            <li>✅ Svelte stores (writable, readable, derived)</li>
-            <li>✅ Reactive statements ($:)</li>
-            <li>✅ Component lifecycle (onMount, onDestroy)</li>
-            <li>✅ Scoped CSS styles</li>
-            <li>✅ Event handling and directives</li>
-            <li>✅ Compile-time optimizations</li>
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/mtm-example">MTM Example</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/vue-example">Vue Example</a></li>
+            <li><a href="/solid-example">Solid Example</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
-          <h4>Performance Benefits</h4>
-          <p>Svelte provides:</p>
-          <ul>
-            <li>📦 Small bundle size (~10KB)</li>
-            <li>⚡ Fast runtime performance</li>
-            <li>🔧 Compile-time optimizations</li>
-            <li>🎯 No virtual DOM overhead</li>
-            <li>🚀 Efficient updates</li>
-          </ul>
-        </div>
-        
-        <div class="footer-section">
-          <h4>Next Steps</h4>
-          <p>Explore other framework integrations:</p>
-          <div class="footer-links">
-            <a href="/react-example" class="footer-link">React Example →</a>
-            <a href="/vue-example" class="footer-link">Vue Example →</a>
-            <a href="/solid-example" class="footer-link">Solid Example →</a>
-            <a href="/" class="footer-link">← Back to Home</a>
-          </div>
+          <h4>Svelte Integration</h4>
+          <p>Svelte + MTM Framework</p>
+          <p>Compile-time optimized components with reactive state</p>
         </div>
       </div>
     </footer>
   </div>
 </template>
-
-<style>
-  .svelte-example-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .breadcrumb {
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-  }
-
-  .breadcrumb-link {
-    color: #667eea;
-    text-decoration: none;
-  }
-
-  .breadcrumb-link:hover {
-    text-decoration: underline;
-  }
-
-  .breadcrumb-separator {
-    margin: 0 0.5rem;
-  }
-
-  .breadcrumb-current {
-    font-weight: 600;
-  }
-
-  .page-header h1 {
-    font-size: 2.5rem;
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .page-description {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 1.5rem;
-  }
-
-  .framework-badge {
-    margin-bottom: 1rem;
-  }
-
-  .badge {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .svelte-badge {
-    background: #fff3e0;
-    color: #ff9800;
-  }
-
-  .example-navigation {
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-
-  .nav-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .nav-link {
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .nav-link.react {
-    background: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .nav-link.vue {
-    background: #e8f5e8;
-    color: #4caf50;
-  }
-
-  .nav-link.solid {
-    background: #e3f2fd;
-    color: #2196f3;
-  }
-
-  .nav-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .intro-section {
-    margin-bottom: 3rem;
-  }
-
-  .integration-features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
-  .feature-item {
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    border-left: 4px solid #ff9800;
-  }
-
-  .feature-item h4 {
-    margin: 0 0 0.5rem;
-    color: #2c3e50;
-  }
-
-  .demo-section {
-    margin-bottom: 3rem;
-  }
-
-  .demo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
-    margin-top: 1.5rem;
-  }
-
-  .demo-card {
-    padding: 2rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e1e5e9;
-  }
-
-  .demo-card h3 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .weather-info {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    font-size: 0.9rem;
-  }
-
-  .weather-info p {
-    margin: 0.5rem 0;
-  }
-
-  .store-demo {
-    text-align: center;
-  }
-
-  .store-controls {
-    margin: 1rem 0;
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-  }
-
-  .store-button {
-    padding: 0.5rem 1rem;
-    background: #ff9800;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-  }
-
-  .store-button:hover {
-    background: #f57c00;
-  }
-
-  .items-list {
-    margin-top: 1rem;
-  }
-
-  .items-list h4 {
-    margin: 0 0 0.5rem;
-    font-size: 1rem;
-  }
-
-  .items-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
-  }
-
-  .item-tag {
-    padding: 0.25rem 0.5rem;
-    background: #e3f2fd;
-    color: #1976d2;
-    border-radius: 12px;
-    font-size: 0.8rem;
-  }
-
-  .reactive-demo {
-    margin-bottom: 3rem;
-  }
-
-  .reactive-container {
-    background: white;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 1.5rem;
-  }
-
-  .reactive-input {
-    margin-bottom: 2rem;
-  }
-
-  .reactive-input label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #2c3e50;
-  }
-
-  .reactive-field {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-  }
-
-  .reactive-outputs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .reactive-output {
-    text-align: center;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-  }
-
-  .reactive-output h4 {
-    margin: 0 0 0.5rem;
-    color: #2c3e50;
-    font-size: 1rem;
-  }
-
-  .output-value {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #ff9800;
-    min-height: 1.5rem;
-  }
-
-  .activity-section {
-    margin-bottom: 3rem;
-  }
-
-  .activity-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
-  .activity-header {
-    padding: 1rem 1.5rem;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e1e5e9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .activity-header h4 {
-    margin: 0;
-    color: #2c3e50;
-  }
-
-  .clear-button {
-    padding: 0.5rem 1rem;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-
-  .activity-list {
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .no-activity {
-    padding: 2rem;
-    text-align: center;
-    color: #666;
-  }
-
-  .activity-item {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .activity-item:last-child {
-    border-bottom: none;
-  }
-
-  .activity-icon {
-    font-size: 1.2rem;
-    margin-top: 0.2rem;
-  }
-
-  .activity-content {
-    flex: 1;
-  }
-
-  .activity-message {
-    margin-bottom: 0.25rem;
-  }
-
-  .activity-time {
-    font-size: 0.8rem;
-    color: #666;
-  }
-
-  .features-comparison {
-    margin-bottom: 3rem;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .feature-card {
-    padding: 1.5rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #ff9800;
-  }
-
-  .feature-card h4 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
-
-  .feature-example {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .code-example-section {
-    margin-bottom: 3rem;
-  }
-
-  .code-block {
-    margin: 1.5rem 0;
-    background: #f8f9fa;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .code-block h4 {
-    margin: 0;
-    padding: 1rem 1.5rem;
-    background: #2c3e50;
-    color: white;
-    font-size: 1rem;
-  }
-
-  .code-block pre {
-    margin: 0;
-    padding: 1.5rem;
-    overflow-x: auto;
-  }
-
-  .code-block code {
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .page-footer {
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e1e5e9;
-  }
-
-  .footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-
-  .footer-section h4 {
-    margin-bottom: 1rem;
-    color: #2c3e50;
-  }
-
-  .footer-section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .footer-section li {
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .footer-link {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .footer-link:hover {
-    text-decoration: underline;
-  }
-</style>
