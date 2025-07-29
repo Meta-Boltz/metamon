@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailwind CSS Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 mb-8">Tailwind CSS Test</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- MTM Counter Test -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">MTM Counter</h3>
+          <div class="flex items-center justify-center space-x-4 mb-4">
+            <button class="w-12 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-bold transition-colors">-</button>
+            <span class="text-3xl font-bold text-gray-900 min-w-[60px] text-center">5</span>
+            <button class="w-12 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-bold transition-colors">+</button>
+          </div>
+          <div class="text-center">
+            <button class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors">Reset</button>
+          </div>
+          <p class="text-sm text-gray-600 mt-4 italic">Native MTM reactive component</p>
+        </div>
+        
+        <!-- React Counter Test -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">React Counter</h3>
+          <div class="flex items-center justify-center space-x-4 mb-4">
+            <button class="w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold transition-colors">-</button>
+            <span class="text-3xl font-bold text-gray-900 min-w-[60px] text-center">3</span>
+            <button class="w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold transition-colors">+</button>
+          </div>
+          <p class="text-sm text-gray-600 mt-4 italic">React Counter Component</p>
+        </div>
+        
+        <!-- Vue Form Test -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Vue Form</h3>
+          <div class="space-y-3">
+            <input type="text" placeholder="Your name" class="w-full p-3 border border-gray-300 rounded-md">
+            <input type="email" placeholder="Your email" class="w-full p-3 border border-gray-300 rounded-md">
+            <div class="bg-gray-50 p-3 rounded-md">
+              <p class="text-sm text-gray-600">Preview:</p>
+              <p class="font-medium text-gray-800">Hello Anonymous</p>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 mt-4 italic">Vue reactive form</p>
+        </div>
+      </div>
+      
+      <div class="mt-8 text-center">
+        <p class="text-lg text-gray-700">If you can see proper styling above, Tailwind CSS is working! 🎉</p>
+        <a href="/" class="inline-block mt-4 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors">
+          Go to Main App
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

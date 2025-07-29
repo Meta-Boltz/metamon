@@ -9,7 +9,7 @@
 
 - [-] 2. Implement core fixes for the chunk loading mechanism
 
-  - [-] 2.1 Create a safe property assignment utility
+  - [x] 2.1 Create a safe property assignment utility
 
     - Implement the `safeAssign` function that checks for getter-only properties
 
@@ -90,13 +90,14 @@
 
 - [ ] 6. Performance optimization and finalization
 
-  - [ ] 6.1 Optimize the safe property assignment mechanism
+  - [x] 6.1 Optimize the safe property assignment mechanism
 
     - Add caching for property descriptors
     - Implement fast paths for common scenarios
     - _Requirements: 1.1, 1.3_
 
-  - [ ] 6.2 Conduct final integration testing
+  - [x] 6.2 Conduct final integration testing
+
     - Test the complete system with all fixes in place
     - Verify backward compatibility with existing code
     - _Requirements: 2.3, 3.1, 3.2, 3.3, 3.4_

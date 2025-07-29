@@ -4,16 +4,16 @@ title: "Enhanced MTM Framework"
 description: "Welcome to the enhanced MTM framework with routing and multi-framework support"
 compileJsMode: "inline"
 route: "/"
+useLayout: "main"
 ---
 
 // Home page - Ultra-modern MTM syntax
-$currentTime! = signal('currentTime', new Date().toLocaleTimeString())
-$visitCount! = signal('visitCount', 0)
+// Layout variables that will be passed to the layout
+$pageTitle! = signal('pageTitle', 'Enhanced MTM Framework')
+$pageDescription! = signal('pageDescription', 'Welcome to the enhanced MTM framework with routing and multi-framework support')
 
-// Update time every second
-$updateTime = () => {
-  $currentTime = new Date().toLocaleTimeString()
-}
+// Page-specific state
+$visitCount! = signal('visitCount', 0)
 
 // Demo functions using ultra-modern MTM syntax
 $showDemo = () => {
@@ -27,94 +27,80 @@ $refreshPage = () => {
 // Initialize page
 $init = () => {
   $visitCount++
-  setInterval($updateTime, 1000)
 }
 
 <template>
-  <div class="home-page">
-    <header class="page-header">
-      <h1>Enhanced MTM Framework</h1>
-      <p class="description">Welcome to the enhanced MTM framework with routing and multi-framework support</p>
-      <div class="page-meta">
-        <span class="current-time">Current time: {$currentTime}</span>
-        <span class="visit-counter">Route: / | Visits: {$visitCount}</span>
-      </div>
-    </header>
-    
-    <nav class="main-navigation">
-      <h2>Navigation Examples</h2>
-      <div class="nav-links">
-        <a href="/about" class="nav-link">About Page</a>
-        <a href="/pure-mtm-showcase" class="nav-link">🌟 Pure MTM Showcase</a>
-        <a href="/mtm-example" class="nav-link">MTM Example</a>
-        <a href="/react-example" class="nav-link">React Example</a>
-        <a href="/vue-example" class="nav-link">Vue Example</a>
-        <a href="/solid-example" class="nav-link">Solid Example</a>
-        <a href="/svelte-example" class="nav-link">Svelte Example</a>
-      </div>
-    </nav>
-    
-    <main class="main-content">
-      <section class="welcome-section">
-        <h2>Welcome to Enhanced MTM!</h2>
-        <div class="interactive-demo">
-          <button click={$showDemo} class="demo-button">
-            Demo Interaction
-          </button>
-          <button click={$refreshPage} class="demo-button">
-            Refresh Page
-          </button>
-        </div>
-      </section>
-      
-      <section class="features-section">
-        <h3>Enhanced MTM Framework Features</h3>
-        <div class="features-grid">
-          <div class="feature-card">
-            <h4>🔗 Client-Side Routing</h4>
-            <p>Navigate between pages using standard HTML anchor tags with automatic interception</p>
-          </div>
-          <div class="feature-card">
-            <h4>⚡ Multi-Framework Support</h4>
-            <p>Import and use React, Vue, Solid, and Svelte components seamlessly</p>
-          </div>
-          <div class="feature-card">
-            <h4>📝 Frontmatter Configuration</h4>
-            <p>Configure routes, compilation modes, and metadata using YAML frontmatter</p>
-          </div>
-          <div class="feature-card">
-            <h4>🎯 Enhanced Development</h4>
-            <p>Hot module replacement, TypeScript support, and optimized builds</p>
-          </div>
-        </div>
-      </section>
-      
-      <section class="routing-demo">
-        <h3>Routing Demonstration</h3>
-        <p>This page demonstrates the enhanced MTM framework with:</p>
-        <ul class="demo-list">
-          <li>✅ Client-side routing with standard anchor tags</li>
-          <li>✅ Multi-framework component integration</li>
-          <li>✅ Optimized build system with Vite</li>
-          <li>✅ TypeScript support for components</li>
-          <li>✅ Hot module replacement during development</li>
-          <li>✅ Production-ready optimizations</li>
-        </ul>
-      </section>
-    </main>
-    
-    <footer class="page-footer">
-      <p>
-        <a href="/about" class="footer-link">About</a> | 
-        <a href="/pure-mtm-showcase" class="footer-link">Pure MTM</a> |
-        <a href="/react-example" class="footer-link">React</a> |
-        <a href="/vue-example" class="footer-link">Vue</a> |
-        <a href="/solid-example" class="footer-link">Solid</a> |
-        <a href="/svelte-example" class="footer-link">Svelte</a>
+  <!-- Page content only - layout wrapper is handled by main.mtm -->
+  <section class="mb-12">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome to Enhanced MTM!</h2>
+      <p class="text-xl text-gray-600 mb-6">
+        A modern framework for building reactive web applications with multi-framework support
       </p>
-      <p class="footer-note">
-        Built with Enhanced MTM Framework - Multi-framework routing example
-      </p>
-    </footer>
-  </div>
+      <div class="flex justify-center gap-4">
+        <button click={$showDemo} class="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+          🚀 Demo Interaction
+        </button>
+        <button click={$refreshPage} class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+          🔄 Refresh Page
+        </button>
+      </div>
+      <p class="text-sm text-gray-500 mt-4">Page visits: {$visitCount}</p>
+    </div>
+  </section>
+  
+  <section class="mb-12">
+    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Framework Features</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">🔗</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Client-Side Routing</h4>
+        <p class="text-gray-600">Navigate between pages using standard HTML anchor tags with automatic interception</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">⚡</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Multi-Framework Support</h4>
+        <p class="text-gray-600">Import and use React, Vue, Solid, and Svelte components seamlessly</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">📝</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Frontmatter Configuration</h4>
+        <p class="text-gray-600">Configure routes, compilation modes, and metadata using YAML frontmatter</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">🎯</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Enhanced Development</h4>
+        <p class="text-gray-600">Hot module replacement, TypeScript support, and optimized builds</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="mb-12">
+    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Quick Start Guide</h3>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl">1️⃣</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Explore Examples</h4>
+          <p class="text-gray-600 text-sm">Check out the framework examples to see different integrations in action</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl">2️⃣</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Try Components</h4>
+          <p class="text-gray-600 text-sm">Interact with the reactive components to understand the framework capabilities</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl">3️⃣</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Build Your Own</h4>
+          <p class="text-gray-600 text-sm">Use the MTM framework to create your own reactive applications</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>

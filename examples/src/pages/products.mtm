@@ -1,0 +1,629 @@
+---
+function: ProductsPage
+useLayout: "ecommerce"
+title: "All Products - MTM Store"
+description: "Browse our complete collection of products"
+breadcrumb: "Products"
+---
+
+<template>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">All Products</h1>
+        <p class="text-gray-600">Discover our complete collection of amazing products</p>
+      </div>
+      
+      <div class="flex items-center space-x-4 mt-4 lg:mt-0">
+        <div class="relative">
+          <select 
+            onchange="handleSortChange(event)"
+            class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="name">Sort by Name</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="newest">Newest First</option>
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="flex border border-gray-300 rounded-lg">
+          <button 
+            onclick="setViewMode('grid')"
+            class="p-2 hover:bg-gray-100 rounded-l-lg"
+            id="grid-view-btn"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+            </svg>
+          </button>
+          <button 
+            onclick="setViewMode('list')"
+            class="p-2 hover:bg-gray-100 rounded-r-lg border-l border-gray-300"
+            id="list-view-btn"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Filters Sidebar -->
+      <aside class="lg:w-64 flex-shrink-0">
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <h3 class="font-semibold text-gray-900 mb-4">Filters</h3>
+          
+          <!-- Category Filter -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-3">Category</h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handleCategoryFilter('electronics', event)">
+                <span class="ml-2 text-sm text-gray-600">Electronics</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handleCategoryFilter('fashion', event)">
+                <span class="ml-2 text-sm text-gray-600">Fashion</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handleCategoryFilter('home', event)">
+                <span class="ml-2 text-sm text-gray-600">Home & Garden</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handleCategoryFilter('sports', event)">
+                <span class="ml-2 text-sm text-gray-600">Sports</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Price Range Filter -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-3">Price Range</h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="price" class="border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handlePriceFilter('0-50')">
+                <span class="ml-2 text-sm text-gray-600">$0 - $50</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="price" class="border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handlePriceFilter('50-100')">
+                <span class="ml-2 text-sm text-gray-600">$50 - $100</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="price" class="border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handlePriceFilter('100-200')">
+                <span class="ml-2 text-sm text-gray-600">$100 - $200</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="price" class="border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handlePriceFilter('200+')">
+                <span class="ml-2 text-sm text-gray-600">$200+</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Rating Filter -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-3">Rating</h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handleRatingFilter('4+')">
+                <span class="ml-2 text-sm text-gray-600">4+ Stars</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="handleRatingFilter('3+')">
+                <span class="ml-2 text-sm text-gray-600">3+ Stars</span>
+              </label>
+            </div>
+          </div>
+          
+          <button onclick="clearFilters()" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+            Clear Filters
+          </button>
+        </div>
+      </aside>
+
+      <!-- Products Grid/List -->
+      <main class="flex-1">
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${Array(9).fill(0).map(() => `
+              <div class="bg-white rounded-xl shadow-sm overflow-hidden animate-pulse">
+                <div class="w-full h-48 bg-gray-200"></div>
+                <div class="p-4">
+                  <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div class="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+                  <div class="h-6 bg-gray-200 rounded w-1/3"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        
+        <!-- Products Container -->
+        <div id="products-container">
+          <!-- Products will be rendered here -->
+        </div>
+        
+        <!-- Pagination -->
+        <div id="pagination" class="flex justify-center mt-12">
+          <!-- Pagination will be rendered here -->
+        </div>
+      </main>
+    </div>
+  </div>
+</template>
+
+// Products page state and functions
+$products! = signal('products', [])
+$filteredProducts! = signal('filteredProducts', [])
+$loading! = signal('loading', true)
+$currentPage! = signal('currentPage', 1)
+$productsPerPage! = signal('productsPerPage', 12)
+$sortBy! = signal('sortBy', 'name')
+$viewMode! = signal('viewMode', 'grid')
+$filters! = signal('filters', {
+  categories: [],
+  priceRange: null,
+  ratings: []
+})
+
+// Initialize page
+$init = () => {
+  loadProducts()
+  setViewMode('grid')
+}
+
+// Load all products
+$loadProducts = async () => {
+  $loading.value = true
+  
+  try {
+    // Simulate API call with comprehensive product data
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    
+    $products.value = [
+      {
+        id: 1,
+        name: "Wireless Bluetooth Headphones",
+        price: 99.99,
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+        category: "electronics",
+        rating: 4.5,
+        reviews: 128,
+        description: "Premium wireless headphones with noise cancellation"
+      },
+      {
+        id: 2,
+        name: "Smart Fitness Watch",
+        price: 199.99,
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+        category: "electronics",
+        rating: 4.8,
+        reviews: 89,
+        description: "Advanced fitness tracking with heart rate monitor"
+      },
+      {
+        id: 3,
+        name: "Designer Leather Backpack",
+        price: 79.99,
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+        category: "fashion",
+        rating: 4.3,
+        reviews: 156,
+        description: "Stylish and durable leather backpack for everyday use"
+      },
+      {
+        id: 4,
+        name: "Premium Coffee Maker",
+        price: 149.99,
+        image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop",
+        category: "home",
+        rating: 4.6,
+        reviews: 203,
+        description: "Professional-grade coffee maker with programmable features"
+      },
+      {
+        id: 5,
+        name: "Wireless Gaming Mouse",
+        price: 59.99,
+        image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop",
+        category: "electronics",
+        rating: 4.4,
+        reviews: 92,
+        description: "High-precision gaming mouse with customizable buttons"
+      },
+      {
+        id: 6,
+        name: "Yoga Mat Set",
+        price: 39.99,
+        image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop",
+        category: "sports",
+        rating: 4.7,
+        reviews: 167,
+        description: "Non-slip yoga mat with carrying strap and blocks"
+      },
+      {
+        id: 7,
+        name: "Casual Summer Dress",
+        price: 49.99,
+        image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop",
+        category: "fashion",
+        rating: 4.2,
+        reviews: 134,
+        description: "Comfortable and stylish summer dress in multiple colors"
+      },
+      {
+        id: 8,
+        name: "Smart Home Speaker",
+        price: 129.99,
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+        category: "electronics",
+        rating: 4.6,
+        reviews: 78,
+        description: "Voice-controlled smart speaker with premium sound"
+      },
+      {
+        id: 9,
+        name: "Indoor Plant Collection",
+        price: 34.99,
+        image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop",
+        category: "home",
+        rating: 4.5,
+        reviews: 89,
+        description: "Set of 3 low-maintenance indoor plants with pots"
+      }
+    ]
+    
+    applyFilters()
+  } catch (error) {
+    console.error('Failed to load products:', error)
+    showNotification('Failed to load products', 'error')
+  } finally {
+    $loading.value = false
+  }
+}
+
+// Apply filters and sorting
+$applyFilters = () => {
+  let filtered = [...$products.value]
+  
+  // Apply category filter
+  if ($filters.value.categories.length > 0) {
+    filtered = filtered.filter(product => 
+      $filters.value.categories.includes(product.category)
+    )
+  }
+  
+  // Apply price filter
+  if ($filters.value.priceRange) {
+    const [min, max] = $filters.value.priceRange.split('-').map(p => p === '+' ? Infinity : parseFloat(p))
+    filtered = filtered.filter(product => 
+      product.price >= min && (max === Infinity || product.price <= max)
+    )
+  }
+  
+  // Apply rating filter
+  if ($filters.value.ratings.length > 0) {
+    const minRating = Math.min(...$filters.value.ratings.map(r => parseFloat(r.replace('+', ''))))
+    filtered = filtered.filter(product => product.rating >= minRating)
+  }
+  
+  // Apply sorting
+  filtered.sort((a, b) => {
+    switch ($sortBy.value) {
+      case 'price-low':
+        return a.price - b.price
+      case 'price-high':
+        return b.price - a.price
+      case 'rating':
+        return b.rating - a.rating
+      case 'newest':
+        return b.id - a.id
+      default:
+        return a.name.localeCompare(b.name)
+    }
+  })
+  
+  $filteredProducts.value = filtered
+  $currentPage.value = 1
+  renderProducts()
+}
+
+// Render products
+$renderProducts = () => {
+  const container = document.getElementById('products-container')
+  if (!container) return
+  
+  if ($loading.value) {
+    document.getElementById('loading-state').classList.remove('hidden')
+    container.innerHTML = ''
+    return
+  }
+  
+  document.getElementById('loading-state').classList.add('hidden')
+  
+  const startIndex = ($currentPage.value - 1) * $productsPerPage.value
+  const endIndex = startIndex + $productsPerPage.value
+  const pageProducts = $filteredProducts.value.slice(startIndex, endIndex)
+  
+  if (pageProducts.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-12">
+        <div class="text-6xl mb-4">🔍</div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
+        <p class="text-gray-600">Try adjusting your filters or search terms</p>
+        <button onclick="clearFilters()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          Clear Filters
+        </button>
+      </div>
+    `
+    return
+  }
+  
+  const isGridView = $viewMode.value === 'grid'
+  const containerClass = isGridView ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'
+  
+  const productsHtml = pageProducts.map(product => {
+    if (isGridView) {
+      return renderGridProduct(product)
+    } else {
+      return renderListProduct(product)
+    }
+  }).join('')
+  
+  container.innerHTML = `<div class="${containerClass}">${productsHtml}</div>`
+  renderPagination()
+}
+
+$renderGridProduct = (product) => {
+  return `
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+      <div class="relative overflow-hidden">
+        <img 
+          src="${product.image}" 
+          alt="${product.name}"
+          class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <button 
+          onclick="addToWishlist(${product.id})"
+          class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition-colors"
+        >
+          <svg class="w-4 h-4 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="p-4">
+        <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+          <a href="/product/${product.id}">${product.name}</a>
+        </h3>
+        
+        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
+        
+        <div class="flex items-center mb-3">
+          <div class="flex items-center">
+            ${Array(5).fill(0).map((_, i) => `
+              <svg class="w-4 h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+            `).join('')}
+          </div>
+          <span class="text-sm text-gray-500 ml-2">(${product.reviews})</span>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <span class="text-xl font-bold text-gray-900">$${product.price}</span>
+          <button 
+            onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+$renderListProduct = (product) => {
+  return `
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <div class="flex">
+        <div class="w-48 h-48 flex-shrink-0">
+          <img 
+            src="${product.image}" 
+            alt="${product.name}"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        
+        <div class="flex-1 p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+                <a href="/product/${product.id}">${product.name}</a>
+              </h3>
+              
+              <div class="flex items-center mb-2">
+                <div class="flex items-center">
+                  ${Array(5).fill(0).map((_, i) => `
+                    <svg class="w-4 h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                  `).join('')}
+                </div>
+                <span class="text-sm text-gray-500 ml-2">(${product.reviews} reviews)</span>
+              </div>
+            </div>
+            
+            <div class="text-right">
+              <div class="text-2xl font-bold text-gray-900 mb-2">$${product.price}</div>
+              <button 
+                onclick="addToWishlist(${product.id})"
+                class="text-gray-400 hover:text-red-500 transition-colors mb-2"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <p class="text-gray-600 mb-4">${product.description}</p>
+          
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500 capitalize">${product.category}</span>
+            <button 
+              onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})"
+              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+$renderPagination = () => {
+  const container = document.getElementById('pagination')
+  if (!container) return
+  
+  const totalPages = Math.ceil($filteredProducts.value.length / $productsPerPage.value)
+  
+  if (totalPages <= 1) {
+    container.innerHTML = ''
+    return
+  }
+  
+  let paginationHtml = ''
+  
+  // Previous button
+  if ($currentPage.value > 1) {
+    paginationHtml += `
+      <button onclick="goToPage(${$currentPage.value - 1})" class="px-3 py-2 mx-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+        Previous
+      </button>
+    `
+  }
+  
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === $currentPage.value) {
+      paginationHtml += `
+        <button class="px-3 py-2 mx-1 bg-blue-600 text-white rounded-lg">${i}</button>
+      `
+    } else {
+      paginationHtml += `
+        <button onclick="goToPage(${i})" class="px-3 py-2 mx-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">${i}</button>
+      `
+    }
+  }
+  
+  // Next button
+  if ($currentPage.value < totalPages) {
+    paginationHtml += `
+      <button onclick="goToPage(${$currentPage.value + 1})" class="px-3 py-2 mx-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+        Next
+      </button>
+    `
+  }
+  
+  container.innerHTML = paginationHtml
+}
+
+// Event handlers
+$handleSortChange = (event) => {
+  $sortBy.value = event.target.value
+  applyFilters()
+}
+
+$setViewMode = (mode) => {
+  $viewMode.value = mode
+  
+  // Update button states
+  const gridBtn = document.getElementById('grid-view-btn')
+  const listBtn = document.getElementById('list-view-btn')
+  
+  if (mode === 'grid') {
+    gridBtn.classList.add('bg-gray-100')
+    listBtn.classList.remove('bg-gray-100')
+  } else {
+    listBtn.classList.add('bg-gray-100')
+    gridBtn.classList.remove('bg-gray-100')
+  }
+  
+  renderProducts()
+}
+
+$handleCategoryFilter = (category, event) => {
+  if (event.target.checked) {
+    $filters.value.categories.push(category)
+  } else {
+    $filters.value.categories = $filters.value.categories.filter(c => c !== category)
+  }
+  applyFilters()
+}
+
+$handlePriceFilter = (range) => {
+  $filters.value.priceRange = range
+  applyFilters()
+}
+
+$handleRatingFilter = (rating, event) => {
+  if (event.target.checked) {
+    $filters.value.ratings.push(rating)
+  } else {
+    $filters.value.ratings = $filters.value.ratings.filter(r => r !== rating)
+  }
+  applyFilters()
+}
+
+$clearFilters = () => {
+  $filters.value = {
+    categories: [],
+    priceRange: null,
+    ratings: []
+  }
+  
+  // Reset form elements
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+    input.checked = false
+  })
+  
+  applyFilters()
+}
+
+$goToPage = (page) => {
+  $currentPage.value = page
+  renderProducts()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+$addToWishlist = (productId) => {
+  const product = $products.value.find(p => p.id === productId)
+  if (product) {
+    showNotification(`${product.name} added to wishlist!`, 'success')
+  }
+}
+
+// Make functions globally available
+window.handleSortChange = $handleSortChange
+window.setViewMode = $setViewMode
+window.handleCategoryFilter = $handleCategoryFilter
+window.handlePriceFilter = $handlePriceFilter
+window.handleRatingFilter = $handleRatingFilter
+window.clearFilters = $clearFilters
+window.goToPage = $goToPage
+window.addToWishlist = $addToWishlist

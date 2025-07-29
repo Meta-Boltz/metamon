@@ -16,7 +16,151 @@
   </div>
   
   <script type="module">
-    // Enhanced routing with interactive components
+    // Layout System
+    function createLayout(content, options = {}) {
+      const { 
+        title = 'MTM Framework',
+        description = '',
+        breadcrumb = null,
+        frameworkBadge = null,
+        showNavigation = true
+      } = options;
+      
+      return `
+        <div class="min-h-screen bg-gray-50">
+          ${createHeader(title, description, breadcrumb, frameworkBadge)}
+          ${showNavigation ? createNavigation() : ''}
+          <main class="container mx-auto px-6 py-8">
+            ${content}
+          </main>
+          ${createFooter()}
+        </div>
+      `;
+    }
+    
+    function createHeader(title, description, breadcrumb, frameworkBadge) {
+      return `
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="container mx-auto px-6 py-6">
+            ${breadcrumb ? `
+              <nav class="mb-4 text-sm">
+                <a href="/" class="text-blue-600 hover:text-blue-800">Home</a>
+                <span class="text-gray-400 mx-2">→</span>
+                <span class="text-gray-900 font-medium">${breadcrumb}</span>
+              </nav>
+            ` : ''}
+            
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">${title}</h1>
+                ${description ? `<p class="text-lg text-gray-600 mb-4">${description}</p>` : ''}
+                ${frameworkBadge ? `
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-block px-3 py-1 ${getFrameworkBadgeClass(frameworkBadge)} rounded-full text-sm font-medium">
+                      ${getFrameworkIcon(frameworkBadge)} ${frameworkBadge}
+                    </span>
+                  </div>
+                ` : ''}
+              </div>
+              
+              <div class="hidden md:block">
+                <div class="text-right">
+                  <div class="text-sm text-gray-500">Current time</div>
+                  <div id="header-time" class="text-lg font-medium text-gray-900">${new Date().toLocaleTimeString()}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+      `;
+    }
+    
+    function createNavigation() {
+      return `
+        <nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div class="container mx-auto px-6 py-4">
+            <div class="flex flex-wrap gap-2">
+              <a href="/" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                🏠 Home
+              </a>
+              <a href="/about" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
+                📖 About
+              </a>
+              <a href="/pure-mtm-showcase" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors">
+                🌟 Pure MTM
+              </a>
+              <a href="/mtm-example" class="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors">
+                🔧 MTM Example
+              </a>
+              <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded-md hover:bg-blue-500 transition-colors">
+                ⚛️ React
+              </a>
+              <a href="/vue-example" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
+                💚 Vue
+              </a>
+              <a href="/solid-example" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                🔷 Solid
+              </a>
+              <a href="/svelte-example" class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors">
+                🧡 Svelte
+              </a>
+            </div>
+          </div>
+        </nav>
+      `;
+    }
+    
+    function createFooter() {
+      return `
+        <footer class="bg-white border-t border-gray-200 mt-16">
+          <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+              <div class="flex flex-wrap justify-center gap-4 mb-4">
+                <a href="/" class="text-blue-600 hover:text-blue-800">Home</a>
+                <a href="/about" class="text-blue-600 hover:text-blue-800">About</a>
+                <a href="/pure-mtm-showcase" class="text-blue-600 hover:text-blue-800">Pure MTM</a>
+                <a href="/react-example" class="text-blue-600 hover:text-blue-800">React</a>
+                <a href="/vue-example" class="text-blue-600 hover:text-blue-800">Vue</a>
+                <a href="/solid-example" class="text-blue-600 hover:text-blue-800">Solid</a>
+                <a href="/svelte-example" class="text-blue-600 hover:text-blue-800">Svelte</a>
+              </div>
+              <p class="text-sm text-gray-600">
+                Built with Enhanced MTM Framework - Multi-framework routing and component integration
+              </p>
+              <p class="text-xs text-gray-500 mt-2">
+                © 2024 MTM Framework. Demonstrating modern web development patterns.
+              </p>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+    
+    function getFrameworkBadgeClass(framework) {
+      const classes = {
+        'Pure MTM': 'bg-purple-100 text-purple-800',
+        'React': 'bg-blue-100 text-blue-800',
+        'Vue': 'bg-green-100 text-green-800',
+        'Solid': 'bg-blue-100 text-blue-800',
+        'Svelte': 'bg-orange-100 text-orange-800',
+        'MTM': 'bg-indigo-100 text-indigo-800'
+      };
+      return classes[framework] || 'bg-gray-100 text-gray-800';
+    }
+    
+    function getFrameworkIcon(framework) {
+      const icons = {
+        'Pure MTM': '🌟',
+        'React': '⚛️',
+        'Vue': '💚',
+        'Solid': '🔷',
+        'Svelte': '🧡',
+        'MTM': '🔧'
+      };
+      return icons[framework] || '📄';
+    }
+
+    // Enhanced routing with layout system
     const routes = {
       '/': () => createHomePage(),
       '/about': () => createAboutPage(),
@@ -32,9 +176,9 @@
       return Promise.resolve({
         default: function() {
           setTimeout(() => {
-            // Update time every second
+            // Update header time every second
             setInterval(() => {
-              const timeEl = document.getElementById('current-time');
+              const timeEl = document.getElementById('header-time');
               if (timeEl) {
                 timeEl.textContent = new Date().toLocaleTimeString();
               }
@@ -45,77 +189,84 @@
             window.refreshPage = () => window.location.reload();
           }, 100);
           
-          return `
-            <div class="min-h-screen bg-gray-50">
-              <header class="bg-white shadow-sm border-b border-gray-200 p-6">
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">Enhanced MTM Framework</h1>
-                <p class="text-lg text-gray-600 mb-4">Welcome to the enhanced MTM framework with routing and multi-framework support</p>
-                <div class="flex flex-wrap gap-4 text-sm">
-                  <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Current time: <span id="current-time">${new Date().toLocaleTimeString()}</span></span>
-                  <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full">Route: / | MTM Compiled</span>
+          const content = `
+            <section class="mb-12">
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome to Enhanced MTM!</h2>
+                <p class="text-xl text-gray-600 mb-6">
+                  A modern framework for building reactive web applications with multi-framework support
+                </p>
+                <div class="flex justify-center gap-4">
+                  <button onclick="showDemo()" class="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+                    🚀 Demo Interaction
+                  </button>
+                  <button onclick="refreshPage()" class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+                    🔄 Refresh Page
+                  </button>
                 </div>
-              </header>
-              
-              <nav class="bg-white border-b border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Navigation Examples</h2>
-                <div class="flex flex-wrap gap-2">
-                  <a href="/about" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors">About Page</a>
-                  <a href="/pure-mtm-showcase" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">🌟 Pure MTM Showcase</a>
-                  <a href="/mtm-example" class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors">MTM Example</a>
-                  <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition-colors">⚛️ React Example</a>
-                  <a href="/vue-example" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">💚 Vue Example</a>
-                  <a href="/solid-example" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">🔷 Solid Example</a>
-                  <a href="/svelte-example" class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors">🧡 Svelte Example</a>
+              </div>
+            </section>
+            
+            <section class="mb-12">
+              <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Framework Features</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">🔗</div>
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Client-Side Routing</h4>
+                  <p class="text-gray-600">Navigate between pages using standard HTML anchor tags with automatic interception</p>
                 </div>
-              </nav>
-              
-              <main class="p-6">
-                <section class="mb-8">
-                  <h2 class="text-2xl font-bold text-gray-900 mb-4">Welcome to Enhanced MTM!</h2>
-                  <div class="flex gap-4">
-                    <button onclick="showDemo()" class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors">Demo Interaction</button>
-                    <button onclick="refreshPage()" class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">Refresh Page</button>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">⚡</div>
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Multi-Framework Support</h4>
+                  <p class="text-gray-600">Import and use React, Vue, Solid, and Svelte components seamlessly</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">📝</div>
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Frontmatter Configuration</h4>
+                  <p class="text-gray-600">Configure routes, compilation modes, and metadata using YAML frontmatter</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">🎯</div>
+                  <h4 class="text-lg font-semibent text-gray-900 mb-3">Enhanced Development</h4>
+                  <p class="text-gray-600">Hot module replacement, TypeScript support, and optimized builds</p>
+                </div>
+              </div>
+            </section>
+            
+            <section class="mb-12">
+              <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Quick Start Guide</h3>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span class="text-xl">1️⃣</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Explore Examples</h4>
+                    <p class="text-gray-600 text-sm">Check out the framework examples to see different integrations in action</p>
                   </div>
-                </section>
-                
-                <section class="mb-8">
-                  <h3 class="text-xl font-semibold text-gray-900 mb-6">Enhanced MTM Framework Features</h3>
-                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h4 class="text-lg font-semibold text-gray-900 mb-2">🔗 Client-Side Routing</h4>
-                      <p class="text-gray-600">Navigate between pages using standard HTML anchor tags with automatic interception</p>
+                  <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span class="text-xl">2️⃣</span>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h4 class="text-lg font-semibold text-gray-900 mb-2">⚡ Multi-Framework Support</h4>
-                      <p class="text-gray-600">Import and use React, Vue, Solid, and Svelte components seamlessly</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h4 class="text-lg font-semibold text-gray-900 mb-2">📝 Frontmatter Configuration</h4>
-                      <p class="text-gray-600">Configure routes, compilation modes, and metadata using YAML frontmatter</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h4 class="text-lg font-semibold text-gray-900 mb-2">🎯 Enhanced Development</h4>
-                      <p class="text-gray-600">Hot module replacement, TypeScript support, and optimized builds</p>
-                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Try Components</h4>
+                    <p class="text-gray-600 text-sm">Interact with the reactive components to understand the framework capabilities</p>
                   </div>
-                </section>
-              </main>
-              
-              <footer class="bg-white border-t border-gray-200 p-6 mt-8">
-                <div class="text-center text-gray-600">
-                  <p class="mb-2">
-                    <a href="/about" class="text-blue-600 hover:text-blue-800">About</a> | 
-                    <a href="/pure-mtm-showcase" class="text-blue-600 hover:text-blue-800">Pure MTM</a> |
-                    <a href="/react-example" class="text-blue-600 hover:text-blue-800">React</a> |
-                    <a href="/vue-example" class="text-blue-600 hover:text-blue-800">Vue</a> |
-                    <a href="/solid-example" class="text-blue-600 hover:text-blue-800">Solid</a> |
-                    <a href="/svelte-example" class="text-blue-600 hover:text-blue-800">Svelte</a>
-                  </p>
-                  <p class="text-sm">Built with Enhanced MTM Framework - Multi-framework routing example</p>
+                  <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span class="text-xl">3️⃣</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Build Your Own</h4>
+                    <p class="text-gray-600 text-sm">Use the MTM framework to create your own reactive applications</p>
+                  </div>
                 </div>
-              </footer>
-            </div>
+              </div>
+            </section>
           `;
+          
+          return createLayout(content, {
+            title: 'Enhanced MTM Framework',
+            description: 'Welcome to the enhanced MTM framework with routing and multi-framework support'
+          });
         }
       });
     }
@@ -127,69 +278,99 @@
             initializeMTMComponents();
           }, 100);
           
-          return `
-            <div class="min-h-screen bg-gray-50">
-              <header class="bg-white shadow-sm border-b border-gray-200 p-6">
-                <div class="mb-4">
-                  <a href="/" class="text-blue-600 hover:text-blue-800">Home</a>
-                  <span class="text-gray-400 mx-2">→</span>
-                  <span class="text-gray-900 font-medium">Pure MTM Showcase</span>
+          const content = `
+            <section class="mb-8">
+              <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Pure MTM Components</h2>
+                <p class="text-lg text-gray-600">
+                  Experience the power of ultra-modern MTM syntax with reactive components
+                </p>
+              </div>
+              
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-purple-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">MTM Counter</h3>
+                    <p class="text-sm text-gray-600">Reactive state with signals</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="mtm-counter"></div>
+                  </div>
                 </div>
                 
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">🌟 Pure MTM Showcase</h1>
-                <p class="text-lg text-gray-600 mb-4">Experience the power of ultra-modern MTM syntax with interactive components</p>
-                <div class="flex flex-wrap gap-2">
-                  <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">🌟 Pure MTM</span>
-                  <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Ultra-modern syntax</span>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">MTM Todo List</h3>
+                    <p class="text-sm text-gray-600">Dynamic list management</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="mtm-todos"></div>
+                  </div>
                 </div>
-              </header>
-              
-              <nav class="bg-white border-b border-gray-200 p-6">
-                <div class="flex flex-wrap gap-2">
-                  <a href="/" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">🏠 Home</a>
-                  <a href="/about" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors">📖 About</a>
-                  <a href="/mtm-example" class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors">🔧 MTM Example</a>
-                  <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition-colors">⚛️ React</a>
-                  <a href="/vue-example" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">💚 Vue</a>
-                  <a href="/solid-example" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">🔷 Solid</a>
-                  <a href="/svelte-example" class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors">🧡 Svelte</a>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-green-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">MTM Theme Toggle</h3>
+                    <p class="text-sm text-gray-600">Dynamic theming system</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="mtm-theme"></div>
+                  </div>
                 </div>
-              </nav>
-              
-              <main class="p-6">
-                <section class="mb-8">
-                  <h2 class="text-2xl font-bold text-gray-900 mb-6">Pure MTM Components</h2>
-                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                      <h3 class="text-lg font-semibold text-gray-800 mb-4">MTM Counter</h3>
-                      <div id="mtm-counter"></div>
+              </div>
+            </section>
+            
+            <section class="mb-8">
+              <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-8 border border-gray-200">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">MTM Framework Features</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span class="text-purple-600 font-bold">$</span>
                     </div>
-                    
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                      <h3 class="text-lg font-semibold text-gray-800 mb-4">MTM Todo List</h3>
-                      <div id="mtm-todos"></div>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                      <h3 class="text-lg font-semibold text-gray-800 mb-4">MTM Theme Toggle</h3>
-                      <div id="mtm-theme"></div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Reactive Signals</h4>
+                      <p class="text-gray-600 text-sm">Built-in reactive state management with automatic updates</p>
                     </div>
                   </div>
-                </section>
-              </main>
-              
-              <footer class="bg-white border-t border-gray-200 p-6 mt-8">
-                <div class="text-center text-gray-600">
-                  <p class="mb-2">
-                    <a href="/" class="text-blue-600 hover:text-blue-800">Home</a> | 
-                    <a href="/about" class="text-blue-600 hover:text-blue-800">About</a> | 
-                    <a href="/mtm-example" class="text-blue-600 hover:text-blue-800">MTM</a>
-                  </p>
-                  <p class="text-sm">Built with Enhanced MTM Framework - Pure MTM showcase</p>
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span class="text-blue-600 font-bold">⚡</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Ultra-Modern Syntax</h4>
+                      <p class="text-gray-600 text-sm">Intuitive syntax with signals, computed values, and reactive templates</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span class="text-green-600 font-bold">🔧</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Component System</h4>
+                      <p class="text-gray-600 text-sm">Reusable components with props and lifecycle management</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span class="text-orange-600 font-bold">📦</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Zero Runtime</h4>
+                      <p class="text-gray-600 text-sm">Compiles to optimized JavaScript with minimal overhead</p>
+                    </div>
+                  </div>
                 </div>
-              </footer>
-            </div>
+              </div>
+            </section>
           `;
+          
+          return createLayout(content, {
+            title: '🌟 Pure MTM Showcase',
+            description: 'Experience the power of ultra-modern MTM syntax with interactive components',
+            breadcrumb: 'Pure MTM Showcase',
+            frameworkBadge: 'Pure MTM'
+          });
         }
       });
     }
@@ -201,54 +382,65 @@
             initializeReactComponents();
           }, 100);
           
-          return `
-            <div class="react-example-page">
-              <header class="page-header">
-                <h1>React Component Integration</h1>
-                <p class="description">React components integrated with MTM framework</p>
-                <div class="page-meta">
-                  <span class="framework-badge react">⚛️ React</span>
-                </div>
-              </header>
+          const content = `
+            <section class="mb-8">
+              <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">React Components</h2>
+                <p class="text-lg text-gray-600">
+                  React components seamlessly integrated with the MTM framework
+                </p>
+              </div>
               
-              <nav class="main-navigation">
-                <div class="nav-links">
-                  <a href="/" class="nav-link">🏠 Home</a>
-                  <a href="/pure-mtm-showcase" class="nav-link">🌟 Pure MTM</a>
-                  <a href="/vue-example" class="nav-link">💚 Vue</a>
-                  <a href="/solid-example" class="nav-link">🔷 Solid</a>
-                  <a href="/svelte-example" class="nav-link">🧡 Svelte</a>
-                </div>
-              </nav>
-              
-              <main class="main-content">
-                <section class="react-components-section">
-                  <h2>React Components</h2>
-                  <div class="components-grid">
-                    <div class="component-demo">
-                      <h3>Counter Component</h3>
-                      <div id="react-counter" class="component-container"></div>
-                    </div>
-                    
-                    <div class="component-demo">
-                      <h3>User Profile Component</h3>
-                      <div id="react-profile" class="component-container"></div>
-                    </div>
-                    
-                    <div class="component-demo">
-                      <h3>Data Chart Component</h3>
-                      <div id="react-chart" class="component-container"></div>
-                    </div>
-                    
-                    <div class="component-demo">
-                      <h3>Modal Component</h3>
-                      <div id="react-modal" class="component-container"></div>
-                    </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Counter Component</h3>
+                    <p class="text-sm text-gray-600">Interactive counter with state management</p>
                   </div>
-                </section>
-              </main>
-            </div>
+                  <div class="p-6">
+                    <div id="react-counter"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">User Profile Component</h3>
+                    <p class="text-sm text-gray-600">User information display with actions</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-profile"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Data Chart Component</h3>
+                    <p class="text-sm text-gray-600">Visual data representation</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-chart"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Modal Component</h3>
+                    <p class="text-sm text-gray-600">Interactive modal dialog</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-modal"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
           `;
+          
+          return createLayout(content, {
+            title: 'React Component Integration',
+            description: 'React components seamlessly integrated with the MTM framework',
+            breadcrumb: 'React Example',
+            frameworkBadge: 'React'
+          });
         }
       });
     }

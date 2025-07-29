@@ -4,11 +4,11 @@ import vue from '@vitejs/plugin-vue';
 import solid from 'vite-plugin-solid';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
-// import { mtmPlugin } from './src/mtm-plugin.js'; // Temporarily disabled
+// import { mtmPlugin } from './build/mtm-plugin.js';
 
 export default defineConfig({
   plugins: [
-    // mtmPlugin(), // Temporarily disabled
+    // mtmPlugin(), // Temporarily disabled for testing
     tailwindcss(),
     react({
       include: ['**/*.jsx', '**/*.tsx']
