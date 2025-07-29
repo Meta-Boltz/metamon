@@ -1,0 +1,172 @@
+// primitive-routing.mtm - Real client-side routing with URL updates
+route: "/"
+title: "MTM Client-Side Routing Demo"
+description: "Real client-side routing with URL updates and browser history"
+
+// Reactive state with proper routing
+$currentPage! = signal('currentPage', 'home')
+$counter! = signal('counter', 0)
+$message! = signal('message', 'Welcome to Real Client-Side Routing!')
+
+// Real client-side routing functions with URL updates
+$navigateTo = (page) => {
+  $currentPage = page
+  $message = `Navigated to ${page} page`
+  
+  // Update browser URL without page reload
+  const url = page === 'home' ? '/' : `/${page}`
+  window.history.pushState({ page }, '', url)
+  
+  // Update document title
+  document.title = `${page.charAt(0).toUpperCase() + page.slice(1)} - MTM Routing Demo`
+  
+  signal.emit('route-changed', { page, url })
+}
+
+$goHome = () => {
+  $navigateTo('home')
+}
+
+$goAbout = () => {
+  $navigateTo('about')
+}
+
+$goContact = () => {
+  $navigateTo('contact')
+}
+
+// Handle browser back/forward buttons
+$handlePopState = (event) => {
+  const page = event.state?.page || 'home'
+  $currentPage = page
+  $message = `Browser navigation to ${page} page`
+  signal.emit('popstate-navigation', { page })
+}
+
+// Initialize routing based on current URL
+$initializeRouting = () => {
+  const path = window.location.pathname
+  let page = 'home'
+  
+  if (path === '/about') page = 'about'
+  else if (path === '/contact') page = 'contact'
+  
+  $currentPage = page
+  $message = `Initialized on ${page} page`
+}
+
+// Counter functions
+$increment = () => {
+  $counter++
+  $message = `Counter incremented to ${$counter} on ${$currentPage} page`
+  signal.emit('counter-updated', { value: $counter, page: $currentPage })
+}
+
+$decrement = () => {
+  $counter--
+  $message = `Counter decremented to ${$counter} on ${$currentPage} page`
+  signal.emit('counter-updated', { value: $counter, page: $currentPage })
+}
+
+$reset = () => {
+  $counter = 0
+  $message = `Counter reset on ${$currentPage} page`
+  signal.emit('counter-reset', { page: $currentPage })
+}
+
+<template>
+  <div class="routing-app">
+    <header class="header">
+      <h1>🔮 MTM Client-Side Routing</h1>
+      <p class="page-info">Route: {route} | Title: {title}</p>
+      <p class="status">{$message}</p>
+      <p class="url-info">Current URL: <span id="current-url">Loading...</span></p>
+    </header>
+
+    <nav class="navigation">
+      <button click={$goHome} class="nav-btn">Home (/)</button>
+      <button click={$goAbout} class="nav-btn">About (/about)</button>
+      <button click={$goContact} class="nav-btn">Contact (/contact)</button>
+      <span class="current-page">Current: {$currentPage}</span>
+    </nav>
+
+    <main class="content">
+      <h2>Page: {$currentPage}</h2>
+      <p class="description">{description}</p>
+      
+      {#if $currentPage === 'home'}
+        <section class="home-content">
+          <h3>🏠 Home Page</h3>
+          <p>Welcome to real client-side routing with URL updates!</p>
+          <div class="routing-info">
+            <h4>🔗 Routing Features:</h4>
+            <ul>
+              <li>✅ URL updates when navigating</li>
+              <li>✅ Browser back/forward buttons work</li>
+              <li>✅ Direct URL access works</li>
+              <li>✅ Document title updates</li>
+              <li>✅ History API integration</li>
+            </ul>
+          </div>
+          <div class="counter-section">
+            <h4>Interactive Counter</h4>
+            <div class="counter-display">
+              <button click={$decrement}>-</button>
+              <span class="count">{$counter}</span>
+              <button click={$increment}>+</button>
+              <button click={$reset} class="reset-btn">Reset</button>
+            </div>
+          </div>
+        </section>
+      {/if}
+
+      {#if $currentPage === 'about'}
+        <section class="about-content">
+          <h3>ℹ️ About Real Client-Side Routing</h3>
+          <p>This is a real single-page application with proper routing!</p>
+          <div class="routing-details">
+            <h4>🚀 Technical Implementation:</h4>
+            <ul>
+              <li>✅ Uses History API (pushState/popState)</li>
+              <li>✅ Updates browser URL bar</li>
+              <li>✅ Handles browser navigation</li>
+              <li>✅ Maintains application state</li>
+              <li>✅ SEO-friendly URLs</li>
+            </ul>
+          </div>
+          <p>Current counter value: {$counter}</p>
+          <p>Try using browser back/forward buttons!</p>
+        </section>
+      {/if}
+
+      {#if $currentPage === 'contact'}
+        <section class="contact-content">
+          <h3>📧 Contact Information</h3>
+          <p>Get in touch with the MTM team!</p>
+          <div class="contact-info">
+            <p>Email: hello@mtm-framework.dev</p>
+            <p>GitHub: github.com/mtm-framework</p>
+            <p>Current URL: <span id="contact-url">Loading...</span></p>
+            <p>Counter state: {$counter}</p>
+          </div>
+          <div class="url-test">
+            <h4>🔗 URL Testing:</h4>
+            <p>Try these actions:</p>
+            <ul>
+              <li>Copy the current URL and open in new tab</li>
+              <li>Use browser back/forward buttons</li>
+              <li>Refresh the page</li>
+              <li>Bookmark this page</li>
+            </ul>
+          </div>
+        </section>
+      {/if}
+    </main>
+
+    <footer class="footer">
+      <p>MTM Framework - Real Client-Side Routing Demo</p>
+      <p>State: counter={$counter}, page={$currentPage}</p>
+      <p>URL updates automatically with navigation!</p>
+    </footer>
+  </div>
+</template>

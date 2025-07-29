@@ -1,0 +1,156 @@
+---
+function: SvelteExamplePage
+title: "Svelte Component Integration"
+description: "This page demonstrates Svelte component integration with MTM framework"
+compileJsMode: "inline"
+route: "/svelte-example"
+imports:
+  - "@components/Card.svelte"
+  - "@components/WeatherWidget.svelte"
+---
+
+// Svelte example page - Ultra-modern MTM syntax
+$pageTitle! = signal('pageTitle', 'Svelte Component Integration')
+$svelteStats! = signal('svelteStats', { components: 2, interactions: 0 })
+$cardData! = signal('cardData', {
+  title: 'Svelte Card',
+  content: 'This is a Svelte component integrated with MTM!',
+  type: 'primary'
+})
+$weatherData! = signal('weatherData', {
+  city: 'New York',
+  temperature: 22,
+  condition: 'Sunny'
+})
+
+$incrementInteractions = () => {
+  $svelteStats = { ...$svelteStats, interactions: $svelteStats.interactions + 1 }
+}
+
+$updateCard = () => {
+  $cardData = {
+    ...$cardData,
+    title: `Updated Card ${Date.now()}`,
+    type: $cardData.type === 'primary' ? 'secondary' : 'primary'
+  }
+  $incrementInteractions()
+}
+
+$updateWeather = () => {
+  const cities = ['New York', 'London', 'Tokyo', 'Paris']
+  const conditions = ['Sunny', 'Cloudy', 'Rainy', 'Snowy']
+  $weatherData = {
+    city: cities[Math.floor(Math.random() * cities.length)],
+    temperature: Math.floor(Math.random() * 30) + 5,
+    condition: conditions[Math.floor(Math.random() * conditions.length)]
+  }
+  $incrementInteractions()
+}
+
+<template>
+  <div class="svelte-example-page">
+    <header class="page-header">
+      <div class="breadcrumb">
+        <a href="/" class="breadcrumb-link">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <span class="breadcrumb-current">Svelte Example</span>
+      </div>
+      
+      <h1>{$pageTitle}</h1>
+      <p class="page-description">This page demonstrates Svelte component integration with MTM framework</p>
+      
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /svelte-example
+        </div>
+        <div class="metadata-item">
+          <strong>Framework:</strong> Svelte + MTM
+        </div>
+        <div class="metadata-item">
+          <strong>Components:</strong> {$svelteStats.components}
+        </div>
+        <div class="metadata-item">
+          <strong>Interactions:</strong> {$svelteStats.interactions}
+        </div>
+      </div>
+    </header>
+    
+    <nav class="framework-nav">
+      <a href="/mtm-example" class="framework-link mtm">MTM Example</a>
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/vue-example" class="framework-link vue">Vue Example</a>
+      <a href="/solid-example" class="framework-link solid">Solid Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
+    </nav>
+    
+    <main class="main-content">
+      <section class="component-demo">
+        <h2>Svelte Components</h2>
+        <p>The following Svelte components are integrated with MTM's reactive system:</p>
+        
+        <div class="component-grid">
+          <div class="component-container">
+            <h3>Svelte Card</h3>
+            <Card data={$cardData} />
+            <button click={$updateCard} class="demo-button">
+              Update Card
+            </button>
+          </div>
+          
+          <div class="component-container">
+            <h3>Weather Widget</h3>
+            <WeatherWidget weather={$weatherData} />
+            <button click={$updateWeather} class="demo-button">
+              Update Weather
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <section class="integration-info">
+        <h2>Svelte + MTM Integration</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>🧡 Svelte Components</h4>
+            <p>Svelte components (.svelte files) integrate seamlessly with MTM's reactive system.</p>
+          </div>
+          <div class="info-card">
+            <h4>🔄 Reactive Stores</h4>
+            <p>Svelte stores work with MTM signals for unified state management.</p>
+          </div>
+          <div class="info-card">
+            <h4>⚡ Compile-time Optimization</h4>
+            <p>Both Svelte and MTM optimize at compile-time for better performance.</p>
+          </div>
+          <div class="info-card">
+            <h4>🚀 Small Bundle Size</h4>
+            <p>Svelte's compiler approach aligns with MTM's optimization philosophy.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="page-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/mtm-example">MTM Example</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/vue-example">Vue Example</a></li>
+            <li><a href="/solid-example">Solid Example</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Svelte Integration</h4>
+          <p>Svelte + MTM Framework</p>
+          <p>Compile-time optimized components with reactive state</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>

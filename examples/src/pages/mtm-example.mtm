@@ -1,0 +1,231 @@
+---
+function: MTMExamplePage
+title: "Native MTM Components"
+description: "This page demonstrates native MTM reactive components with built-in state management"
+compileJsMode: "inline"
+route: "/mtm-example"
+imports:
+  - "@components/MTMCounter.mtm"
+  - "@components/MTMTodoList.mtm"
+  - "@components/MTMThemeToggle.mtm"
+---
+
+// MTM example page - Ultra-modern MTM syntax
+$globalCounter! = signal('globalCounter', 0)
+$pageTheme! = signal('pageTheme', 'light')
+$componentStats! = signal('componentStats', { counters: 3, todos: 1, themes: 1 })
+$pageLoadTime! = signal('pageLoadTime', new Date().toISOString())
+
+// Global state functions using ultra-modern MTM syntax
+$incrementGlobalCounter = () => {
+  $globalCounter++
+}
+
+$resetGlobalCounter = () => {
+  $globalCounter = 0
+}
+
+$updateTheme = (theme) => {
+  $pageTheme = theme
+  document.documentElement.setAttribute('data-theme', theme)
+}
+
+<template>
+  <div class="mtm-example-page">
+    <header class="page-header">
+      <div class="breadcrumb">
+        <a href="/" class="breadcrumb-link">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <span class="breadcrumb-current">MTM Example</span>
+      </div>
+      
+      <h1>Native MTM Components</h1>
+      <p class="page-description">This page demonstrates native MTM reactive components with built-in state management</p>
+      
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /mtm-example
+        </div>
+        <div class="metadata-item">
+          <strong>Compile Mode:</strong> inline
+        </div>
+        <div class="metadata-item">
+          <strong>Components:</strong> {$componentStats.counters + $componentStats.todos + $componentStats.themes}
+        </div>
+      </div>
+    </header>
+    
+    <nav class="framework-nav">
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/vue-example" class="framework-link vue">Vue Example</a>
+      <a href="/solid-example" class="framework-link solid">Solid Example</a>
+      <a href="/svelte-example" class="framework-link svelte">Svelte Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
+    </nav>
+    
+    <main class="main-content">
+      <section class="component-demo">
+        <h2>Native MTM Components</h2>
+        <p>The following components are built using pure MTM syntax with native reactivity:</p>
+        
+        <div class="component-grid">
+          <div class="component-container">
+            <MTMCounter />
+          </div>
+          
+          <div class="component-container">
+            <MTMTodoList />
+          </div>
+          
+          <div class="component-container">
+            <MTMThemeToggle />
+          </div>
+        </div>
+      </section>
+      
+      <section class="global-state-demo">
+        <h2>Global State Management</h2>
+        <div class="state-demo-card">
+          <h3>MTM Global State</h3>
+          <div class="state-display">
+            <p>Global Counter: <strong>{$globalCounter}</strong></p>
+            <p>Current Theme: <strong>{$pageTheme}</strong></p>
+            <div class="state-controls">
+              <button click={$incrementGlobalCounter} class="demo-button">
+                Increment Global
+              </button>
+              <button click={$resetGlobalCounter} class="demo-button secondary">
+                Reset Global
+              </button>
+            </div>
+          </div>
+          <p class="state-info">
+            This demonstrates MTM's built-in global state management with reactive updates
+          </p>
+        </div>
+      </section>
+      
+      <section class="code-example">
+        <h2>MTM Component Code Example</h2>
+        <pre><code>---
+function: MTMCounter
+---
+
+// MTM Counter Component - Ultra-modern MTM syntax
+$count! = signal('count', 0)
+
+$increment = () => {
+  $count++
+}
+
+$decrement = () => {
+  $count = Math.max(0, $count - 1)
+}
+
+&lt;template&gt;
+  &lt;div class="mtm-counter"&gt;
+    &lt;button click={$decrement}&gt;-&lt;/button&gt;
+    &lt;span&gt;{$count}&lt;/span&gt;
+    &lt;button click={$increment}&gt;+&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</code></pre>
+      </section>
+      
+      <section class="features-section">
+        <h2>Native MTM Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <h4>🎯 Pure MTM Syntax</h4>
+            <p>No external dependencies, just clean MTM code with frontmatter configuration</p>
+          </div>
+          <div class="feature-card">
+            <h4>⚡ Built-in Reactivity</h4>
+            <p>Native reactive state management with signals and computed values</p>
+          </div>
+          <div class="feature-card">
+            <h4>🔄 Global State</h4>
+            <p>Simple global state management with automatic reactive updates</p>
+          </div>
+          <div class="feature-card">
+            <h4>📦 Lightweight</h4>
+            <p>Minimal overhead with maximum performance and clean syntax</p>
+          </div>
+          <div class="feature-card">
+            <h4>🎨 Scoped Styles</h4>
+            <p>Component-scoped CSS with automatic style encapsulation</p>
+          </div>
+          <div class="feature-card">
+            <h4>🔗 Component Import</h4>
+            <p>Import other MTM components using standard ES6 import syntax</p>
+          </div>
+        </div>
+      </section>
+      
+      <section class="mtm-syntax-demo">
+        <h2>MTM Syntax Features</h2>
+        <div class="syntax-examples">
+          <div class="syntax-card">
+            <h4>Reactive Signals</h4>
+            <code>$count! = signal('count', 0)</code>
+            <p>Create reactive state with automatic updates</p>
+          </div>
+          
+          <div class="syntax-card">
+            <h4>Computed Values</h4>
+            <code>$doubled! = computed(() => $count * 2)</code>
+            <p>Derived state that updates automatically</p>
+          </div>
+          
+          <div class="syntax-card">
+            <h4>Event Handlers</h4>
+            <code>&lt;button click={$increment}&gt;+&lt;/button&gt;</code>
+            <p>Direct function binding with MTM syntax</p>
+          </div>
+          
+          <div class="syntax-card">
+            <h4>Conditional Rendering</h4>
+            <code>{#if $count > 0} ... {/if}</code>
+            <p>Show/hide content based on state</p>
+          </div>
+          
+          <div class="syntax-card">
+            <h4>List Rendering</h4>
+            <code>{#each $items as item} ... {/each}</code>
+            <p>Render lists with automatic updates</p>
+          </div>
+          
+          <div class="syntax-card">
+            <h4>Component Props</h4>
+            <code>&lt;MTMCounter initialValue={5} /&gt;</code>
+            <p>Pass data between components</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="page-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/pure-mtm-showcase">Pure MTM Showcase</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/vue-example">Vue Example</a></li>
+            <li><a href="/solid-example">Solid Example</a></li>
+            <li><a href="/svelte-example">Svelte Example</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>MTM Framework</h4>
+          <p>Enhanced MTM Framework v2.0</p>
+          <p>Native reactive components with multi-framework support</p>
+          <p>Loaded: {$pageLoadTime}</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>

@@ -1,0 +1,61 @@
+---
+route: "/"
+title: "Enhanced MTM Demo - Home"
+description: "Showcase of enhanced MTM framework with multi-framework support"
+compileJsMode: "external.js"
+keywords: "mtm, react, vue, solid, svelte, framework"
+---
+
+<template>
+  <div class="home-page">
+    <header class="hero">
+      <h1>🔮 Enhanced MTM Framework</h1>
+      <p>One framework to rule them all - React, Vue, Solid, and Svelte in harmony</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/" data-link="true">Home</a>
+      <a href="/react-demo" data-link="true">React Demo</a>
+      <a href="/vue-demo" data-link="true">Vue Demo</a>
+      <a href="/solid-demo" data-link="true">Solid Demo</a>
+      <a href="/svelte-demo" data-link="true">Svelte Demo</a>
+      <a href="/multi-framework" data-link="true">Multi-Framework</a>
+    </nav>
+
+    <main class="content">
+      <section class="features">
+        <h2>🚀 Enhanced Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>🔥 Hot Module Replacement</h3>
+            <p>Lightning-fast development with real-time updates</p>
+          </div>
+          <div class="feature-card">
+            <h3>📦 Framework Bundles</h3>
+            <p>Optimized code splitting by framework</p>
+          </div>
+          <div class="feature-card">
+            <h3>🌳 Tree Shaking</h3>
+            <p>Eliminate dead code for smaller bundles</p>
+          </div>
+          <div class="feature-card">
+            <h3>📊 Bundle Analysis</h3>
+            <p>Detailed insights into your build</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="getting-started">
+        <h2>🎯 Getting Started</h2>
+        <p>Navigate through the demo pages to see different frameworks in action:</p>
+        <ul>
+          <li><strong>React Demo:</strong> Interactive counter component</li>
+          <li><strong>Vue Demo:</strong> Todo list with Composition API</li>
+          <li><strong>Solid Demo:</strong> Real-time data chart</li>
+          <li><strong>Svelte Demo:</strong> Weather widget with animations</li>
+          <li><strong>Multi-Framework:</strong> All frameworks on one page</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>

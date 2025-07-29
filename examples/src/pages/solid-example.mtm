@@ -1,0 +1,123 @@
+---
+function: SolidExamplePage
+title: "Solid Component Integration"
+description: "This page demonstrates Solid.js component integration with MTM framework"
+compileJsMode: "inline"
+route: "/solid-example"
+---
+
+// Solid example page - Ultra-modern MTM syntax
+$pageTitle! = signal('pageTitle', 'Solid Component Integration')
+$solidStats! = signal('solidStats', { components: 1, interactions: 0 })
+$signalValue! = signal('signalValue', 42)
+
+$incrementInteractions = () => {
+  $solidStats = { ...$solidStats, interactions: $solidStats.interactions + 1 }
+}
+
+$updateSignal = () => {
+  $signalValue = Math.floor(Math.random() * 100)
+  $incrementInteractions()
+}
+
+<template>
+  <div class="solid-example-page">
+    <header class="page-header">
+      <div class="breadcrumb">
+        <a href="/" class="breadcrumb-link">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <span class="breadcrumb-current">Solid Example</span>
+      </div>
+      
+      <h1>{$pageTitle}</h1>
+      <p class="page-description">This page demonstrates Solid.js component integration with MTM framework</p>
+      
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /solid-example
+        </div>
+        <div class="metadata-item">
+          <strong>Framework:</strong> Solid + MTM
+        </div>
+        <div class="metadata-item">
+          <strong>Signal Value:</strong> {$signalValue}
+        </div>
+        <div class="metadata-item">
+          <strong>Interactions:</strong> {$solidStats.interactions}
+        </div>
+      </div>
+    </header>
+    
+    <nav class="framework-nav">
+      <a href="/mtm-example" class="framework-link mtm">MTM Example</a>
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/vue-example" class="framework-link vue">Vue Example</a>
+      <a href="/svelte-example" class="framework-link svelte">Svelte Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
+    </nav>
+    
+    <main class="main-content">
+      <section class="component-demo">
+        <h2>Solid.js Integration</h2>
+        <p>Solid.js components integrate seamlessly with MTM's signal-based reactivity:</p>
+        
+        <div class="component-grid">
+          <div class="component-container">
+            <h3>Signal Demo</h3>
+            <div class="signal-display">
+              <p>Current Signal Value: <strong>{$signalValue}</strong></p>
+              <button click={$updateSignal} class="demo-button">
+                Update Signal
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section class="integration-info">
+        <h2>Solid + MTM Integration</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>🔷 Solid Components</h4>
+            <p>Solid.js components (.tsx files) integrate naturally with MTM's signal system.</p>
+          </div>
+          <div class="info-card">
+            <h4>⚡ Signal Compatibility</h4>
+            <p>Solid's signals work seamlessly with MTM signals for unified reactivity.</p>
+          </div>
+          <div class="info-card">
+            <h4>🚀 Performance</h4>
+            <p>Both Solid and MTM use fine-grained reactivity for optimal performance.</p>
+          </div>
+          <div class="info-card">
+            <h4>🎯 No Virtual DOM</h4>
+            <p>Direct DOM updates provide excellent performance in both systems.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="page-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/mtm-example">MTM Example</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/vue-example">Vue Example</a></li>
+            <li><a href="/svelte-example">Svelte Example</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Solid Integration</h4>
+          <p>Solid.js + MTM Framework</p>
+          <p>Signal-based reactivity with fine-grained updates</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>

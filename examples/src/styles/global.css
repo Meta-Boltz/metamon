@@ -1,0 +1,22 @@
+/* Global styles for Enhanced MTM Framework examples */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Only essential base styles - let Tailwind handle everything else */
+body {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.error {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #dc2626;
+}
+

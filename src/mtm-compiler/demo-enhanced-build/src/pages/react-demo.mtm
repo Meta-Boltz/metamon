@@ -1,0 +1,51 @@
+---
+route: "/react-demo"
+title: "React Demo - Enhanced MTM"
+description: "React components in MTM framework"
+compileJsMode: "external.js"
+---
+import Counter from "@components/Counter.tsx"
+
+<template>
+  <div class="demo-page">
+    <header>
+      <h1>⚛️ React Demo</h1>
+      <p>Interactive React components in MTM</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/" data-link="true">← Back to Home</a>
+      <a href="/vue-demo" data-link="true">Vue Demo →</a>
+    </nav>
+
+    <main>
+      <section class="component-showcase">
+        <h2>React Counter Component</h2>
+        <p>This counter is built with React hooks and TypeScript:</p>
+        
+        <div class="component-demo">
+          <Counter initialValue={10} step={2} />
+        </div>
+        
+        <div class="component-demo">
+          <Counter initialValue={0} step={1} />
+        </div>
+        
+        <div class="component-demo">
+          <Counter initialValue={100} step={10} />
+        </div>
+      </section>
+
+      <section class="code-example">
+        <h3>Component Features:</h3>
+        <ul>
+          <li>✅ TypeScript interfaces for props</li>
+          <li>✅ React hooks (useState)</li>
+          <li>✅ Configurable initial value and step</li>
+          <li>✅ Hot module replacement support</li>
+          <li>✅ Production optimizations</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>

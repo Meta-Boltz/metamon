@@ -1,6 +1,6 @@
-# Metamon Framework - Example Application
+# Enhanced Routing Multi-Framework Examples
 
-This comprehensive example application demonstrates the full capabilities of the Metamon meta-framework, showcasing how components written in different JavaScript frameworks (React, Vue, Solid, Svelte) can work together seamlessly.
+This example application demonstrates the enhanced MTM framework with comprehensive routing system, client-side navigation using standard HTML anchor tags, frontmatter-based route configuration, flexible JavaScript compilation modes, and seamless integration with multiple frontend frameworks (React, Vue, Solid, Svelte).
 
 ## 🚀 Quick Start
 
@@ -11,104 +11,55 @@ This comprehensive example application demonstrates the full capabilities of the
 
 ### Step 1: Install Dependencies
 
-From the **root directory** of the Metamon project:
-
 ```bash
-# Install all workspace dependencies
-npm install
-
-# Or if using pnpm
-pnpm install
-```
-
-### Step 2: Build the Framework Packages
-
-The examples depend on the Metamon packages, so build them first:
-
-```bash
-# Build all packages (from root directory)
-npm run build
-
-# Or if using pnpm
-pnpm build
-```
-
-### Step 3: Run the Example Application
-
-```bash
-# Navigate to examples directory
 cd examples
+npm install
+```
 
-# Start development server
+### Step 2: Run the Development Server
+
+```bash
 npm run dev
-
-# Or from root directory using workspace
-npm run dev --workspace=examples
 ```
 
 The application will be available at `http://localhost:3000`
 
-### Step 4: Explore the Features
+### Step 3: Explore the Features
 
-- **Main Demo** (`/`): See all framework components working together
-- **Performance** (`/performance`): Run live benchmarks
-- **Documentation** (`/docs`): Browse code examples and best practices
+- **Home** (`/`): Main demo showcasing all framework components working together
+- **About** (`/about`): Basic routing demonstration
+- **React Example** (`/react-example`): React component integration
+- **Vue Example** (`/vue-example`): Vue component integration
+- **Solid Example** (`/solid-example`): Solid component integration
+- **Svelte Example** (`/svelte-example`): Svelte component integration
 
-## 🧪 Running Tests
+## 🎯 What This Example Demonstrates
 
-### Unit Tests
+### 1. Enhanced Routing System
 
-```bash
-cd examples
-npm test
-```
+- **Frontmatter Route Configuration**: Define routes using `---route: "/path"---` in .mtm files
+- **Client-Side Navigation**: Standard HTML anchor tags with `href` attributes
+- **Dynamic Route Segments**: Support for parameterized routing like `/user/[id]`
+- **Browser History Integration**: Back/forward buttons and bookmarking work correctly
 
-### End-to-End Tests
+### 2. Multi-Framework Component Integration
 
-```bash
-cd examples
+- **React Components**: Counter and DataChart components with hooks
+- **Vue Components**: Button and TodoList components with Composition API
+- **Solid Components**: UserProfile with native signals
+- **Svelte Components**: Card and WeatherWidget with stores
 
-# Install Playwright browsers (first time only)
-npx playwright install
+### 3. Flexible JavaScript Compilation
 
-# Run E2E tests
-npm run test:e2e
-```
+- **Inline Mode**: `---compileJsMode: inline---` embeds JavaScript in HTML
+- **External Mode**: `---compileJsMode: external.js---` generates separate .js files
+- **Automatic Optimization**: Smart defaults based on script size
 
-### Performance Benchmarks
+### 4. Unified Component Path Resolution
 
-```bash
-cd examples
-npm run benchmark
-```
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**"Cannot resolve @metamon/core"**
-
-- Make sure you've run `npm run build` from the root directory first
-- The examples use workspace dependencies that need to be built
-
-**"Vite plugin errors"**
-
-- Ensure all framework plugins are installed: `npm install` in examples directory
-- Check that Node.js version is 18+
-
-**"Playwright tests fail"**
-
-- Run `npx playwright install` to install browser dependencies
-- Make sure the dev server is running on port 3000
-
-**"Port 3000 already in use"**
-
-- Change the port in `examples/vite.config.js`:
-  ```js
-  server: {
-    port: 3001; // or any available port
-  }
-  ```
+- **@components/ prefix**: Consistent import paths across frameworks
+- **Relative imports**: `./ComponentName` resolves relative to current file
+- **TypeScript support**: Proper type checking and IntelliSense
 
 ## 📁 Project Structure
 
@@ -116,90 +67,111 @@ npm run benchmark
 examples/
 ├── src/
 │   ├── components/          # Multi-framework components
-│   │   ├── react-counter.mtm       # React component with signals
-│   │   ├── vue-message-board.mtm   # Vue component with pub/sub
-│   │   ├── solid-theme-toggle.mtm  # Solid component with native signals
-│   │   └── svelte-user-list.mtm    # Svelte component with stores
-│   ├── pages/               # Application pages
-│   │   ├── index.mtm               # Main demo page (React)
-│   │   ├── performance.mtm         # Performance benchmarks (React)
-│   │   └── documentation.mtm       # Documentation (Vue)
-│   ├── main.js             # Application entry point
-│   └── style.css           # Global styles
-├── tests/
+│   │   ├── Button.vue              # Vue button component
+│   │   ├── Card.svelte             # Svelte card component
+│   │   ├── Counter.tsx             # React counter component
+│   │   ├── DataChart.tsx           # React data visualization
+│   │   ├── Modal.tsx               # React modal component
+│   │   ├── TodoList.vue            # Vue todo list component
+│   │   ├── UserProfile.tsx         # Solid user profile
+│   │   └── WeatherWidget.svelte    # Svelte weather widget
+│   ├── pages/               # Application pages (.mtm files)
+│   │   ├── index.mtm               # Home page
+│   │   ├── about.mtm               # About page
+│   │   ├── react-example.mtm       # React integration demo
+│   │   ├── vue-example.mtm         # Vue integration demo
+│   │   ├── solid-example.mtm       # Solid integration demo
+│   │   └── svelte-example.mtm      # Svelte integration demo
+│   └── styles/              # Global styles
+│       └── global.css              # Application styles
+├── tests/                   # Test files
 │   └── e2e/                # End-to-end tests
-│       └── cross-framework.spec.js
-├── scripts/
-│   └── benchmark.js        # Performance benchmarking
+├── scripts/                # Build and utility scripts
 └── README.md
 ```
 
-## 🎯 What This Example Demonstrates
-
-### 1. Multi-Framework Components
-
-- **React Counter**: Demonstrates signal-based state management with React hooks
-- **Vue Message Board**: Shows cross-framework event communication using Vue Composition API
-- **Solid Theme Toggle**: Native Solid.js signal integration with global state
-- **Svelte User List**: Combines Svelte stores with Metamon signals
-
-### 2. Cross-Framework Communication
-
-- **Shared Signals**: Global state that updates across all framework components
-- **Pub/Sub Events**: Components emit events that other frameworks can listen to
-- **Real-time Updates**: Changes in one framework instantly reflect in others
-
-### 3. Unified Development Experience
-
-- **Single Build System**: One Vite configuration handles all frameworks
-- **Consistent API**: Same signal and event APIs across all frameworks
-- **Hot Module Replacement**: Live updates during development for all frameworks
-
 ## 🔧 Key Features Showcased
 
-### Signal Management
+### Frontmatter Route Configuration
 
-```javascript
-// Works the same across all frameworks
-const [count, setCount] = useMetamonSignal("globalCount");
+```mtm
+---
+route: "/user/profile"
+compileJsMode: "external.js"
+title: "User Profile"
+description: "User profile management page"
+---
+
+import UserCard from "@components/UserCard.tsx"
+import ProfileForm from "@components/ProfileForm.vue"
+
+<template>
+  <div class="profile-page">
+    <h1>User Profile</h1>
+    <UserCard />
+    <ProfileForm />
+
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/settings">Settings</a>
+    </nav>
+  </div>
+</template>
 ```
 
-### Event Communication
+### Client-Side Navigation
 
-```javascript
-// Emit events from any framework
-emit("user-action", { framework: "React", action: "increment" });
+```html
+<!-- Standard HTML anchor tags work for client-side routing -->
+<a href="/about">About</a>
+<a href="/react-example">React Demo</a>
+<a href="/vue-example">Vue Demo</a>
 
-// Listen from any framework
-subscribe("user-action", (data) => {
-  console.log(`${data.framework} performed: ${data.action}`);
-});
+<!-- External links work normally -->
+<a href="https://example.com">External Link</a>
 ```
 
-### File-based Routing
+### Multi-Framework Component Usage
 
+```mtm
+---
+route: "/demo"
+---
+
+import Counter from "@components/Counter.tsx"        <!-- React -->
+import TodoList from "@components/TodoList.vue"     <!-- Vue -->
+import UserProfile from "@components/UserProfile.tsx" <!-- Solid -->
+import WeatherWidget from "@components/WeatherWidget.svelte" <!-- Svelte -->
+
+<template>
+  <div>
+    <Counter initialValue={0} />
+    <TodoList items={[]} />
+    <UserProfile userId="123" />
+    <WeatherWidget location="New York" />
+  </div>
+</template>
 ```
-src/pages/index.mtm          → /
-src/pages/performance.mtm    → /performance
-src/pages/documentation.mtm  → /docs
+
+### JavaScript Compilation Modes
+
+```mtm
+---
+route: "/inline-demo"
+compileJsMode: "inline"
+---
+
+<!-- JavaScript will be embedded directly in HTML -->
+
+---
+route: "/external-demo"
+compileJsMode: "external.js"
+---
+
+<!-- JavaScript will be compiled to separate .js file -->
 ```
 
-## 📊 Performance Benchmarks
-
-The example includes comprehensive performance benchmarks comparing Metamon to native framework implementations:
-
-```bash
-npm run benchmark
-```
-
-### Benchmark Results (Typical)
-
-- **Signal Updates**: 0-15% overhead vs native
-- **Event Emission**: 5-20% overhead vs native
-- **Bundle Size**: +15-25KB overhead
-- **Memory Usage**: Minimal with automatic cleanup
-
-## 🧪 Testing
+## 🧪 Running Tests
 
 ### Unit Tests
 
@@ -210,202 +182,87 @@ npm test
 ### End-to-End Tests
 
 ```bash
+# Install Playwright browsers (first time only)
+npx playwright install
+
+# Run E2E tests
 npm run test:e2e
 ```
 
-The E2E tests verify:
+### Browser Compatibility Tests
 
-- Cross-framework state sharing
-- Event communication between frameworks
-- Theme changes across components
-- Routing between pages
-- Performance benchmark execution
-- Component cleanup and memory management
-
-## 🎨 Framework-Specific Examples
-
-### React Component (.mtm)
-
-```javascript
----
-target: reactjs
-channels:
-  - event: user-action
-    emit: onUserAction
----
-
-import React from 'react';
-import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
-
-export default function ReactComponent() {
-  const [count, setCount] = useMetamonSignal('globalCount');
-  const { emit } = useMetamonPubSub();
-
-  return (
-    <button onClick={() => {
-      setCount(count + 1);
-      emit('user-action', { framework: 'React', action: 'increment' });
-    }}>
-      Count: {count}
-    </button>
-  );
-}
+```bash
+npm run test:browser-compat
 ```
 
-### Vue Component (.mtm)
+### Production Build Tests
 
-```vue
----
-target: vue
-channels:
-  - event: message-sent
-    emit: onMessageSent
----
-
-<template>
-  <div>
-    <input v-model="message" @keyup.enter="sendMessage" />
-    <button @click="sendMessage">Send</button>
-    <p>Messages: {{ messages.length }}</p>
-  </div>
-</template>
-
-<script setup>
-import { ref } from "vue";
-import { useMetamonSignal, useMetamonPubSub } from "@metamon/adapters/vue";
-
-const [messages, setMessages] = useMetamonSignal("messages");
-const { emit } = useMetamonPubSub();
-const message = ref("");
-
-const sendMessage = () => {
-  setMessages([...messages.value, message.value]);
-  emit("message-sent", { text: message.value, framework: "Vue" });
-  message.value = "";
-};
-</script>
+```bash
+npm run test:production
 ```
 
-### Solid Component (.mtm)
+## 🚀 Building for Production
 
-```javascript
----
-target: solid
-channels:
-  - event: theme-changed
-    emit: onThemeChanged
----
+```bash
+# Build optimized production bundle
+npm run build
 
-import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/solid';
-
-export default function SolidComponent() {
-  const [theme, setTheme] = useMetamonSignal('theme');
-  const { emit } = useMetamonPubSub();
-
-  const toggleTheme = () => {
-    const newTheme = theme() === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    emit('theme-changed', { theme: newTheme, framework: 'Solid' });
-  };
-
-  return (
-    <button onClick={toggleTheme}>
-      Theme: {theme()}
-    </button>
-  );
-}
+# Preview production build
+npm run preview
 ```
 
-### Svelte Component (.mtm)
+## 🔧 Development
 
-```svelte
----
-target: svelte
-channels:
-  - event: user-added
-    emit: onUserAdded
----
+### Hot Module Replacement
 
-<script>
-  import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/svelte';
+The development server supports HMR for all frameworks:
 
-  const [userCount, setUserCount] = useMetamonSignal('userCount');
-  const { emit } = useMetamonPubSub();
+- React components update instantly
+- Vue components preserve state during updates
+- Solid components re-render efficiently
+- Svelte components update with minimal overhead
 
-  function addUser() {
-    setUserCount($userCount + 1);
-    emit('user-added', { count: $userCount + 1, framework: 'Svelte' });
-  }
-</script>
+### Error Handling
 
-<div>
-  <button on:click={addUser}>Add User</button>
-  <p>Users: {$userCount}</p>
-</div>
-```
+- Clear compilation errors for route conflicts
+- Helpful messages for import resolution failures
+- Runtime error boundaries for component failures
+- Development-friendly error overlays
+
+## 📊 Performance Features
+
+- **Tree Shaking**: Unused framework code is eliminated
+- **Code Splitting**: Routes are loaded on demand
+- **Component Lazy Loading**: Components load when needed
+- **Bundle Optimization**: Framework-specific optimizations applied
 
 ## 🌟 Best Practices Demonstrated
 
-1. **Signal Naming**: Use descriptive names for global signals
-2. **Event Contracts**: Consistent event payload structures
-3. **Component Cleanup**: Automatic cleanup of subscriptions
-4. **Performance**: Batched updates and optimized rendering
-5. **Development**: Hot reloading and error handling
+1. **Route Organization**: Logical page structure with clear URLs
+2. **Component Reusability**: Components work across different pages
+3. **Import Consistency**: Unified import paths across frameworks
+4. **Performance Optimization**: Efficient compilation and bundling
+5. **Developer Experience**: Fast development with HMR and error handling
 
-## 🔗 Navigation
+## 🔗 Navigation Examples
 
-- **Home** (`/`): Main demo with all framework components
-- **Performance** (`/performance`): Benchmarks and performance analysis
-- **Documentation** (`/docs`): Code examples and best practices
+The application demonstrates various navigation patterns:
 
-## 🚀 Getting Started with Your Own Project
-
-1. **Install Metamon**:
-
-   ```bash
-   npm install @metamon/core @metamon/adapters @metamon/build-tools
-   ```
-
-2. **Configure Vite**:
-
-   ```javascript
-   import { metamon } from "@metamon/build-tools";
-
-   export default defineConfig({
-     plugins: [metamon({ frameworks: ["react", "vue"] })],
-   });
-   ```
-
-3. **Create your first .mtm file**:
-
-   ```javascript
-   ---
-   target: reactjs
-   ---
-
-   import React from 'react';
-
-   export default function MyComponent() {
-     return <h1>Hello Metamon!</h1>;
-   }
-   ```
-
-## 📚 Learn More
-
-- Visit the [Documentation page](/docs) in the example app
-- Check out the [Performance page](/performance) for benchmarks
-- Explore the source code in `src/components/` for implementation details
-- Run the E2E tests to see cross-framework communication in action
+- **Static Routes**: `/about`, `/contact`
+- **Framework Examples**: `/react-example`, `/vue-example`
+- **Nested Navigation**: Components with internal navigation
+- **External Links**: Proper handling of external URLs
 
 ## 🤝 Contributing
 
-This example application serves as both a demonstration and a test suite for the Metamon framework. When adding new features to Metamon:
+When adding new examples:
 
-1. Add corresponding examples to this application
-2. Update the documentation page with new code examples
-3. Add E2E tests to verify cross-framework functionality
-4. Update performance benchmarks if needed
+1. Create new .mtm files in `src/pages/`
+2. Add corresponding components in `src/components/`
+3. Update navigation links in existing pages
+4. Add E2E tests for new functionality
+5. Update this README with new features
 
 ## 📄 License
 
-This example application is part of the Metamon framework and follows the same license terms.
+This example application demonstrates the enhanced MTM framework capabilities and is provided for educational and development purposes.

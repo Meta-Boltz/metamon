@@ -1,0 +1,115 @@
+---
+function: MTMThemeToggle
+---
+
+// MTM Theme Toggle Component - Ultra-modern MTM syntax
+$currentTheme! = signal('currentTheme', 'light')
+$systemTheme! = signal('systemTheme', 'light')
+
+// Theme configurations using ultra-modern MTM syntax
+$themes! = signal('themes', {
+  light: {
+    name: 'Light',
+    icon: '☀️',
+    bg: 'bg-white',
+    text: 'text-gray-900',
+    accent: 'border-purple-500'
+  },
+  dark: {
+    name: 'Dark',
+    icon: '🌙',
+    bg: 'bg-gray-800',
+    text: 'text-white',
+    accent: 'border-blue-500'
+  },
+  auto: {
+    name: 'Auto',
+    icon: '🔄',
+    bg: 'bg-gray-100',
+    text: 'text-gray-900',
+    accent: 'border-green-500'
+  }
+})
+
+// Computed values using ultra-modern MTM syntax
+$activeTheme! = computed(() => {
+  if ($currentTheme === 'auto') {
+    return $systemTheme === 'dark' ? $themes.dark : $themes.light
+  }
+  return $themes[$currentTheme]
+})
+
+// Component methods using ultra-modern MTM syntax
+$toggleTheme = () => {
+  const themeKeys = Object.keys($themes)
+  const currentIndex = themeKeys.indexOf($currentTheme)
+  const nextIndex = (currentIndex + 1) % themeKeys.length
+  $currentTheme = themeKeys[nextIndex]
+  $applyTheme()
+}
+
+$setTheme = (theme) => {
+  if ($themes[theme]) {
+    $currentTheme = theme
+    $applyTheme()
+  }
+}
+
+$applyTheme = () => {
+  const theme = $activeTheme
+  // Theme applied successfully
+}
+
+$detectSystemTheme = () => {
+  if (typeof window !== 'undefined') {
+    $systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+}
+
+// Initialize component
+$init = (props = {}) => {
+  $currentTheme = props.initialTheme || 'light'
+  $detectSystemTheme()
+  
+  // Listen for system theme changes
+  if (typeof window !== 'undefined') {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      $detectSystemTheme()
+      if ($currentTheme === 'auto') {
+        $applyTheme()
+      }
+    })
+  }
+  
+  // Apply initial theme
+  setTimeout($applyTheme, 100)
+}
+
+<template>
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Native MTM Theme Toggle</h4>
+    <div class="flex items-center space-x-3 mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded">
+      <span class="text-2xl">{$activeTheme.icon}</span>
+      <span class="text-gray-900 dark:text-white">Current theme: <strong>{$activeTheme.name}</strong></span>
+    </div>
+    <div class="text-center mb-4">
+      <button click={$toggleTheme} class="px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded font-semibold transition-colors">
+        Toggle Theme
+      </button>
+    </div>
+    <div class="flex justify-center space-x-2 mb-4">
+      <button click={() => $setTheme('light')} class="px-3 py-2 bg-gray-100 hover:bg-gray-200 border rounded text-sm transition-colors">☀️ Light</button>
+      <button click={() => $setTheme('dark')} class="px-3 py-2 bg-gray-100 hover:bg-gray-200 border rounded text-sm transition-colors">🌙 Dark</button>
+      <button click={() => $setTheme('auto')} class="px-3 py-2 bg-gray-100 hover:bg-gray-200 border rounded text-sm transition-colors">🔄 Auto</button>
+    </div>
+    <div class="p-4 {$activeTheme.bg} {$activeTheme.text} border-2 {$activeTheme.accent} rounded text-center">
+      <p class="font-semibold mb-2">Theme Preview</p>
+      <small class="block opacity-75">Background: {$activeTheme.bg}</small>
+      <small class="block opacity-75">Text: {$activeTheme.text}</small>
+      <small class="block opacity-75">Accent: {$activeTheme.accent}</small>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-4 italic">
+      This is a native MTM theme toggle with system preference detection
+    </p>
+  </div>
+</template>

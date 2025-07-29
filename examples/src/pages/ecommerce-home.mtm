@@ -1,0 +1,336 @@
+---
+function: EcommerceHomePage
+useLayout: "ecommerce"
+title: "MTM Store - Your One-Stop Shop"
+description: "Discover amazing products with our MTM-powered e-commerce platform"
+---
+
+<template>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+          Welcome to MTM Store
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-blue-100">
+          Discover amazing products with lightning-fast performance
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/products" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            Shop Now
+          </a>
+          <a href="/categories" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+            Browse Categories
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Categories -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+        <p class="text-gray-600 text-lg">Find exactly what you're looking for</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="group cursor-pointer" onclick="navigateToCategory('electronics')">
+          <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-8 text-white text-center hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+            <div class="text-4xl mb-4">📱</div>
+            <h3 class="text-xl font-semibold mb-2">Electronics</h3>
+            <p class="text-blue-100 text-sm">Latest gadgets & tech</p>
+          </div>
+        </div>
+        
+        <div class="group cursor-pointer" onclick="navigateToCategory('fashion')">
+          <div class="bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl p-8 text-white text-center hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+            <div class="text-4xl mb-4">👗</div>
+            <h3 class="text-xl font-semibold mb-2">Fashion</h3>
+            <p class="text-pink-100 text-sm">Trendy clothes & accessories</p>
+          </div>
+        </div>
+        
+        <div class="group cursor-pointer" onclick="navigateToCategory('home')">
+          <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-8 text-white text-center hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+            <div class="text-4xl mb-4">🏠</div>
+            <h3 class="text-xl font-semibold mb-2">Home & Garden</h3>
+            <p class="text-green-100 text-sm">Everything for your home</p>
+          </div>
+        </div>
+        
+        <div class="group cursor-pointer" onclick="navigateToCategory('sports')">
+          <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-8 text-white text-center hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+            <div class="text-4xl mb-4">⚽</div>
+            <h3 class="text-xl font-semibold mb-2">Sports</h3>
+            <p class="text-orange-100 text-sm">Gear for active lifestyle</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Products</h2>
+        <p class="text-gray-600 text-lg">Hand-picked items just for you</p>
+      </div>
+      
+      <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Products will be loaded here -->
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="/products" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          View All Products
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose MTM Store?</h2>
+        <p class="text-gray-600 text-lg">Built with cutting-edge technology for the best experience</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Lightning Fast</h3>
+          <p class="text-gray-600">Powered by MTM framework for instant page loads and smooth interactions</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Secure Shopping</h3>
+          <p class="text-gray-600">Your data is protected with enterprise-grade security measures</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Customer First</h3>
+          <p class="text-gray-600">24/7 support and hassle-free returns for your peace of mind</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="py-16 bg-gray-900 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
+        <p class="text-gray-300 text-lg mb-8">Get the latest deals and product updates delivered to your inbox</p>
+        
+        <div class="max-w-md mx-auto">
+          <div class="flex">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              class="flex-1 px-4 py-3 rounded-l-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="newsletter-email"
+            />
+            <button
+              onclick="subscribeNewsletter()"
+              class="bg-blue-600 text-white px-6 py-3 rounded-r-lg hover:bg-blue-700 transition-colors font-semibold"
+            >
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+// Home page state and functions
+$featuredProducts! = signal('featuredProducts', [])
+$loading! = signal('loading', true)
+
+// Initialize page
+$init = () => {
+  loadFeaturedProducts()
+}
+
+// Load featured products
+$loadFeaturedProducts = async () => {
+  $loading.value = true
+  
+  try {
+    // Simulate API call with sample data
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    $featuredProducts.value = [
+      {
+        id: 1,
+        name: "Wireless Headphones",
+        price: 99.99,
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+        category: "electronics",
+        rating: 4.5,
+        reviews: 128
+      },
+      {
+        id: 2,
+        name: "Smart Watch",
+        price: 199.99,
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
+        category: "electronics",
+        rating: 4.8,
+        reviews: 89
+      },
+      {
+        id: 3,
+        name: "Designer Backpack",
+        price: 79.99,
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
+        category: "fashion",
+        rating: 4.3,
+        reviews: 156
+      },
+      {
+        id: 4,
+        name: "Coffee Maker",
+        price: 149.99,
+        image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=300&fit=crop",
+        category: "home",
+        rating: 4.6,
+        reviews: 203
+      }
+    ]
+    
+    renderFeaturedProducts()
+  } catch (error) {
+    console.error('Failed to load featured products:', error)
+    showNotification('Failed to load products', 'error')
+  } finally {
+    $loading.value = false
+  }
+}
+
+$renderFeaturedProducts = () => {
+  const container = document.getElementById('featured-products')
+  if (!container) return
+  
+  if ($loading.value) {
+    container.innerHTML = Array(4).fill(0).map(() => `
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden animate-pulse">
+        <div class="w-full h-48 bg-gray-200"></div>
+        <div class="p-4">
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+          <div class="h-6 bg-gray-200 rounded w-1/3"></div>
+        </div>
+      </div>
+    `).join('')
+    return
+  }
+  
+  const productsHtml = $featuredProducts.value.map(product => `
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+      <div class="relative overflow-hidden">
+        <img 
+          src="${product.image}" 
+          alt="${product.name}"
+          class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <button 
+          onclick="addToWishlist(${product.id})"
+          class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition-colors"
+        >
+          <svg class="w-4 h-4 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="p-4">
+        <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+          <a href="/product/${product.id}">${product.name}</a>
+        </h3>
+        
+        <div class="flex items-center mb-2">
+          <div class="flex items-center">
+            ${Array(5).fill(0).map((_, i) => `
+              <svg class="w-4 h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+            `).join('')}
+          </div>
+          <span class="text-sm text-gray-500 ml-2">(${product.reviews})</span>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <span class="text-xl font-bold text-gray-900">$${product.price}</span>
+          <button 
+            onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+  
+  container.innerHTML = productsHtml
+}
+
+// Navigation functions
+$navigateToCategory = (category) => {
+  window.location.href = `/category/${category}`
+}
+
+// Newsletter subscription
+$subscribeNewsletter = () => {
+  const email = document.getElementById('newsletter-email').value
+  if (!email) {
+    showNotification('Please enter your email address', 'error')
+    return
+  }
+  
+  if (!isValidEmail(email)) {
+    showNotification('Please enter a valid email address', 'error')
+    return
+  }
+  
+  // Simulate API call
+  showNotification('Thank you for subscribing!', 'success')
+  document.getElementById('newsletter-email').value = ''
+}
+
+$isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
+
+$addToWishlist = (productId) => {
+  const product = $featuredProducts.value.find(p => p.id === productId)
+  if (product) {
+    showNotification(`${product.name} added to wishlist!`, 'success')
+  }
+}
+
+// Make functions globally available
+window.navigateToCategory = $navigateToCategory
+window.subscribeNewsletter = $subscribeNewsletter
+window.addToWishlist = $addToWishlist

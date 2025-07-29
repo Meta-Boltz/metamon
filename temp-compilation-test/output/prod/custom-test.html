@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Mode Test</title>
+    <meta name="description" content="Testing custom JavaScript file compilation">
+    <meta name="route" content="/custom-test">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .navigation a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .link-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .link-examples a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .link-examples a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .counter-component, .vue-button, .react-component {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="custom-test">
+    <h1>Custom Mode Test</h1>
+    <p>Testing custom JavaScript file compilation</p>
+    
+    <div class="form-container">
+      <h2>Contact Form</h2>
+      
+      <div class="form-group">
+        <label>Name:</label>
+        <input 
+          type="text" 
+          value={$formData.name}
+          change={(e) => $updateField('name', e.target.value)}
+        />
+      </div>
+      
+      <div class="form-group">
+        <label>Email:</label>
+        <input 
+          type="email" 
+          value={$formData.email}
+          change={(e) => $updateField('email', e.target.value)}
+        />
+      </div>
+      
+      <div class="form-group">
+        <label>Message:</label>
+        <textarea 
+          value={$formData.message}
+          change={(e) => $updateField('message', e.target.value)}
+        ></textarea>
+      </div>
+      
+      <button 
+        data-event-click="$submitForm"
+        class:disabled={!$isValid}
+      >
+        Submit Form
+      </button>
+      
+      <div data-if="$isValid" style="display: none;">
+        <p class="success">Form is ready to submit!</p>
+      </div>
+    </div>
+    
+    <div data-component="ReactForm" data-type="react" data-event-data="$formData" data-event-onSubmit="$submitForm"></div>
+    <div data-component="SvelteWidget" data-type="svelte" title="Custom Widget"></div>
+    
+    <nav class="navigation">
+      <a href="/inline-test">Inline Test</a>
+      <a href="/external-test">External Test</a>
+    </nav>
+  </div></div>
+    <script src="custom-app-bundle.js"></script>
+</body>
+</html>

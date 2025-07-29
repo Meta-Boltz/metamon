@@ -1,0 +1,129 @@
+---
+function: VueExamplePage
+title: "Vue Component Integration"
+description: "This page demonstrates Vue component integration with MTM framework"
+compileJsMode: "inline"
+route: "/vue-example"
+imports:
+  - "@components/Button.vue"
+  - "@components/TodoList.vue"
+---
+
+// Vue example page - Ultra-modern MTM syntax
+$pageTitle! = signal('pageTitle', 'Vue Component Integration')
+$vueStats! = signal('vueStats', { components: 2, interactions: 0 })
+$todos! = signal('todos', [
+  { id: 1, text: 'Learn Vue + MTM integration', completed: false },
+  { id: 2, text: 'Build reactive components', completed: true }
+])
+
+$incrementInteractions = () => {
+  $vueStats = { ...$vueStats, interactions: $vueStats.interactions + 1 }
+}
+
+$addTodo = (text) => {
+  $todos = [...$todos, { id: Date.now(), text, completed: false }]
+  $incrementInteractions()
+}
+
+<template>
+  <div class="vue-example-page">
+    <header class="page-header">
+      <div class="breadcrumb">
+        <a href="/" class="breadcrumb-link">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <span class="breadcrumb-current">Vue Example</span>
+      </div>
+      
+      <h1>{$pageTitle}</h1>
+      <p class="page-description">This page demonstrates Vue component integration with MTM framework</p>
+      
+      <div class="page-metadata">
+        <div class="metadata-item">
+          <strong>Route:</strong> /vue-example
+        </div>
+        <div class="metadata-item">
+          <strong>Framework:</strong> Vue + MTM
+        </div>
+        <div class="metadata-item">
+          <strong>Components:</strong> {$vueStats.components}
+        </div>
+        <div class="metadata-item">
+          <strong>Interactions:</strong> {$vueStats.interactions}
+        </div>
+      </div>
+    </header>
+    
+    <nav class="framework-nav">
+      <a href="/mtm-example" class="framework-link mtm">MTM Example</a>
+      <a href="/react-example" class="framework-link react">React Example</a>
+      <a href="/solid-example" class="framework-link solid">Solid Example</a>
+      <a href="/svelte-example" class="framework-link svelte">Svelte Example</a>
+      <a href="/pure-mtm-showcase" class="framework-link mtm">Pure MTM Showcase</a>
+      <a href="/about" class="framework-link about">About</a>
+    </nav>
+    
+    <main class="main-content">
+      <section class="component-demo">
+        <h2>Vue Components</h2>
+        <p>The following Vue components are integrated with MTM's reactive system:</p>
+        
+        <div class="component-grid">
+          <div class="component-container">
+            <h3>Vue Button</h3>
+            <Button onClick={$incrementInteractions} text="Click me!" />
+          </div>
+          
+          <div class="component-container">
+            <h3>Vue Todo List</h3>
+            <TodoList todos={$todos} onAdd={$addTodo} />
+          </div>
+        </div>
+      </section>
+      
+      <section class="integration-info">
+        <h2>Vue + MTM Integration</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>💚 Vue Components</h4>
+            <p>Standard Vue components (.vue files) work seamlessly with MTM's reactive system.</p>
+          </div>
+          <div class="info-card">
+            <h4>🔄 Reactivity Bridge</h4>
+            <p>Vue's reactivity system integrates with MTM signals for unified state management.</p>
+          </div>
+          <div class="info-card">
+            <h4>🎯 Composition API</h4>
+            <p>Vue Composition API works perfectly with MTM's functional approach.</p>
+          </div>
+          <div class="info-card">
+            <h4>🚀 Performance</h4>
+            <p>Vue components benefit from MTM's optimized rendering pipeline.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="page-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/mtm-example">MTM Example</a></li>
+            <li><a href="/react-example">React Example</a></li>
+            <li><a href="/solid-example">Solid Example</a></li>
+            <li><a href="/svelte-example">Svelte Example</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Vue Integration</h4>
+          <p>Vue 3 + MTM Framework</p>
+          <p>Reactive component integration with Composition API support</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>

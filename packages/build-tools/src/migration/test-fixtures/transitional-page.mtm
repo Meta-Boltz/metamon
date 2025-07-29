@@ -1,0 +1,27 @@
+---
+title: Transitional Page
+description: This page is partially migrated
+keywords: transitional, mixed, format
+layout: default
+route: /transitional
+---
+
+$count = signal('counter', 0)
+$message! = signal('message', 'Hello')
+
+$onMount = () => {
+  console.log('Modern lifecycle')
+}
+
+$destroy = () => {
+  console.log('Legacy lifecycle')
+}
+
+$increment = () => {
+  $count++
+}
+
+<div className="transitional-page">
+  <h1>{$message}</h1>
+  <button click={$increment}>Count: {$count}</button>
+</div>

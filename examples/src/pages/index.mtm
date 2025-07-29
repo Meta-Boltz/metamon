@@ -1,94 +1,106 @@
 ---
-target: reactjs
-route: /
-channels:
-  - event: framework-demo-loaded
-    emit: onDemoLoaded
+function: HomePage
+title: "Enhanced MTM Framework"
+description: "Welcome to the enhanced MTM framework with routing and multi-framework support"
+compileJsMode: "inline"
+route: "/"
+useLayout: "main"
 ---
 
-import React, { useEffect } from 'react';
-import { useMetamonSignal, useMetamonPubSub } from '@metamon/adapters/react';
-import ReactCounter from '@components/react-counter';
-import VueMessageBoard from '@components/vue-message-board';
-import SolidThemeToggle from '@components/solid-theme-toggle';
-import SvelteUserList from '@components/svelte-user-list';
+// Home page - Ultra-modern MTM syntax
+// Layout variables that will be passed to the layout
+$pageTitle! = signal('pageTitle', 'Enhanced MTM Framework')
+$pageDescription! = signal('pageDescription', 'Welcome to the enhanced MTM framework with routing and multi-framework support')
 
-export default function HomePage() {
-  const [userCount] = useMetamonSignal('userCount');
-  const [messages] = useMetamonSignal('messages');
-  const [theme] = useMetamonSignal('theme');
-  const { emit } = useMetamonPubSub();
+// Page-specific state
+$visitCount! = signal('visitCount', 0)
 
-  useEffect(() => {
-    emit('framework-demo-loaded', { timestamp: Date.now() });
-  }, []);
+// Demo functions using ultra-modern MTM syntax
+$showDemo = () => {
+  alert('MTM Framework Demo!')
+}
 
-  return (
-    <div className="app-container">
-      <header className="header">
-        <h1>🚀 Metamon Framework Demo</h1>
-        <p>Multi-framework components working together seamlessly</p>
-      </header>
+$refreshPage = () => {
+  window.location.reload()
+}
 
-      <div className="shared-state-display">
-        <h3>🔄 Shared State (Live Updates)</h3>
-        <div className="state-item">
-          <span>Active Users:</span>
-          <span className="metric-value">{userCount}</span>
-        </div>
-        <div className="state-item">
-          <span>Messages:</span>
-          <span className="metric-value">{messages.length}</span>
-        </div>
-        <div className="state-item">
-          <span>Theme:</span>
-          <span className="metric-value">{theme}</span>
-        </div>
+// Initialize page
+$init = () => {
+  $visitCount++
+}
+
+<template>
+  <!-- Page content only - layout wrapper is handled by main.mtm -->
+  <section class="mb-12">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome to Enhanced MTM!</h2>
+      <p class="text-xl text-gray-600 mb-6">
+        A modern framework for building reactive web applications with multi-framework support
+      </p>
+      <div class="flex justify-center gap-4">
+        <button click={$showDemo} class="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+          🚀 Demo Interaction
+        </button>
+        <button click={$refreshPage} class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+          🔄 Refresh Page
+        </button>
       </div>
-
-      <div className="framework-grid">
-        <div className="framework-card">
-          <div className="react-badge framework-badge">React</div>
-          <h3>Counter Component</h3>
-          <p>Demonstrates signal-based state management</p>
-          <ReactCounter />
-        </div>
-
-        <div className="framework-card">
-          <div className="vue-badge framework-badge">Vue</div>
-          <h3>Message Board</h3>
-          <p>Shows cross-framework event communication</p>
-          <VueMessageBoard />
-        </div>
-
-        <div className="framework-card">
-          <div className="solid-badge framework-badge">Solid</div>
-          <h3>Theme Toggle</h3>
-          <p>Native Solid signals integration</p>
-          <SolidThemeToggle />
-        </div>
-
-        <div className="framework-card">
-          <div className="svelte-badge framework-badge">Svelte</div>
-          <h3>User Management</h3>
-          <p>Svelte stores with Metamon signals</p>
-          <SvelteUserList />
-        </div>
+      <p class="text-sm text-gray-500 mt-4">Page visits: {$visitCount}</p>
+    </div>
+  </section>
+  
+  <section class="mb-12">
+    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Framework Features</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">🔗</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Client-Side Routing</h4>
+        <p class="text-gray-600">Navigate between pages using standard HTML anchor tags with automatic interception</p>
       </div>
-
-      <div className="shared-state">
-        <h3>📊 Framework Communication Demo</h3>
-        <p>
-          Each component above is built with a different framework, but they all share state
-          and communicate through Metamon's unified pub/sub system and signals.
-        </p>
-        <ul>
-          <li>React Counter updates the global user count signal</li>
-          <li>Vue Message Board listens for messages from all frameworks</li>
-          <li>Solid Theme Toggle changes the global theme signal</li>
-          <li>Svelte User List manages users and emits events</li>
-        </ul>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">⚡</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Multi-Framework Support</h4>
+        <p class="text-gray-600">Import and use React, Vue, Solid, and Svelte components seamlessly</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">📝</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Frontmatter Configuration</h4>
+        <p class="text-gray-600">Configure routes, compilation modes, and metadata using YAML frontmatter</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-4">🎯</div>
+        <h4 class="text-lg font-semibold text-gray-900 mb-3">Enhanced Development</h4>
+        <p class="text-gray-600">Hot module replacement, TypeScript support, and optimized builds</p>
       </div>
     </div>
-  );
-}
+  </section>
+  
+  <section class="mb-12">
+    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Quick Start Guide</h3>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl">1️⃣</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Explore Examples</h4>
+          <p class="text-gray-600 text-sm">Check out the framework examples to see different integrations in action</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl">2️⃣</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Try Components</h4>
+          <p class="text-gray-600 text-sm">Interact with the reactive components to understand the framework capabilities</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl">3️⃣</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Build Your Own</h4>
+          <p class="text-gray-600 text-sm">Use the MTM framework to create your own reactive applications</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>

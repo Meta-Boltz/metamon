@@ -1,38 +1,54 @@
 {
-  "name": "@metamon/build-tools",
-  "version": "0.1.0",
-  "description": "Build tools and plugins for Metamon",
+  "name": "@mtm/build-tools",
+  "version": "1.0.0",
+  "description": "Build tools and migration utilities for Ultra-Modern MTM",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "vitest run",
-    "lint": "tsc --noEmit",
-    "clean": "rm -rf dist"
+  "main": "src/index.js",
+  "bin": {
+    "mtm-migrate": "src/migration/cli.js"
   },
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "migrate": "node src/migration/cli.js migrate",
+    "check": "node src/migration/cli.js check",
+    "analyze": "node src/migration/cli.js analyze",
+    "validate": "node src/migration/cli.js validate"
+  },
+  "keywords": [
+    "mtm",
+    "migration",
+    "build-tools",
+    "ultra-modern",
+    "ssr",
+    "reactive"
+  ],
+  "author": "MTM Team",
+  "license": "MIT",
   "dependencies": {
-    "@metamon/adapters": "*",
-    "@metamon/core": "*",
-    "chokidar": "^3.5.3",
-    "yaml": "^2.3.0"
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "@types/jsdom": "^21.1.7",
-    "@types/node": "^20.0.0",
-    "jsdom": "^26.1.0",
-    "typescript": "^5.0.0",
-    "vite": "^4.0.0",
-    "vitest": "^0.34.0"
-  },
-  "peerDependencies": {
-    "vite": "^4.0.0"
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
   },
   "files": [
-    "dist"
+    "src/",
+    "README.md"
   ],
-  "bin": {
-    "metamon-build": "./dist/cli.js"
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    },
+    "./migration": {
+      "import": "./src/migration/mtm-migrator.js"
+    },
+    "./compatibility": {
+      "import": "./src/migration/backward-compatibility.js"
+    },
+    "./report": {
+      "import": "./src/migration/report-generator.js"
+    }
   }
 }

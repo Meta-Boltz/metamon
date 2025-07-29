@@ -220,7 +220,7 @@
     - Write integration tests for backward compatibility
     - _Requirements: All requirements_
 
-- [ ] 12. Create migration tools and utilities
+- [x] 12. Create migration tools and utilities
 
   - [x] 12.1 Build syntax migration analyzer
 

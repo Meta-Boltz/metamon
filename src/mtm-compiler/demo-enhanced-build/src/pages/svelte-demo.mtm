@@ -1,0 +1,46 @@
+---
+route: "/svelte-demo"
+title: "Svelte Demo - Enhanced MTM"
+description: "Svelte components with reactive statements in MTM framework"
+compileJsMode: "external.js"
+---
+import WeatherWidget from "@components/WeatherWidget.svelte"
+
+<template>
+  <div class="demo-page">
+    <header>
+      <h1>🧡 Svelte Demo</h1>
+      <p>Svelte reactive components in MTM</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/solid-demo" data-link="true">← Solid Demo</a>
+      <a href="/" data-link="true">Home</a>
+      <a href="/multi-framework" data-link="true">Multi-Framework →</a>
+    </nav>
+
+    <main>
+      <section class="component-showcase">
+        <h2>Svelte Weather Widget</h2>
+        <p>This widget demonstrates Svelte's reactive statements and animations:</p>
+        
+        <div class="widget-grid">
+          <WeatherWidget location="New York" unit="F" />
+          <WeatherWidget location="London" unit="C" />
+          <WeatherWidget location="Tokyo" unit="C" />
+        </div>
+      </section>
+
+      <section class="code-example">
+        <h3>Component Features:</h3>
+        <ul>
+          <li>✅ Svelte reactive statements</li>
+          <li>✅ TypeScript support</li>
+          <li>✅ Conditional rendering (#if blocks)</li>
+          <li>✅ Event handling (on:click)</li>
+          <li>✅ Scoped CSS with animations</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>

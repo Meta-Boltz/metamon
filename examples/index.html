@@ -3,51 +3,1294 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Metamon Framework - Example Application</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    
-    .app-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .header {
-      text-align: center;
-      color: white;
-      margin-bottom: 40px;
-    }
-    
-    .framework-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    
-    .framework-card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .shared-state {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 20px;
-    }
-  </style>
+  <title>Enhanced Routing Multi-Framework Examples</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/styles/global.css">
 </head>
 <body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.jsx"></script>
+  <div id="app">
+    <div class="loading">
+      <h1>Enhanced MTM Framework Examples</h1>
+      <p>Loading...</p>
+    </div>
+  </div>
+  
+  <script type="module">
+    // Layout System
+    function createLayout(content, options = {}) {
+      const { 
+        title = 'MTM Framework',
+        description = '',
+        breadcrumb = null,
+        frameworkBadge = null,
+        showNavigation = true
+      } = options;
+      
+      return `
+        <div class="min-h-screen bg-gray-50">
+          ${createHeader(title, description, breadcrumb, frameworkBadge)}
+          ${showNavigation ? createNavigation() : ''}
+          <main class="container mx-auto px-6 py-8">
+            ${content}
+          </main>
+          ${createFooter()}
+        </div>
+      `;
+    }
+    
+    function createHeader(title, description, breadcrumb, frameworkBadge) {
+      return `
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="container mx-auto px-6 py-6">
+            ${breadcrumb ? `
+              <nav class="mb-4 text-sm">
+                <a href="/" class="text-blue-600 hover:text-blue-800">Home</a>
+                <span class="text-gray-400 mx-2">→</span>
+                <span class="text-gray-900 font-medium">${breadcrumb}</span>
+              </nav>
+            ` : ''}
+            
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">${title}</h1>
+                ${description ? `<p class="text-lg text-gray-600 mb-4">${description}</p>` : ''}
+                ${frameworkBadge ? `
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-block px-3 py-1 ${getFrameworkBadgeClass(frameworkBadge)} rounded-full text-sm font-medium">
+                      ${getFrameworkIcon(frameworkBadge)} ${frameworkBadge}
+                    </span>
+                  </div>
+                ` : ''}
+              </div>
+              
+              <div class="hidden md:block">
+                <div class="text-right">
+                  <div class="text-sm text-gray-500">Current time</div>
+                  <div id="header-time" class="text-lg font-medium text-gray-900">${new Date().toLocaleTimeString()}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+      `;
+    }
+    
+    function createNavigation() {
+      return `
+        <nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div class="container mx-auto px-6 py-4">
+            <div class="flex flex-wrap gap-2">
+              <a href="/" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                🏠 Home
+              </a>
+              <a href="/about" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
+                📖 About
+              </a>
+              <a href="/pure-mtm-showcase" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors">
+                🌟 Pure MTM
+              </a>
+              <a href="/mtm-example" class="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors">
+                🔧 MTM Example
+              </a>
+              <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded-md hover:bg-blue-500 transition-colors">
+                ⚛️ React
+              </a>
+              <a href="/vue-example" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
+                💚 Vue
+              </a>
+              <a href="/solid-example" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                🔷 Solid
+              </a>
+              <a href="/svelte-example" class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors">
+                🧡 Svelte
+              </a>
+            </div>
+          </div>
+        </nav>
+      `;
+    }
+    
+    function createFooter() {
+      return `
+        <footer class="bg-white border-t border-gray-200 mt-16">
+          <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+              <div class="flex flex-wrap justify-center gap-4 mb-4">
+                <a href="/" class="text-blue-600 hover:text-blue-800">Home</a>
+                <a href="/about" class="text-blue-600 hover:text-blue-800">About</a>
+                <a href="/pure-mtm-showcase" class="text-blue-600 hover:text-blue-800">Pure MTM</a>
+                <a href="/react-example" class="text-blue-600 hover:text-blue-800">React</a>
+                <a href="/vue-example" class="text-blue-600 hover:text-blue-800">Vue</a>
+                <a href="/solid-example" class="text-blue-600 hover:text-blue-800">Solid</a>
+                <a href="/svelte-example" class="text-blue-600 hover:text-blue-800">Svelte</a>
+              </div>
+              <p class="text-sm text-gray-600">
+                Built with Enhanced MTM Framework - Multi-framework routing and component integration
+              </p>
+              <p class="text-xs text-gray-500 mt-2">
+                © 2024 MTM Framework. Demonstrating modern web development patterns.
+              </p>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+    
+    function getFrameworkBadgeClass(framework) {
+      const classes = {
+        'Pure MTM': 'bg-purple-100 text-purple-800',
+        'React': 'bg-blue-100 text-blue-800',
+        'Vue': 'bg-green-100 text-green-800',
+        'Solid': 'bg-blue-100 text-blue-800',
+        'Svelte': 'bg-orange-100 text-orange-800',
+        'MTM': 'bg-indigo-100 text-indigo-800'
+      };
+      return classes[framework] || 'bg-gray-100 text-gray-800';
+    }
+    
+    function getFrameworkIcon(framework) {
+      const icons = {
+        'Pure MTM': '🌟',
+        'React': '⚛️',
+        'Vue': '💚',
+        'Solid': '🔷',
+        'Svelte': '🧡',
+        'MTM': '🔧'
+      };
+      return icons[framework] || '📄';
+    }
+
+    // Enhanced routing with layout system
+    const routes = {
+      '/': () => createHomePage(),
+      '/about': () => createAboutPage(),
+      '/mtm-example': () => createMTMExamplePage(),
+      '/pure-mtm-showcase': () => createPureMTMShowcase(),
+      '/react-example': () => createReactExample(),
+      '/vue-example': () => createVueExample(),
+      '/solid-example': () => createSolidExample(),
+      '/svelte-example': () => createSvelteExample()
+    };
+    
+    function createHomePage() {
+      return Promise.resolve({
+        default: function() {
+          setTimeout(() => {
+            // Update header time every second
+            setInterval(() => {
+              const timeEl = document.getElementById('header-time');
+              if (timeEl) {
+                timeEl.textContent = new Date().toLocaleTimeString();
+              }
+            }, 1000);
+            
+            // Global functions
+            window.showDemo = () => alert('MTM Framework Demo!');
+            window.refreshPage = () => window.location.reload();
+          }, 100);
+          
+          const content = `
+            <section class="mb-12">
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome to Enhanced MTM!</h2>
+                <p class="text-xl text-gray-600 mb-6">
+                  A modern framework for building reactive web applications with multi-framework support
+                </p>
+                <div class="flex justify-center gap-4">
+                  <button onclick="showDemo()" class="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+                    🚀 Demo Interaction
+                  </button>
+                  <button onclick="refreshPage()" class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors shadow-sm">
+                    🔄 Refresh Page
+                  </button>
+                </div>
+              </div>
+            </section>
+            
+            <section class="mb-12">
+              <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Framework Features</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">🔗</div>
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Client-Side Routing</h4>
+                  <p class="text-gray-600">Navigate between pages using standard HTML anchor tags with automatic interception</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">⚡</div>
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Multi-Framework Support</h4>
+                  <p class="text-gray-600">Import and use React, Vue, Solid, and Svelte components seamlessly</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">📝</div>
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Frontmatter Configuration</h4>
+                  <p class="text-gray-600">Configure routes, compilation modes, and metadata using YAML frontmatter</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="text-3xl mb-4">🎯</div>
+                  <h4 class="text-lg font-semibent text-gray-900 mb-3">Enhanced Development</h4>
+                  <p class="text-gray-600">Hot module replacement, TypeScript support, and optimized builds</p>
+                </div>
+              </div>
+            </section>
+            
+            <section class="mb-12">
+              <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Quick Start Guide</h3>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span class="text-xl">1️⃣</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Explore Examples</h4>
+                    <p class="text-gray-600 text-sm">Check out the framework examples to see different integrations in action</p>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span class="text-xl">2️⃣</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Try Components</h4>
+                    <p class="text-gray-600 text-sm">Interact with the reactive components to understand the framework capabilities</p>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span class="text-xl">3️⃣</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Build Your Own</h4>
+                    <p class="text-gray-600 text-sm">Use the MTM framework to create your own reactive applications</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+          
+          return createLayout(content, {
+            title: 'Enhanced MTM Framework',
+            description: 'Welcome to the enhanced MTM framework with routing and multi-framework support'
+          });
+        }
+      });
+    }
+    
+    function createPureMTMShowcase() {
+      return Promise.resolve({
+        default: function() {
+          setTimeout(() => {
+            initializeMTMComponents();
+          }, 100);
+          
+          const content = `
+            <section class="mb-8">
+              <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Pure MTM Components</h2>
+                <p class="text-lg text-gray-600">
+                  Experience the power of ultra-modern MTM syntax with reactive components
+                </p>
+              </div>
+              
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-purple-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">MTM Counter</h3>
+                    <p class="text-sm text-gray-600">Reactive state with signals</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="mtm-counter"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">MTM Todo List</h3>
+                    <p class="text-sm text-gray-600">Dynamic list management</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="mtm-todos"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-green-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">MTM Theme Toggle</h3>
+                    <p class="text-sm text-gray-600">Dynamic theming system</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="mtm-theme"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            
+            <section class="mb-8">
+              <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-8 border border-gray-200">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">MTM Framework Features</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span class="text-purple-600 font-bold">$</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Reactive Signals</h4>
+                      <p class="text-gray-600 text-sm">Built-in reactive state management with automatic updates</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span class="text-blue-600 font-bold">⚡</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Ultra-Modern Syntax</h4>
+                      <p class="text-gray-600 text-sm">Intuitive syntax with signals, computed values, and reactive templates</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span class="text-green-600 font-bold">🔧</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Component System</h4>
+                      <p class="text-gray-600 text-sm">Reusable components with props and lifecycle management</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span class="text-orange-600 font-bold">📦</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900">Zero Runtime</h4>
+                      <p class="text-gray-600 text-sm">Compiles to optimized JavaScript with minimal overhead</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+          
+          return createLayout(content, {
+            title: '🌟 Pure MTM Showcase',
+            description: 'Experience the power of ultra-modern MTM syntax with interactive components',
+            breadcrumb: 'Pure MTM Showcase',
+            frameworkBadge: 'Pure MTM'
+          });
+        }
+      });
+    }
+    
+    function createReactExample() {
+      return Promise.resolve({
+        default: function() {
+          setTimeout(() => {
+            initializeReactComponents();
+          }, 100);
+          
+          const content = `
+            <section class="mb-8">
+              <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">React Components</h2>
+                <p class="text-lg text-gray-600">
+                  React components seamlessly integrated with the MTM framework
+                </p>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Counter Component</h3>
+                    <p class="text-sm text-gray-600">Interactive counter with state management</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-counter"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">User Profile Component</h3>
+                    <p class="text-sm text-gray-600">User information display with actions</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-profile"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Data Chart Component</h3>
+                    <p class="text-sm text-gray-600">Visual data representation</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-chart"></div>
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Modal Component</h3>
+                    <p class="text-sm text-gray-600">Interactive modal dialog</p>
+                  </div>
+                  <div class="p-6">
+                    <div id="react-modal"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+          
+          return createLayout(content, {
+            title: 'React Component Integration',
+            description: 'React components seamlessly integrated with the MTM framework',
+            breadcrumb: 'React Example',
+            frameworkBadge: 'React'
+          });
+        }
+      });
+    }
+    
+    function createAboutPage() {
+      return Promise.resolve({
+        default: function() {
+          return `
+            <div class="about-page">
+              <header class="page-header">
+                <h1>About MTM Framework</h1>
+                <p class="description">Learn about the MTM framework and its capabilities</p>
+              </header>
+              
+              <nav class="main-navigation">
+                <div class="nav-links">
+                  <a href="/" class="nav-link">🏠 Home</a>
+                  <a href="/pure-mtm-showcase" class="nav-link">🌟 Pure MTM</a>
+                  <a href="/react-example" class="nav-link">⚛️ React</a>
+                </div>
+              </nav>
+              
+              <main class="main-content">
+                <section>
+                  <h2>About the Enhanced MTM Framework</h2>
+                  <p>This framework demonstrates advanced routing and multi-framework integration.</p>
+                </section>
+              </main>
+            </div>
+          `;
+        }
+      });
+    }
+    
+    function createMTMExamplePage() {
+      return Promise.resolve({
+        default: function() {
+          return `<div class="mtm-page"><h1>MTM Example Page</h1><nav><a href="/" class="nav-link">Home</a></nav></div>`;
+        }
+      });
+    }
+    
+    function createVueExample() {
+      return Promise.resolve({
+        default: function() {
+          setTimeout(() => {
+            initializeVueComponents();
+          }, 100);
+          
+          return `
+            <div class="vue-example-page">
+              <header class="page-header">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Vue Component Integration</h1>
+                <p class="text-lg text-gray-600 mb-4">Vue components integrated with MTM framework</p>
+                <div class="page-meta">
+                  <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">💚 Vue</span>
+                </div>
+              </header>
+              
+              <nav class="main-navigation mb-8">
+                <div class="flex flex-wrap gap-2">
+                  <a href="/" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">🏠 Home</a>
+                  <a href="/pure-mtm-showcase" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">🌟 Pure MTM</a>
+                  <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition-colors">⚛️ React</a>
+                  <a href="/solid-example" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">🔷 Solid</a>
+                  <a href="/svelte-example" class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors">🧡 Svelte</a>
+                </div>
+              </nav>
+              
+              <main class="main-content">
+                <section class="vue-components-section">
+                  <h2 class="text-2xl font-bold text-gray-900 mb-6">Vue Components</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Button Component</h3>
+                      <div id="vue-button" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Todo List Component</h3>
+                      <div id="vue-todos" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Reactive Form</h3>
+                      <div id="vue-form" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Weather Widget</h3>
+                      <div id="vue-weather" class="component-container"></div>
+                    </div>
+                  </div>
+                </section>
+              </main>
+            </div>
+          `;
+        }
+      });
+    }
+    
+    function createSolidExample() {
+      return Promise.resolve({
+        default: function() {
+          setTimeout(() => {
+            initializeSolidComponents();
+          }, 100);
+          
+          return `
+            <div class="solid-example-page">
+              <header class="page-header">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Solid Component Integration</h1>
+                <p class="text-lg text-gray-600 mb-4">Solid components integrated with MTM framework</p>
+                <div class="page-meta">
+                  <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">🔷 Solid</span>
+                </div>
+              </header>
+              
+              <nav class="main-navigation mb-8">
+                <div class="flex flex-wrap gap-2">
+                  <a href="/" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">🏠 Home</a>
+                  <a href="/pure-mtm-showcase" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">🌟 Pure MTM</a>
+                  <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition-colors">⚛️ React</a>
+                  <a href="/vue-example" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">💚 Vue</a>
+                  <a href="/svelte-example" class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors">🧡 Svelte</a>
+                </div>
+              </nav>
+              
+              <main class="main-content">
+                <section class="solid-components-section">
+                  <h2 class="text-2xl font-bold text-gray-900 mb-6">Solid Components</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Signal Counter</h3>
+                      <div id="solid-counter" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Reactive Store</h3>
+                      <div id="solid-store" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Effect Demo</h3>
+                      <div id="solid-effects" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Resource Loading</h3>
+                      <div id="solid-resource" class="component-container"></div>
+                    </div>
+                  </div>
+                </section>
+              </main>
+            </div>
+          `;
+        }
+      });
+    }
+    
+    function createSvelteExample() {
+      return Promise.resolve({
+        default: function() {
+          setTimeout(() => {
+            initializeSvelteComponents();
+          }, 100);
+          
+          return `
+            <div class="svelte-example-page">
+              <header class="page-header">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Svelte Component Integration</h1>
+                <p class="text-lg text-gray-600 mb-4">Svelte components integrated with MTM framework</p>
+                <div class="page-meta">
+                  <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">🧡 Svelte</span>
+                </div>
+              </header>
+              
+              <nav class="main-navigation mb-8">
+                <div class="flex flex-wrap gap-2">
+                  <a href="/" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">🏠 Home</a>
+                  <a href="/pure-mtm-showcase" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">🌟 Pure MTM</a>
+                  <a href="/react-example" class="px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition-colors">⚛️ React</a>
+                  <a href="/vue-example" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">💚 Vue</a>
+                  <a href="/solid-example" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">🔷 Solid</a>
+                </div>
+              </nav>
+              
+              <main class="main-content">
+                <section class="svelte-components-section">
+                  <h2 class="text-2xl font-bold text-gray-900 mb-6">Svelte Components</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Card Component</h3>
+                      <div id="svelte-card" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Weather Widget</h3>
+                      <div id="svelte-weather" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Interactive Form</h3>
+                      <div id="svelte-form" class="component-container"></div>
+                    </div>
+                    
+                    <div class="component-demo">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">Animation Demo</h3>
+                      <div id="svelte-animation" class="component-container"></div>
+                    </div>
+                  </div>
+                </section>
+              </main>
+            </div>
+          `;
+        }
+      });
+    }
+    
+    // Component initialization functions
+    function initializeMTMComponents() {
+      // MTM Counter
+      let mtmCount = 0;
+      const counterEl = document.getElementById('mtm-counter');
+      if (counterEl) {
+        function renderCounter() {
+          counterEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">' +
+            '<h4 class="text-lg font-semibold text-gray-900 mb-4">Native MTM Counter</h4>' +
+            '<div class="flex items-center justify-center space-x-4 mb-4">' +
+              '<button onclick="decrementMTMCounter()" class="w-12 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-bold transition-colors">-</button>' +
+              '<span class="text-3xl font-bold text-gray-900 min-w-[60px] text-center">' + mtmCount + '</span>' +
+              '<button onclick="incrementMTMCounter()" class="w-12 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-bold transition-colors">+</button>' +
+            '</div>' +
+            '<div class="text-center">' +
+              '<button onclick="resetMTMCounter()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors">Reset</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-4 italic">Native MTM reactive component with built-in state management</p>' +
+          '</div>';
+        }
+        
+        window.incrementMTMCounter = () => { mtmCount++; renderCounter(); };
+        window.decrementMTMCounter = () => { mtmCount = Math.max(0, mtmCount - 1); renderCounter(); };
+        window.resetMTMCounter = () => { mtmCount = 0; renderCounter(); };
+        
+        renderCounter();
+      }
+      
+      // MTM Todo List
+      let todos = [
+        { id: 1, text: 'Learn MTM Framework', completed: false },
+        { id: 2, text: 'Build awesome apps', completed: false }
+      ];
+      let nextId = 3;
+      
+      const todosEl = document.getElementById('mtm-todos');
+      if (todosEl) {
+        function renderTodos() {
+          const todoItems = todos.map(todo => 
+            '<li class="flex items-center justify-between p-3 border-b border-gray-100 ' + (todo.completed ? 'opacity-60' : '') + '">' +
+              '<div class="flex items-center">' +
+                '<input type="checkbox" ' + (todo.completed ? 'checked' : '') + ' onchange="toggleTodo(' + todo.id + ')" class="mr-3 w-4 h-4 text-purple-600 rounded">' +
+                '<span class="' + (todo.completed ? 'line-through text-gray-500' : 'text-gray-900') + '">' + todo.text + '</span>' +
+              '</div>' +
+              '<button onclick="deleteTodo(' + todo.id + ')" class="text-red-500 hover:text-red-700 font-bold text-lg">×</button>' +
+            '</li>'
+          ).join('');
+          
+          todosEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">' +
+            '<h4 class="text-lg font-semibold text-gray-900 mb-4">Native MTM Todo List</h4>' +
+            '<div class="mb-4">' +
+              '<input type="text" id="new-todo" placeholder="Add a new todo..." class="w-full p-3 border border-gray-300 rounded-md mb-2">' +
+              '<button onclick="addTodo()" class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors">Add Todo</button>' +
+            '</div>' +
+            '<div class="mb-3 text-sm text-gray-600">Total: ' + todos.length + ' todos</div>' +
+            '<ul class="space-y-1">' + (todoItems || '<li class="text-gray-500 italic text-center py-4">No todos yet. Add one above!</li>') + '</ul>' +
+            '<p class="text-sm text-gray-600 mt-4 italic">MTM reactive todo list with state management</p>' +
+          '</div>';
+        }
+        
+        window.addTodo = () => {
+          const input = document.getElementById('new-todo');
+          if (input && input.value.trim()) {
+            todos.push({ id: nextId++, text: input.value.trim(), completed: false });
+            input.value = '';
+            renderTodos();
+          }
+        };
+        
+        window.toggleTodo = (id) => {
+          const todo = todos.find(t => t.id === id);
+          if (todo) {
+            todo.completed = !todo.completed;
+            renderTodos();
+          }
+        };
+        
+        window.deleteTodo = (id) => {
+          todos = todos.filter(t => t.id !== id);
+          renderTodos();
+        };
+        
+        renderTodos();
+      }
+      
+      // MTM Theme Toggle
+      let currentTheme = 'light';
+      const themes = {
+        light: { name: 'Light', icon: '☀️' },
+        dark: { name: 'Dark', icon: '🌙' },
+        auto: { name: 'Auto', icon: '🔄' }
+      };
+      
+      const themeEl = document.getElementById('mtm-theme');
+      if (themeEl) {
+        function renderTheme() {
+          const theme = themes[currentTheme];
+          themeEl.innerHTML = '<div class="bg-white border rounded-lg p-4">' +
+            '<h4 class="font-semibold mb-4">Native MTM Theme Toggle</h4>' +
+            '<div class="mb-4">' +
+              '<span class="text-2xl mr-2">' + theme.icon + '</span>' +
+              '<span>Current: <strong>' + theme.name + '</strong></span>' +
+            '</div>' +
+            '<div class="space-x-2">' +
+              '<button onclick="setTheme(\'light\')" class="px-3 py-1 bg-yellow-400 text-black rounded">☀️ Light</button>' +
+              '<button onclick="setTheme(\'dark\')" class="px-3 py-1 bg-gray-800 text-white rounded">🌙 Dark</button>' +
+              '<button onclick="setTheme(\'auto\')" class="px-3 py-1 bg-blue-500 text-white rounded">🔄 Auto</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-4 italic">MTM theme toggle with reactive styling</p>' +
+          '</div>';
+        }
+        
+        window.setTheme = (theme) => {
+          currentTheme = theme;
+          renderTheme();
+        };
+        
+        renderTheme();
+      }
+    }
+    
+    function initializeReactComponents() {
+      // React Counter
+      let reactCount = 0;
+      const counterEl = document.getElementById('react-counter');
+      if (counterEl) {
+        function renderReactCounter() {
+          counterEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">' +
+            '<div class="flex items-center justify-center space-x-4 mb-4">' +
+              '<button onclick="decrementReactCounter()" class="w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold transition-colors">-</button>' +
+              '<span class="text-3xl font-bold text-gray-900 min-w-[60px] text-center">' + reactCount + '</span>' +
+              '<button onclick="incrementReactCounter()" class="w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold transition-colors">+</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 italic">React Counter Component integrated with MTM</p>' +
+          '</div>';
+        }
+        
+        window.incrementReactCounter = () => { reactCount++; renderReactCounter(); };
+        window.decrementReactCounter = () => { reactCount = Math.max(0, reactCount - 1); renderReactCounter(); };
+        
+        renderReactCounter();
+      }
+      
+      // User Profile
+      const profileEl = document.getElementById('react-profile');
+      if (profileEl) {
+        profileEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">' +
+          '<div class="flex items-center space-x-4">' +
+            '<div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl">JD</div>' +
+            '<div class="flex-1">' +
+              '<h4 class="text-lg font-semibold text-gray-900">John Doe</h4>' +
+              '<p class="text-gray-600 mb-2">john@example.com</p>' +
+              '<span class="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">Active</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mt-4 pt-4 border-t border-gray-100">' +
+            '<button onclick="alert(\'Profile clicked!\')" class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors">View Profile</button>' +
+          '</div>' +
+          '<p class="text-sm text-gray-600 mt-4 italic">React User Profile Component with interactive elements</p>' +
+        '</div>';
+      }
+      
+      // Data Chart
+      const chartEl = document.getElementById('react-chart');
+      if (chartEl) {
+        chartEl.innerHTML = '<div class="bg-white border rounded-lg p-4">' +
+          '<h4 class="font-semibold mb-4">Sample Data Chart</h4>' +
+          '<div class="flex items-end space-x-2 h-32">' +
+            '<div class="bg-blue-500 w-8" style="height: 60%"></div>' +
+            '<div class="bg-blue-500 w-8" style="height: 80%"></div>' +
+            '<div class="bg-blue-500 w-8" style="height: 40%"></div>' +
+            '<div class="bg-blue-500 w-8" style="height: 90%"></div>' +
+          '</div>' +
+          '<p class="text-sm text-gray-600 mt-4 italic">React Data Chart Component</p>' +
+        '</div>';
+      }
+      
+      // Modal
+      const modalEl = document.getElementById('react-modal');
+      if (modalEl) {
+        modalEl.innerHTML = '<div class="bg-white border rounded-lg p-4">' +
+          '<button onclick="showModal()" class="px-4 py-2 bg-blue-500 text-white rounded">Show Modal</button>' +
+          '<div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">' +
+            '<div class="bg-white rounded-lg p-6 max-w-md mx-4">' +
+              '<h3 class="text-lg font-semibold mb-4">React Modal</h3>' +
+              '<p class="mb-4">This is a React modal component!</p>' +
+              '<button onclick="hideModal()" class="px-4 py-2 bg-gray-500 text-white rounded">Close</button>' +
+            '</div>' +
+          '</div>' +
+          '<p class="text-sm text-gray-600 mt-4 italic">React Modal Component</p>' +
+        '</div>';
+        
+        window.showModal = () => {
+          const overlay = document.getElementById('modal-overlay');
+          if (overlay) {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+          }
+        };
+        
+        window.hideModal = () => {
+          const overlay = document.getElementById('modal-overlay');
+          if (overlay) {
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+          }
+        };
+      }
+    }
+    
+    function initializeVueComponents() {
+      // Vue Button Component
+      let vueClickCount = 0;
+      const buttonEl = document.getElementById('vue-button');
+      if (buttonEl) {
+        function renderVueButton() {
+          buttonEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<button onclick="handleVueClick()" class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors">' +
+              'Click me! (Clicked: ' + vueClickCount + ' times)' +
+            '</button>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Vue Button Component with reactive state</p>' +
+          '</div>';
+        }
+        
+        window.handleVueClick = () => { vueClickCount++; renderVueButton(); };
+        renderVueButton();
+      }
+      
+      // Vue Todo List
+      let vueTodos = ['Learn Vue 3', 'Build with Composition API', 'Integrate with MTM'];
+      const todosEl = document.getElementById('vue-todos');
+      if (todosEl) {
+        function renderVueTodos() {
+          const todoItems = vueTodos.map((todo, index) => 
+            '<li class="flex items-center justify-between p-2 border-b border-gray-100">' +
+              '<span class="text-gray-800">' + todo + '</span>' +
+              '<button onclick="removeVueTodo(' + index + ')" class="text-red-500 hover:text-red-700 font-bold">×</button>' +
+            '</li>'
+          ).join('');
+          
+          todosEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="mb-3">' +
+              '<input type="text" id="vue-todo-input" placeholder="Add Vue todo..." class="w-full p-2 border border-gray-300 rounded-md">' +
+              '<button onclick="addVueTodo()" class="mt-2 w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md">Add Todo</button>' +
+            '</div>' +
+            '<ul class="space-y-1">' + todoItems + '</ul>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Vue Todo List with reactive updates</p>' +
+          '</div>';
+        }
+        
+        window.addVueTodo = () => {
+          const input = document.getElementById('vue-todo-input');
+          if (input && input.value.trim()) {
+            vueTodos.push(input.value.trim());
+            input.value = '';
+            renderVueTodos();
+          }
+        };
+        
+        window.removeVueTodo = (index) => {
+          vueTodos.splice(index, 1);
+          renderVueTodos();
+        };
+        
+        renderVueTodos();
+      }
+      
+      // Vue Form
+      const formEl = document.getElementById('vue-form');
+      if (formEl) {
+        formEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+          '<div class="space-y-3">' +
+            '<input type="text" id="vue-name" placeholder="Your name" onkeyup="updateVueForm()" class="w-full p-2 border border-gray-300 rounded-md">' +
+            '<input type="email" id="vue-email" placeholder="Your email" onkeyup="updateVueForm()" class="w-full p-2 border border-gray-300 rounded-md">' +
+            '<div class="bg-gray-50 p-3 rounded-md">' +
+              '<p class="text-sm text-gray-600">Preview:</p>' +
+              '<p id="vue-preview" class="font-medium text-gray-800">Fill out the form to see preview</p>' +
+            '</div>' +
+          '</div>' +
+          '<p class="text-sm text-gray-600 mt-3 italic">Vue reactive form with live preview</p>' +
+        '</div>';
+        
+        window.updateVueForm = () => {
+          const name = document.getElementById('vue-name').value || 'Anonymous';
+          const email = document.getElementById('vue-email').value || 'No email';
+          document.getElementById('vue-preview').textContent = 'Hello ' + name + ' (' + email + ')';
+        };
+      }
+      
+      // Vue Weather Widget
+      const weatherEl = document.getElementById('vue-weather');
+      if (weatherEl) {
+        let currentWeather = { temp: 22, condition: 'Sunny', icon: '☀️' };
+        const conditions = [
+          { temp: 22, condition: 'Sunny', icon: '☀️' },
+          { temp: 18, condition: 'Cloudy', icon: '☁️' },
+          { temp: 15, condition: 'Rainy', icon: '🌧️' },
+          { temp: 25, condition: 'Hot', icon: '🔥' }
+        ];
+        
+        function renderVueWeather() {
+          weatherEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="text-center">' +
+              '<div class="text-4xl mb-2">' + currentWeather.icon + '</div>' +
+              '<div class="text-2xl font-bold text-gray-800">' + currentWeather.temp + '°C</div>' +
+              '<div class="text-gray-600">' + currentWeather.condition + '</div>' +
+              '<button onclick="refreshVueWeather()" class="mt-3 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md">🔄 Refresh</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Vue Weather Widget with random updates</p>' +
+          '</div>';
+        }
+        
+        window.refreshVueWeather = () => {
+          currentWeather = conditions[Math.floor(Math.random() * conditions.length)];
+          renderVueWeather();
+        };
+        
+        renderVueWeather();
+      }
+    }
+    
+    function initializeSolidComponents() {
+      // Solid Signal Counter
+      let solidCount = 0;
+      const counterEl = document.getElementById('solid-counter');
+      if (counterEl) {
+        function renderSolidCounter() {
+          counterEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="text-center">' +
+              '<div class="flex items-center justify-center space-x-4 mb-4">' +
+                '<button onclick="decrementSolidCounter()" class="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold">-</button>' +
+                '<span class="text-3xl font-bold text-gray-800">' + solidCount + '</span>' +
+                '<button onclick="incrementSolidCounter()" class="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold">+</button>' +
+              '</div>' +
+              '<div class="text-sm text-gray-600">Doubled: ' + (solidCount * 2) + '</div>' +
+              '<div class="text-sm text-gray-600">Is Even: ' + (solidCount % 2 === 0) + '</div>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Solid Signal Counter with computed values</p>' +
+          '</div>';
+        }
+        
+        window.incrementSolidCounter = () => { solidCount++; renderSolidCounter(); };
+        window.decrementSolidCounter = () => { solidCount = Math.max(0, solidCount - 1); renderSolidCounter(); };
+        
+        renderSolidCounter();
+      }
+      
+      // Solid Store
+      let solidItems = ['Solid Signal', 'Reactive Store', 'Fine-grained Updates'];
+      const storeEl = document.getElementById('solid-store');
+      if (storeEl) {
+        function renderSolidStore() {
+          const itemsList = solidItems.map((item, index) => 
+            '<li class="flex items-center justify-between p-2 bg-gray-50 rounded">' +
+              '<span>' + item + '</span>' +
+              '<button onclick="removeSolidItem(' + index + ')" class="text-red-500 hover:text-red-700">×</button>' +
+            '</li>'
+          ).join('');
+          
+          storeEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="mb-3 space-x-2">' +
+              '<button onclick="addSolidItem()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Add Item</button>' +
+              '<button onclick="clearSolidItems()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">Clear All</button>' +
+            '</div>' +
+            '<ul class="space-y-2">' + itemsList + '</ul>' +
+            '<div class="mt-3 text-sm text-gray-600">Total items: ' + solidItems.length + '</div>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Solid Reactive Store with array operations</p>' +
+          '</div>';
+        }
+        
+        window.addSolidItem = () => {
+          solidItems.push('New Item ' + (solidItems.length + 1));
+          renderSolidStore();
+        };
+        
+        window.removeSolidItem = (index) => {
+          solidItems.splice(index, 1);
+          renderSolidStore();
+        };
+        
+        window.clearSolidItems = () => {
+          solidItems = [];
+          renderSolidStore();
+        };
+        
+        renderSolidStore();
+      }
+      
+      // Solid Effects
+      const effectsEl = document.getElementById('solid-effects');
+      if (effectsEl) {
+        effectsEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+          '<input type="text" id="solid-input" placeholder="Type something..." onkeyup="updateSolidEffect()" class="w-full p-2 border border-gray-300 rounded-md mb-3">' +
+          '<div class="bg-gray-50 p-3 rounded-md space-y-1">' +
+            '<div>Length: <span id="solid-length" class="font-medium">0</span></div>' +
+            '<div>Uppercase: <span id="solid-upper" class="font-medium">-</span></div>' +
+            '<div>Word count: <span id="solid-words" class="font-medium">0</span></div>' +
+          '</div>' +
+          '<p class="text-sm text-gray-600 mt-3 italic">Solid Effects with derived computations</p>' +
+        '</div>';
+        
+        window.updateSolidEffect = () => {
+          const input = document.getElementById('solid-input');
+          const text = input.value;
+          document.getElementById('solid-length').textContent = text.length;
+          document.getElementById('solid-upper').textContent = text.toUpperCase() || '-';
+          document.getElementById('solid-words').textContent = text.trim() ? text.trim().split(/\\s+/).length : 0;
+        };
+      }
+      
+      // Solid Resource
+      const resourceEl = document.getElementById('solid-resource');
+      if (resourceEl) {
+        let isLoading = false;
+        let data = null;
+        
+        function renderSolidResource() {
+          let content = '';
+          if (isLoading) {
+            content = '<div class="text-center py-4"><div class="text-blue-600">Loading...</div></div>';
+          } else if (data) {
+            content = '<div class="bg-green-50 p-3 rounded-md"><div class="text-green-800 font-medium">Data loaded!</div><div class="text-sm text-green-600">' + data + '</div></div>';
+          } else {
+            content = '<div class="text-center py-4"><div class="text-gray-600">No data loaded</div></div>';
+          }
+          
+          resourceEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<button onclick="loadSolidResource()" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md mb-3">Load Resource</button>' +
+            content +
+            '<p class="text-sm text-gray-600 mt-3 italic">Solid Resource loading simulation</p>' +
+          '</div>';
+        }
+        
+        window.loadSolidResource = () => {
+          isLoading = true;
+          data = null;
+          renderSolidResource();
+          
+          setTimeout(() => {
+            isLoading = false;
+            data = 'Sample data loaded at ' + new Date().toLocaleTimeString();
+            renderSolidResource();
+          }, 1000);
+        };
+        
+        renderSolidResource();
+      }
+    }
+    
+    function initializeSvelteComponents() {
+      // Svelte Card Component
+      let svelteCardVisible = true;
+      let svelteCardClicks = 0;
+      const cardEl = document.getElementById('svelte-card');
+      if (cardEl) {
+        function renderSvelteCard() {
+          const contentStyle = svelteCardVisible ? '' : 'style="display: none;"';
+          cardEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="flex items-center justify-between mb-3">' +
+              '<h4 class="font-semibold text-gray-800">Svelte Card</h4>' +
+              '<button onclick="toggleSvelteCard()" class="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded text-sm">Toggle</button>' +
+            '</div>' +
+            '<div ' + contentStyle + '>' +
+              '<p class="text-gray-600 mb-3">This is a Svelte card component!</p>' +
+              '<p class="text-sm text-gray-500 mb-3">Clicks: ' + svelteCardClicks + '</p>' +
+              '<button onclick="incrementSvelteCard()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded">Click me</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Svelte Card with toggle and state</p>' +
+          '</div>';
+        }
+        
+        window.toggleSvelteCard = () => { svelteCardVisible = !svelteCardVisible; renderSvelteCard(); };
+        window.incrementSvelteCard = () => { svelteCardClicks++; renderSvelteCard(); };
+        
+        renderSvelteCard();
+      }
+      
+      // Svelte Weather Widget
+      let svelteWeather = { temp: 20, condition: 'Partly Cloudy', icon: '⛅' };
+      const weatherConditions = [
+        { temp: 25, condition: 'Sunny', icon: '☀️' },
+        { temp: 20, condition: 'Partly Cloudy', icon: '⛅' },
+        { temp: 15, condition: 'Cloudy', icon: '☁️' },
+        { temp: 12, condition: 'Rainy', icon: '🌧️' }
+      ];
+      
+      const weatherEl = document.getElementById('svelte-weather');
+      if (weatherEl) {
+        function renderSvelteWeather() {
+          weatherEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="text-center">' +
+              '<div class="text-5xl mb-3">' + svelteWeather.icon + '</div>' +
+              '<div class="text-2xl font-bold text-gray-800 mb-1">' + svelteWeather.temp + '°C</div>' +
+              '<div class="text-gray-600 mb-4">' + svelteWeather.condition + '</div>' +
+              '<button onclick="refreshSvelteWeather()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded">🔄 Update Weather</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Svelte Weather Widget with animations</p>' +
+          '</div>';
+        }
+        
+        window.refreshSvelteWeather = () => {
+          svelteWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+          renderSvelteWeather();
+        };
+        
+        renderSvelteWeather();
+      }
+      
+      // Svelte Form
+      const formEl = document.getElementById('svelte-form');
+      if (formEl) {
+        formEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+          '<div class="space-y-3">' +
+            '<div>' +
+              '<label class="block text-sm font-medium text-gray-700 mb-1">Name:</label>' +
+              '<input type="text" id="svelte-name" onkeyup="updateSvelteForm()" placeholder="Enter your name" class="w-full p-2 border border-gray-300 rounded-md">' +
+            '</div>' +
+            '<div>' +
+              '<label class="block text-sm font-medium text-gray-700 mb-1">Age:</label>' +
+              '<input type="number" id="svelte-age" onkeyup="updateSvelteForm()" placeholder="Enter your age" class="w-full p-2 border border-gray-300 rounded-md">' +
+            '</div>' +
+            '<div>' +
+              '<label class="block text-sm font-medium text-gray-700 mb-1">Favorite Color:</label>' +
+              '<select id="svelte-color" onchange="updateSvelteForm()" class="w-full p-2 border border-gray-300 rounded-md">' +
+                '<option value="">Select a color</option>' +
+                '<option value="red">Red</option>' +
+                '<option value="blue">Blue</option>' +
+                '<option value="green">Green</option>' +
+                '<option value="orange">Orange</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="bg-gray-50 p-3 rounded-md">' +
+              '<h5 class="font-medium text-gray-800 mb-1">Preview:</h5>' +
+              '<p id="svelte-preview" class="text-gray-600">Fill out the form to see a preview</p>' +
+            '</div>' +
+          '</div>' +
+          '<p class="text-sm text-gray-600 mt-3 italic">Svelte reactive form with live updates</p>' +
+        '</div>';
+        
+        window.updateSvelteForm = () => {
+          const name = document.getElementById('svelte-name').value;
+          const age = document.getElementById('svelte-age').value;
+          const color = document.getElementById('svelte-color').value;
+          
+          let preview = 'Fill out the form to see a preview';
+          if (name || age || color) {
+            preview = 'Hello ' + (name || 'Anonymous');
+            if (age) preview += ', age ' + age;
+            if (color) preview += '. Your favorite color is ' + color;
+            preview += '!';
+          }
+          
+          document.getElementById('svelte-preview').textContent = preview;
+        };
+      }
+      
+      // Svelte Animation Demo
+      const animationEl = document.getElementById('svelte-animation');
+      if (animationEl) {
+        let animationActive = false;
+        
+        function renderSvelteAnimation() {
+          const buttonText = animationActive ? 'Stop Animation' : 'Start Animation';
+          const buttonClass = animationActive ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600';
+          const boxClass = animationActive ? 'transform rotate-45 scale-110 bg-orange-400' : 'transform rotate-0 scale-100 bg-orange-500';
+          
+          animationEl.innerHTML = '<div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">' +
+            '<div class="text-center">' +
+              '<div class="w-16 h-16 ' + boxClass + ' mx-auto mb-4 rounded-lg transition-all duration-500 ease-in-out"></div>' +
+              '<button onclick="toggleSvelteAnimation()" class="px-4 py-2 ' + buttonClass + ' text-white rounded">' + buttonText + '</button>' +
+            '</div>' +
+            '<p class="text-sm text-gray-600 mt-3 italic">Svelte animation with CSS transitions</p>' +
+          '</div>';
+        }
+        
+        window.toggleSvelteAnimation = () => {
+          animationActive = !animationActive;
+          renderSvelteAnimation();
+        };
+        
+        renderSvelteAnimation();
+      }
+    }
+
+    async function navigate(path) {
+      console.log('Navigating to:', path);
+      const route = routes[path] || routes['/'];
+      try {
+        const module = await route();
+        const app = document.getElementById('app');
+        if (!app) {
+          console.error('App container not found');
+          return;
+        }
+        
+        const content = module.default();
+        app.innerHTML = content;
+        
+        if (window.location.pathname !== path) {
+          history.pushState({}, '', path);
+        }
+        
+        console.log('Navigation completed for:', path);
+      } catch (error) {
+        console.error('Navigation error:', error);
+        const app = document.getElementById('app');
+        if (app) {
+          app.innerHTML = '<div class="error"><h1>Page Not Found</h1><p>Error: ' + error.message + '</p><a href="/">Return to Home</a></div>';
+        }
+      }
+    }
+
+    // Handle clicks
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link && link.href && link.href.startsWith(window.location.origin)) {
+        e.preventDefault();
+        const path = new URL(link.href).pathname;
+        console.log('Link clicked, navigating to:', path);
+        navigate(path);
+      }
+    });
+
+    // Handle back/forward
+    window.addEventListener('popstate', () => {
+      navigate(window.location.pathname);
+    });
+
+    // Initial navigation
+    console.log('Starting initial navigation to:', window.location.pathname);
+    navigate(window.location.pathname);
+  </script>
 </body>
 </html>

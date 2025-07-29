@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Enhanced MTM Framework</title>
+    <meta name="description" content="Welcome to the enhanced MTM framework with link-based routing and component imports">
+    <meta name="route" content="/">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .navigation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .navigation a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .link-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .link-examples a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .link-examples a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .counter-component, .vue-button, .react-component {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .counter-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .counter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="home-page">
+<header>
+<h1>Home - Enhanced MTM Framework</h1>
+<p>Welcome to the enhanced MTM framework with link-based routing and component imports</p>
+</header>
+<nav class="navigation">
+<a href="/about" data-link="true">About Us</a>
+<a href="/contact" data-link="true">Contact</a>
+<a href="/blog" data-link="true">Blog</a>
+</nav>
+<main>
+<section class="welcome">
+<h2><span data-bind="$welcomeMessage">Loading...</span></h2>
+<div data-component="Counter" data-type="react"
+data-event-initialValue="$clickCount"
+data-event-onIncrement="$handleClick"></div>
+<div data-component="Button" data-type="vue"
+label="Click Me!"
+data-event-onClick="$handleClick"
+variant="primary"></div>
+</section>
+<section class="features">
+<h3>Enhanced MTM Features</h3>
+<ul>
+<li>✅ Link-based routing with &lt;a href="/path"&gt;</li>
+<li>✅ Component imports from React/Vue/Svelte</li>
+<li>✅ External JavaScript compilation</li>
+<li>✅ Route definitions in MTM files</li>
+<li>✅ Professional SPA architecture</li>
+</ul>
+</section>
+</main>
+<footer>
+<p>
+<a href="/privacy">Privacy Policy</a> |
+<a href="/terms">Terms of Service</a>
+</p>
+</footer>
+</div></div>
+    
+        <script src="./js/mtm-router.js"></script>
+        <script src="./js/components.js"></script>
+        <script src="./js/external.js"></script>
+      
+</body>
+</html>

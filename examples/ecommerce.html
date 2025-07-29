@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MTM Store - E-commerce Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/styles/global.css">
+</head>
+<body>
+  <div id="app">
+    <div class="loading min-h-screen bg-gray-50 flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <span class="text-white font-bold text-2xl">🛒</span>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">MTM Store</h1>
+        <p class="text-gray-600">Loading your shopping experience...</p>
+        <div class="mt-4">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module">
+    // E-commerce routing system
+    const routes = {
+      '/': () => import('./src/pages/ecommerce-home.mtm'),
+      '/products': () => import('./src/pages/products.mtm'),
+      '/product-detail': () => import('./src/pages/product-detail.mtm'),
+      '/product/:id': () => import('./src/pages/product-detail.mtm'),
+      '/cart': () => import('./src/pages/cart.mtm'),
+      '/category/:category': () => import('./src/pages/products.mtm'),
+      '/search': () => import('./src/pages/products.mtm'),
+      '/about': () => import('./src/pages/about.mtm'),
+      '/contact': () => import('./src/pages/contact.mtm'),
+      '/checkout': () => import('./src/pages/checkout.mtm')
+    };
+
+    // Enhanced router with parameter support
+    class EcommerceRouter {
+      constructor() {
+        this.currentRoute = null;
+        this.init();
+      }
+
+      init() {
+        // Handle initial load
+        this.handleRoute();
+        
+        // Handle browser navigation
+        window.addEventListener('popstate', () => this.handleRoute());
+        
+        // Intercept link clicks
+        document.addEventListener('click', (e) => {
+          const link = e.target.closest('a');
+          if (link && this.shouldIntercept(link)) {
+            e.preventDefault();
+            this.navigate(link.getAttribute('href'));
+          }
+        });
+      }
+
+      shouldIntercept(link) {
+        const href = link.getAttribute('href');
+        return href && 
+               !link.hasAttribute('target') &&
+               !href.startsWith('http') &&
+               !href.startsWith('mailto:') &&
+               !href.startsWith('tel:') &&
+               !href.startsWith('#');
+      }
+
+      navigate(path) {
+        if (path !== window.location.pathname) {
+          history.pushState(null, '', path);
+        }
+        this.handleRoute();
+      }
+
+      async handleRoute() {
+        const path = window.location.pathname;
+        const route = this.matchRoute(path);
+        
+        if (route) {
+          try {
+            const module = await route.handler();
+            if (module && module.default) {
+              const content = module.default();
+              document.getElementById('app').innerHTML = content;
+              
+              // Update page title based on route
+              this.updatePageTitle(path);
+              
+              // Scroll to top
+              window.scrollTo(0, 0);
+            }
+          } catch (error) {
+            console.error('Failed to load route:', error);
+            this.show404();
+          }
+        } else {
+          this.show404();
+        }
+      }
+
+      matchRoute(path) {
+        // Exact match first
+        if (routes[path]) {
+          return { handler: routes[path], params: {} };
+        }
+
+        // Pattern matching for dynamic routes
+        for (const [pattern, handler] of Object.entries(routes)) {
+          const params = this.matchPattern(pattern, path);
+          if (params) {
+            return { handler, params };
+          }
+        }
+
+        return null;
+      }
+
+      matchPattern(pattern, path) {
+        const patternParts = pattern.split('/');
+        const pathParts = path.split('/');
+
+        if (patternParts.length !== pathParts.length) {
+          return null;
+        }
+
+        const params = {};
+        
+        for (let i = 0; i < patternParts.length; i++) {
+          const patternPart = patternParts[i];
+          const pathPart = pathParts[i];
+
+          if (patternPart.startsWith(':')) {
+            // Dynamic parameter
+            const paramName = patternPart.slice(1);
+            params[paramName] = pathPart;
+          } else if (patternPart !== pathPart) {
+            // Static part doesn't match
+            return null;
+          }
+        }
+
+        return params;
+      }
+
+      updatePageTitle(path) {
+        const titles = {
+          '/': 'MTM Store - Your One-Stop Shop',
+          '/products': 'All Products - MTM Store',
+          '/cart': 'Shopping Cart - MTM Store',
+          '/about': 'About Us - MTM Store',
+          '/contact': 'Contact Us - MTM Store',
+          '/checkout': 'Checkout - MTM Store'
+        };
+
+        document.title = titles[path] || 'MTM Store';
+      }
+
+      show404() {
+        document.getElementById('app').innerHTML = `
+          <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-6xl mb-4">🔍</div>
+              <h1 class="text-3xl font-bold text-gray-900 mb-4">Page Not Found</h1>
+              <p class="text-gray-600 mb-8">The page you're looking for doesn't exist.</p>
+              <a href="/" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                Go Home
+              </a>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Global e-commerce functions
+    window.addToCart = function(product) {
+      const cart = JSON.parse(localStorage.getItem('mtm-cart') || '[]');
+      const existingItem = cart.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+      
+      localStorage.setItem('mtm-cart', JSON.stringify(cart));
+      
+      // Update cart count in header
+      updateCartCount();
+      
+      // Show notification
+      showNotification(`${product.name} added to cart!`, 'success');
+    };
+
+    window.updateCartCount = function() {
+      const cart = JSON.parse(localStorage.getItem('mtm-cart') || '[]');
+      const count = cart.reduce((total, item) => total + item.quantity, 0);
+      
+      const countElements = document.querySelectorAll('#cart-count, [id*="cart-count"]');
+      countElements.forEach(el => {
+        if (el) el.textContent = count;
+      });
+    };
+
+    window.showNotification = function(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 transition-all duration-300 ${
+        type === 'success' ? 'bg-green-500' : 
+        type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+      }`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
+      }, 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    };
+
+    // Initialize router
+    const router = new EcommerceRouter();
+    
+    // Initialize cart count on page load
+    setTimeout(() => {
+      updateCartCount();
+    }, 1000);
+  </script>
+</body>
+</html>

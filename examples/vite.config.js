@@ -3,26 +3,21 @@ import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
 import solid from 'vite-plugin-solid';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-// import { mtmPlugin } from '@metamon/build-tools';
+import tailwindcss from '@tailwindcss/vite';
+// import { mtmPlugin } from './build/mtm-plugin.js';
 
 export default defineConfig({
   plugins: [
-    // MTM Plugin - temporarily disabled while fixing core compilation
-    // mtmPlugin({
-    //   include: ['**/*.mtm'],
-    //   hmr: true,
-    //   sourceMaps: true
-    // }),
+    // mtmPlugin(), // Temporarily disabled for testing
+    tailwindcss(),
     react({
-      include: ['**/*.jsx', '**/*.tsx'],
-      exclude: ['**/components/Solid*.jsx', '**/components/Svelte*.svelte']
+      include: ['**/*.jsx', '**/*.tsx']
     }),
     vue({
       include: ['**/*.vue']
     }),
     solid({
-      include: ['**/components/Solid*.jsx', '**/mount-solid.js'],
-      exclude: ['**/components/React*.jsx', '**/components/Shared*.jsx']
+      include: ['**/components/Solid*.jsx']
     }),
     svelte({
       include: ['**/*.svelte']
@@ -32,10 +27,17 @@ export default defineConfig({
     alias: {
       '@': '/src',
       '@components': '/src/components',
-      '@pages': '/src/pages'
+      '@pages': '/src/pages',
+      '@styles': '/src/styles'
     }
   },
   server: {
-    port: 3000
+    port: 3000,
+    open: true
+  },
+
+  build: {
+    outDir: 'dist',
+    sourcemap: true
   }
 });

@@ -1,0 +1,98 @@
+---
+function: MTMTodoList
+---
+
+// MTM Todo List Component - Ultra-modern MTM syntax
+$todos! = signal('todos', [])
+$newTodo! = signal('newTodo', '')
+$nextId! = signal('nextId', 1)
+
+// Computed values using ultra-modern MTM syntax
+$completedCount! = computed(() => $todos.filter(todo => todo.completed).length)
+$totalCount! = computed(() => $todos.length)
+
+// Component methods using ultra-modern MTM syntax
+$addTodo = () => {
+  if ($newTodo.trim()) {
+    $todos = [...$todos, {
+      id: $nextId,
+      text: $newTodo.trim(),
+      completed: false
+    }]
+    $nextId++
+    $newTodo = ''
+  }
+}
+
+$toggleTodo = (id) => {
+  $todos = $todos.map(todo => 
+    todo.id === id ? { ...todo, completed: !todo.completed } : todo
+  )
+}
+
+$deleteTodo = (id) => {
+  $todos = $todos.filter(todo => todo.id !== id)
+}
+
+$clearCompleted = () => {
+  $todos = $todos.filter(todo => !todo.completed)
+}
+
+// Initialize component with props
+$init = (props = {}) => {
+  if (props.items) {
+    $todos = props.items.map((item, index) => ({
+      id: index + 1,
+      text: item.text || item,
+      completed: item.completed || false
+    }))
+    $nextId = $todos.length + 1
+  }
+}
+
+// Handle enter key in input
+$handleKeyPress = (event) => {
+  if (event.key === 'Enter') {
+    $addTodo()
+  }
+}
+
+<template>
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Native MTM Todo List</h4>
+    <div class="flex space-x-2 mb-4">
+      <input 
+        type="text" 
+        bind:value={$newTodo}
+        keypress={$handleKeyPress}
+        placeholder="Add a new todo..." 
+        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+      />
+      <button click={$addTodo} class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded font-semibold transition-colors">Add</button>
+    </div>
+    <div class="flex justify-between items-center mb-4 p-2 bg-gray-100 dark:bg-gray-700 rounded">
+      <span class="font-semibold text-gray-900 dark:text-white">{$completedCount}/{$totalCount} completed</span>
+      <button click={$clearCompleted} class="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded text-sm transition-colors">Clear Completed</button>
+    </div>
+    <ul class="space-y-2 max-h-64 overflow-y-auto">
+      {#each $todos as todo}
+        <li class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded border {todo.completed ? 'opacity-60 line-through' : ''}">
+          <span class="flex-1">{todo.text}</span>
+          <div class="flex space-x-2">
+            <button click={() => $toggleTodo(todo.id)} class="w-8 h-8 {todo.completed ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-500 hover:bg-green-600'} text-white rounded-full text-sm font-bold transition-colors">
+              {todo.completed ? '↶' : '✓'}
+            </button>
+            <button click={() => $deleteTodo(todo.id)} class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full text-sm font-bold transition-colors">×</button>
+          </div>
+        </li>
+      {/each}
+      
+      {#if $todos.length === 0}
+        <li class="text-center py-8 text-gray-500 italic">No todos yet. Add one above!</li>
+      {/if}
+    </ul>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-4 italic">
+      This is a native MTM reactive todo list with state management
+    </p>
+  </div>
+</template>

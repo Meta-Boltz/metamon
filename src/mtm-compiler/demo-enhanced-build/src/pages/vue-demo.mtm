@@ -1,0 +1,44 @@
+---
+route: "/vue-demo"
+title: "Vue Demo - Enhanced MTM"
+description: "Vue components with Composition API in MTM framework"
+compileJsMode: "external.js"
+---
+import TodoList from "@components/TodoList.vue"
+
+<template>
+  <div class="demo-page">
+    <header>
+      <h1>💚 Vue Demo</h1>
+      <p>Vue 3 Composition API components in MTM</p>
+    </header>
+
+    <nav class="navigation">
+      <a href="/react-demo" data-link="true">← React Demo</a>
+      <a href="/" data-link="true">Home</a>
+      <a href="/solid-demo" data-link="true">Solid Demo →</a>
+    </nav>
+
+    <main>
+      <section class="component-showcase">
+        <h2>Vue Todo List Component</h2>
+        <p>This todo list uses Vue 3's Composition API with TypeScript:</p>
+        
+        <div class="component-demo">
+          <TodoList />
+        </div>
+      </section>
+
+      <section class="code-example">
+        <h3>Component Features:</h3>
+        <ul>
+          <li>✅ Vue 3 Composition API</li>
+          <li>✅ TypeScript support</li>
+          <li>✅ Reactive data with ref() and reactive()</li>
+          <li>✅ Scoped CSS styling</li>
+          <li>✅ Template directives (v-for, v-model)</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>

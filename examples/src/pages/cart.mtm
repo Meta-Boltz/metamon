@@ -1,0 +1,446 @@
+---
+function: CartPage
+useLayout: "ecommerce"
+title: "Shopping Cart - MTM Store"
+description: "Review and manage your cart items"
+breadcrumb: "Shopping Cart"
+---
+
+<template>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+      <a href="/products" class="text-blue-600 hover:text-blue-800 font-medium">
+        Continue Shopping
+      </a>
+    </div>
+
+    <!-- Empty Cart State -->
+    <div id="empty-cart" class="hidden text-center py-16">
+      <div class="text-6xl mb-6">🛒</div>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
+      <p class="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
+      <a href="/products" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+        Start Shopping
+      </a>
+    </div>
+
+    <!-- Cart Content -->
+    <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Cart Items -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-sm border">
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Cart Items</h2>
+          </div>
+          
+          <div id="cart-items-list" class="divide-y divide-gray-200">
+            <!-- Cart items will be populated here -->
+          </div>
+        </div>
+
+        <!-- Recommended Products -->
+        <div class="mt-8">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">You might also like</h3>
+          <div id="recommended-products" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Recommended products will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-sm border sticky top-8">
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Order Summary</h2>
+          </div>
+          
+          <div class="p-6">
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Subtotal</span>
+                <span id="subtotal" class="font-medium">$0.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Shipping</span>
+                <span id="shipping" class="font-medium">$0.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Tax</span>
+                <span id="tax" class="font-medium">$0.00</span>
+              </div>
+              <div class="border-t pt-3">
+                <div class="flex justify-between">
+                  <span class="text-lg font-semibold text-gray-900">Total</span>
+                  <span id="total" class="text-lg font-bold text-gray-900">$0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Promo Code</label>
+              <div class="flex">
+                <input
+                  type="text"
+                  id="promo-code"
+                  placeholder="Enter code"
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button
+                  onclick="applyPromoCode()"
+                  class="px-4 py-2 bg-gray-100 text-gray-700 border border-l-0 border-gray-300 rounded-r-lg hover:bg-gray-200 transition-colors"
+                >
+                  Apply
+                </button>
+              </div>
+              <div id="promo-message" class="mt-2 text-sm hidden"></div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button
+              onclick="proceedToCheckout()"
+              class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-semibold mb-4"
+            >
+              Proceed to Checkout
+            </button>
+
+            <!-- Payment Methods -->
+            <div class="text-center">
+              <p class="text-xs text-gray-500 mb-2">We accept</p>
+              <div class="flex justify-center space-x-2">
+                <div class="w-8 h-5 bg-blue-600 rounded text-white text-xs flex items-center justify-center">VISA</div>
+                <div class="w-8 h-5 bg-red-600 rounded text-white text-xs flex items-center justify-center">MC</div>
+                <div class="w-8 h-5 bg-blue-500 rounded text-white text-xs flex items-center justify-center">AMEX</div>
+                <div class="w-8 h-5 bg-yellow-500 rounded text-white text-xs flex items-center justify-center">PP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Badge -->
+        <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <div>
+              <p class="text-sm font-medium text-green-800">Secure Checkout</p>
+              <p class="text-xs text-green-600">Your information is protected</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+// Cart page state and functions
+$cartItems! = signal('cartItems', [])
+$subtotal! = signal('subtotal', 0)
+$shipping! = signal('shipping', 0)
+$tax! = signal('tax', 0)
+$total! = signal('total', 0)
+$promoCode! = signal('promoCode', '')
+$promoDiscount! = signal('promoDiscount', 0)
+
+// Initialize page
+$init = () => {
+  loadCartItems()
+  loadRecommendedProducts()
+}
+
+// Load cart items from localStorage
+$loadCartItems = () => {
+  const savedCart = localStorage.getItem('mtm-cart')
+  if (savedCart) {
+    $cartItems.value = JSON.parse(savedCart)
+  }
+  
+  if ($cartItems.value.length === 0) {
+    document.getElementById('empty-cart').classList.remove('hidden')
+    document.getElementById('cart-content').classList.add('hidden')
+  } else {
+    document.getElementById('empty-cart').classList.add('hidden')
+    document.getElementById('cart-content').classList.remove('hidden')
+    renderCartItems()
+    calculateTotals()
+  }
+}
+
+// Render cart items
+$renderCartItems = () => {
+  const container = document.getElementById('cart-items-list')
+  if (!container) return
+  
+  const itemsHtml = $cartItems.value.map(item => `
+    <div class="p-6">
+      <div class="flex items-start space-x-4">
+        <div class="flex-shrink-0">
+          <img 
+            src="${item.image}" 
+            alt="${item.name}"
+            class="w-20 h-20 object-cover rounded-lg"
+          />
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <h3 class="text-lg font-medium text-gray-900 mb-1">
+            <a href="/product/${item.id}" class="hover:text-blue-600">${item.name}</a>
+          </h3>
+          
+          <div class="text-sm text-gray-500 mb-2">
+            ${item.selectedColor ? `Color: ${item.selectedColor}` : ''}
+            ${item.selectedSize ? ` • Size: ${item.selectedSize}` : ''}
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <button 
+                onclick="updateItemQuantity(${item.id}, ${item.quantity - 1})"
+                class="w-8 h-8 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center"
+                ${item.quantity <= 1 ? 'disabled' : ''}
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                </svg>
+              </button>
+              
+              <span class="text-lg font-medium w-8 text-center">${item.quantity}</span>
+              
+              <button 
+                onclick="updateItemQuantity(${item.id}, ${item.quantity + 1})"
+                class="w-8 h-8 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="text-right">
+              <div class="text-lg font-bold text-gray-900">$${(item.price * item.quantity).toFixed(2)}</div>
+              <div class="text-sm text-gray-500">$${item.price.toFixed(2)} each</div>
+            </div>
+          </div>
+          
+          <div class="mt-4 flex items-center space-x-4">
+            <button 
+              onclick="moveToWishlist(${item.id})"
+              class="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Move to Wishlist
+            </button>
+            <button 
+              onclick="removeFromCart(${item.id})"
+              class="text-sm text-red-600 hover:text-red-800 font-medium"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('')
+  
+  container.innerHTML = itemsHtml
+}
+
+// Calculate totals
+$calculateTotals = () => {
+  $subtotal.value = $cartItems.value.reduce((total, item) => total + (item.price * item.quantity), 0)
+  
+  // Calculate shipping (free over $100)
+  $shipping.value = $subtotal.value >= 100 ? 0 : 9.99
+  
+  // Calculate tax (8.5%)
+  $tax.value = ($subtotal.value - $promoDiscount.value) * 0.085
+  
+  // Calculate total
+  $total.value = $subtotal.value + $shipping.value + $tax.value - $promoDiscount.value
+  
+  // Update display
+  document.getElementById('subtotal').textContent = `$${$subtotal.value.toFixed(2)}`
+  document.getElementById('shipping').textContent = $shipping.value === 0 ? 'FREE' : `$${$shipping.value.toFixed(2)}`
+  document.getElementById('tax').textContent = `$${$tax.value.toFixed(2)}`
+  document.getElementById('total').textContent = `$${$total.value.toFixed(2)}`
+}
+
+// Update item quantity
+$updateItemQuantity = (itemId, newQuantity) => {
+  if (newQuantity <= 0) {
+    removeFromCart(itemId)
+    return
+  }
+  
+  const item = $cartItems.value.find(item => item.id === itemId)
+  if (item) {
+    item.quantity = newQuantity
+    saveCart()
+    renderCartItems()
+    calculateTotals()
+    
+    // Update global cart count
+    updateCartCount()
+  }
+}
+
+// Remove item from cart
+$removeFromCart = (itemId) => {
+  $cartItems.value = $cartItems.value.filter(item => item.id !== itemId)
+  saveCart()
+  
+  if ($cartItems.value.length === 0) {
+    document.getElementById('empty-cart').classList.remove('hidden')
+    document.getElementById('cart-content').classList.add('hidden')
+  } else {
+    renderCartItems()
+    calculateTotals()
+  }
+  
+  // Update global cart count
+  updateCartCount()
+  
+  showNotification('Item removed from cart', 'success')
+}
+
+// Move item to wishlist
+$moveToWishlist = (itemId) => {
+  const item = $cartItems.value.find(item => item.id === itemId)
+  if (item) {
+    // Add to wishlist (in a real app, this would save to wishlist)
+    showNotification(`${item.name} moved to wishlist`, 'success')
+    
+    // Remove from cart
+    removeFromCart(itemId)
+  }
+}
+
+// Apply promo code
+$applyPromoCode = () => {
+  const code = document.getElementById('promo-code').value.trim().toUpperCase()
+  const messageEl = document.getElementById('promo-message')
+  
+  if (!code) {
+    showPromoMessage('Please enter a promo code', 'error')
+    return
+  }
+  
+  // Sample promo codes
+  const promoCodes = {
+    'SAVE10': { discount: 0.10, type: 'percentage', description: '10% off' },
+    'SAVE20': { discount: 0.20, type: 'percentage', description: '20% off' },
+    'FREESHIP': { discount: 9.99, type: 'fixed', description: 'Free shipping' },
+    'WELCOME': { discount: 15, type: 'fixed', description: '$15 off' }
+  }
+  
+  if (promoCodes[code]) {
+    const promo = promoCodes[code]
+    
+    if (promo.type === 'percentage') {
+      $promoDiscount.value = $subtotal.value * promo.discount
+    } else {
+      $promoDiscount.value = Math.min(promo.discount, $subtotal.value)
+    }
+    
+    $promoCode.value = code
+    calculateTotals()
+    showPromoMessage(`Promo code applied: ${promo.description}`, 'success')
+    
+    // Disable the input and button
+    document.getElementById('promo-code').disabled = true
+    document.querySelector('button[onclick="applyPromoCode()"]').textContent = 'Applied'
+    document.querySelector('button[onclick="applyPromoCode()"]').disabled = true
+  } else {
+    showPromoMessage('Invalid promo code', 'error')
+  }
+}
+
+$showPromoMessage = (message, type) => {
+  const messageEl = document.getElementById('promo-message')
+  messageEl.textContent = message
+  messageEl.className = `mt-2 text-sm ${type === 'success' ? 'text-green-600' : 'text-red-600'}`
+  messageEl.classList.remove('hidden')
+}
+
+// Load recommended products
+$loadRecommendedProducts = async () => {
+  const recommendedProducts = [
+    {
+      id: 10,
+      name: "Wireless Charger",
+      price: 39.99,
+      image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=300&h=300&fit=crop",
+      rating: 4.4
+    },
+    {
+      id: 11,
+      name: "Phone Case",
+      price: 19.99,
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=300&h=300&fit=crop",
+      rating: 4.2
+    }
+  ]
+  
+  const container = document.getElementById('recommended-products')
+  container.innerHTML = recommendedProducts.map(product => `
+    <div class="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <img 
+        src="${product.image}" 
+        alt="${product.name}"
+        class="w-full h-32 object-cover"
+      />
+      
+      <div class="p-4">
+        <h4 class="font-medium text-gray-900 mb-2">${product.name}</h4>
+        
+        <div class="flex items-center mb-2">
+          <div class="flex items-center">
+            ${Array(5).fill(0).map((_, i) => `
+              <svg class="w-3 h-3 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+            `).join('')}
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-gray-900">$${product.price}</span>
+          <button 
+            onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})"
+            class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+// Proceed to checkout
+$proceedToCheckout = () => {
+  if ($cartItems.value.length === 0) {
+    showNotification('Your cart is empty', 'error')
+    return
+  }
+  
+  // In a real app, this would redirect to checkout
+  showNotification('Redirecting to checkout...', 'success')
+  
+  setTimeout(() => {
+    window.location.href = '/checkout'
+  }, 1500)
+}
+
+// Save cart to localStorage
+$saveCart = () => {
+  localStorage.setItem('mtm-cart', JSON.stringify($cartItems.value))
+}
+
+// Make functions globally available
+window.updateItemQuantity = $updateItemQuantity
+window.removeFromCart = $removeFromCart
+window.moveToWishlist = $moveToWishlist
+window.applyPromoCode = $applyPromoCode
+window.proceedToCheckout = $proceedToCheckout

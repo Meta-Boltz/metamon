@@ -1,0 +1,137 @@
+// primitive.mtm - Testing MTM framework capabilities
+export default function Primitive() {
+  // Basic reactive variables
+  $currentPage! = "home"
+  $counter! = 0
+  $message! = "Welcome to MTM Primitive Test"
+  $items! = []
+  $newItem! = ""
+  $showAdvanced! = false
+
+  // Navigation functions (client-side routing test)
+  $navigateTo = (page) => {
+    $currentPage = page
+    $message = `Navigated to ${page} page`
+  }
+
+  $goHome = () => {
+    $navigateTo("home")
+  }
+
+  $goAbout = () => {
+    $navigateTo("about")
+  }
+
+  $goContact = () => {
+    $navigateTo("contact")
+  }
+
+  // Counter functions
+  $increment = () => {
+    $counter++
+    $message = `Counter incremented to ${$counter}`
+  }
+
+  $decrement = () => {
+    $counter--
+    $message = `Counter decremented to ${$counter}`
+  }
+
+  $reset = () => {
+    $counter = 0
+    $message = "Counter reset to 0"
+  }
+
+  // List management functions
+  $addItem = () => {
+    if ($newItem.trim()) {
+      $items = [...$items, { id: Date.now(), text: $newItem, done: false }]
+      $newItem = ""
+      $message = `Added item: ${$items[$items.length - 1].text}`
+    }
+  }
+
+  $removeItem = (id) => {
+    $items = $items.filter(item => item.id !== id)
+    $message = "Item removed"
+  }
+
+  $toggleAdvanced = () => {
+    $showAdvanced = !$showAdvanced
+    $message = $showAdvanced ? "Advanced features shown" : "Advanced features hidden"
+  }
+
+  // Input handler
+  $handleInput = (e) => {
+    $newItem = e.target.value
+  }
+
+  <template>
+    <div class="primitive-app">
+      <header class="header">
+        <h1>🔮 MTM Primitive Test</h1>
+        <p class="status">{$message}</p>
+      </header>
+
+      <nav class="navigation">
+        <button click={$goHome} class="nav-btn">Home</button>
+        <button click={$goAbout} class="nav-btn">About</button>
+        <button click={$goContact} class="nav-btn">Contact</button>
+        <span class="current-page">Current: {$currentPage}</span>
+      </nav>
+
+      <main class="content">
+        <div class="page-content">
+          <h2>Page: {$currentPage}</h2>
+          
+          <section class="counter-section">
+            <h3>Counter Test</h3>
+            <div class="counter-display">
+              <button click={$decrement}>-</button>
+              <span class="count">{$counter}</span>
+              <button click={$increment}>+</button>
+              <button click={$reset} class="reset-btn">Reset</button>
+            </div>
+          </section>
+
+          <section class="list-section">
+            <h3>Dynamic List Test</h3>
+            <div class="add-item">
+              <input 
+                type="text" 
+                placeholder="Add new item..."
+                value={$newItem}
+                input={$handleInput}
+              />
+              <button click={$addItem}>Add</button>
+            </div>
+            <div class="items-list">
+              <p>Items count: {$items.length}</p>
+            </div>
+          </section>
+
+          <section class="advanced-section">
+            <button click={$toggleAdvanced} class="toggle-btn">
+              Toggle Advanced Features
+            </button>
+            
+            <div class="advanced-content" style="display: {$showAdvanced ? 'block' : 'none'}">
+              <h4>Advanced MTM Features</h4>
+              <p>✅ Reactive variables: Working</p>
+              <p>✅ Event handling: Working</p>
+              <p>✅ Template interpolation: Working</p>
+              <p>🚧 Client-side routing: Testing</p>
+              <p>🚧 Dynamic lists: Testing</p>
+              <p>🚧 Conditional rendering: Testing</p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>MTM Framework - Write once, compile anywhere!</p>
+        <p>Current state: counter={$counter}, page={$currentPage}, items={$items.length}</p>
+      </footer>
+    </div>
+  </template>
+}

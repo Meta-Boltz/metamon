@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleCounter</title>
+    <style>
+        
+      .counter {
+        max-width: 400px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border: 2px solid #667eea;
+        border-radius: 12px;
+        background: #f8f9ff;
+        text-align: center;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      
+      .counter h3 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+      }
+      
+      .counter-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      
+      .counter button {
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-weight: 600;
+        min-width: 40px;
+      }
+      
+      .counter button:hover:not(:disabled) {
+        background: #5a6fd8;
+      }
+      
+      .counter button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      
+      .count {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+        min-width: 100px;
+      }
+      
+      .count.high {
+        color: #e74c3c;
+      }
+      
+      .warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 0.5rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      }
+      
+      .reset-btn {
+        background: #e74c3c !important;
+      }
+      
+      .reset-btn:hover {
+        background: #c0392b !important;
+      }
+      
+      .contact-form-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #333;
+      }
+      
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        box-sizing: border-box;
+      }
+      
+      .form-group input.invalid,
+      .form-group textarea.invalid {
+        border-color: #e74c3c;
+      }
+      
+      .error {
+        color: #e74c3c;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+      }
+      
+      .submit-btn {
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      
+      .submit-btn:hover:not(:disabled) {
+        background: #229954;
+      }
+      
+      .submit-btn:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+      }
+      
+      .success-message {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+      }
+      
+      .note {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 1rem;
+        font-style: italic;
+      }
+    
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="counter">
+      <h3>Simple Counter</h3>
+      <div class="counter-display">
+        <button click=<span data-mtm-bind="decrement"></span>>-</button>
+        <span class="count"><span data-mtm-bind="count"></span></span>
+        <button click=<span data-mtm-bind="increment"></span>>+</button>
+      </div>
+      <p>This works like PHP + Next.js - pure HTML/JS!</p>
+    </div>
+    </div>
+    
+    <script>
+        
+// MTM Signal System for Pure HTML/JS
+class MTMSignal {
+  constructor() {
+    this.signals = new Map();
+    this.subscribers = new Map();
+  }
+  
+  signal(key, initialValue) {
+    if (!this.signals.has(key)) {
+      this.signals.set(key, initialValue);
+      this.subscribers.set(key, new Set());
+    }
+    
+    return {
+      get value() {
+        return window.mtm.signals.get(key);
+      },
+      set value(newValue) {
+        window.mtm.signals.set(key, newValue);
+        window.mtm.notifySubscribers(key, newValue);
+      }
+    };
+  }
+  
+  emit(event, data) {
+    const eventKey = `event:${event}`;
+    this.notifySubscribers(eventKey, data);
+  }
+  
+  on(event, callback) {
+    const eventKey = `event:${event}`;
+    if (!this.subscribers.has(eventKey)) {
+      this.subscribers.set(eventKey, new Set());
+    }
+    this.subscribers.get(eventKey).add(callback);
+  }
+  
+  notifySubscribers(key, value) {
+    if (this.subscribers.has(key)) {
+      this.subscribers.get(key).forEach(callback => callback(value));
+    }
+  }
+  
+  subscribe(key, element, property) {
+    if (!this.subscribers.has(key)) {
+      this.subscribers.set(key, new Set());
+    }
+    
+    const updateElement = (value) => {
+      if (property === 'textContent') {
+        element.textContent = value;
+      } else if (property === 'innerHTML') {
+        element.innerHTML = value;
+      } else if (property.startsWith('class:')) {
+        const className = property.split(':')[1];
+        element.classList.toggle(className, value);
+      } else {
+        element.setAttribute(property, value);
+      }
+    };
+    
+    this.subscribers.get(key).add(updateElement);
+    updateElement(this.signals.get(key)); // Initial update
+  }
+}
+
+// Initialize global MTM instance
+window.mtm = new MTMSignal();
+window.signal = (key, initialValue) => window.mtm.signal(key, initialValue);
+window.emit = (event, data) => window.mtm.emit(event, data);
+
+        
+        function SimpleCounter() {
+  const $count = signal('count', 0);
+  let $increment = () => {;
+  let $decrement = () => {;
+
+  // Set up DOM bindings
+  const container = document.getElementById('app');
+
+  container.querySelectorAll('[data-mtm-bind="count"]').forEach(el => {
+    mtm.subscribe('count', el, 'textContent');
+  });
+
+  // Handle conditional rendering
+  const updateConditionals = () => {
+    container.querySelectorAll('[data-mtm-if="count"]').forEach(el => {
+      el.style.display = $count.value ? 'block' : 'none';
+    });
+    container.querySelectorAll('[data-mtm-if="increment"]').forEach(el => {
+      el.style.display = $increment.value ? 'block' : 'none';
+    });
+    container.querySelectorAll('[data-mtm-if="decrement"]').forEach(el => {
+      el.style.display = $decrement.value ? 'block' : 'none';
+    });
+  };
+  updateConditionals();
+  mtm.subscribe('count', null, updateConditionals);
+}
+
+        
+        // Initialize component
+        document.addEventListener('DOMContentLoaded', () => {
+            SimpleCounter();
+        });
+    </script>
+</body>
+</html>
